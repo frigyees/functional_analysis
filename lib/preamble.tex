@@ -1,0 +1,196 @@
+% =====================================================================
+%  preamble.tex: class, packages, colours, environments, page style
+% =====================================================================
+
+\documentclass[11pt,a4paper]{article}
+
+% ---------- page ----------
+\usepackage[a4paper,margin=2.4cm,nohead,includefoot,footskip=1.1cm]{geometry}
+
+% ---------- fonts ----------
+\usepackage{fontspec}
+\setmainfont{TeX Gyre Pagella}
+\setsansfont{TeX Gyre Heros}
+% No monospaced font is loaded on purpose. The notes contain no \texttt
+% and no \verb; a family loaded lazily on first use is a portability
+% hazard. Adding one requires \setmonofont by file name, not by family.
+
+\usepackage{polyglossia}
+\setdefaultlanguage{english}
+
+% ---------- mathematics ----------
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{mathrsfs}
+% No icomma: the notes are English and use the decimal point. If the
+% decimal separator ever changes, load icomma and then audit every
+% mathematics-mode comma, because a tight comma becomes a separator.
+
+% ---------- graphics ----------
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{calc,arrows.meta,patterns,decorations.pathmorphing,positioning}
+
+% ---------- structure ----------
+\usepackage{mdframed}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\usepackage{xcolor}
+
+% ---------- colours ----------
+\definecolor{accent}{HTML}{2B4C7E}
+\definecolor{accentdark}{HTML}{1D3557}
+\definecolor{defaccent}{HTML}{2B4C7E}
+\definecolor{defbg}{HTML}{EAF0F7}
+\definecolor{thmaccent}{HTML}{7A4D2B}
+\definecolor{thmbg}{HTML}{F6EFE7}
+\definecolor{exaccent}{HTML}{2F6B3D}
+\definecolor{exbg}{HTML}{EBF2EA}
+\definecolor{procaccent}{HTML}{6A3D82}
+\definecolor{procbg}{HTML}{F2ECF6}
+\definecolor{rulegrey}{HTML}{B8C4D6}
+\definecolor{missingred}{HTML}{A32020}
+
+% ---------- box geometry ----------
+% nobreak: a box moves to the next page rather than splitting, which
+% otherwise leaves one-line slivers at the top of a page. A box longer
+% than a full text page would overflow the bottom margin and has to be
+% split by hand; nothing in the notes is near that length.
+\mdfsetup{nobreak=true}
+\mdfdefinestyle{defboxstyle}{linewidth=0pt,backgroundcolor=defbg,
+  innertopmargin=7pt,innerbottommargin=7pt,
+  innerleftmargin=9pt,innerrightmargin=9pt,skipabove=9pt,skipbelow=9pt}
+\mdfdefinestyle{thmboxstyle}{linewidth=0pt,backgroundcolor=thmbg,
+  innertopmargin=7pt,innerbottommargin=7pt,
+  innerleftmargin=9pt,innerrightmargin=9pt,skipabove=9pt,skipbelow=9pt}
+\mdfdefinestyle{exboxstyle}{linewidth=0pt,backgroundcolor=exbg,
+  innertopmargin=7pt,innerbottommargin=7pt,
+  innerleftmargin=9pt,innerrightmargin=9pt,skipabove=9pt,skipbelow=9pt}
+\mdfdefinestyle{procboxstyle}{linewidth=0pt,backgroundcolor=procbg,
+  innertopmargin=7pt,innerbottommargin=7pt,
+  innerleftmargin=9pt,innerrightmargin=9pt,skipabove=9pt,skipbelow=9pt}
+
+% ---------- theorem styles ----------
+% Heads are set in the body colour. The box background carries the
+% distinction between roles; the head does not repeat it.
+\newtheoremstyle{defstyle}{0pt}{0pt}{\normalfont}{0pt}
+  {\bfseries}{.}{ }{}
+\newtheoremstyle{thmstyle}{0pt}{0pt}{\normalfont}{0pt}
+  {\bfseries}{.}{ }{}
+\newtheoremstyle{exstyle}{0pt}{0pt}{\normalfont}{0pt}
+  {\bfseries}{.}{ }{}
+\newtheoremstyle{procstyle}{0pt}{0pt}{\normalfont}{0pt}
+  {\bfseries}{.}{ }{}
+\newtheoremstyle{remarkstyle}{9pt}{9pt}{\normalfont}{0pt}
+  {\itshape}{.}{ }{}
+
+% ---------- environments, one shared counter, reset per section ----------
+\theoremstyle{defstyle}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{notation}[definition]{Notation}
+
+\theoremstyle{thmstyle}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{corollary}[definition]{Corollary}
+
+\theoremstyle{exstyle}
+\newtheorem{example}[definition]{Example}
+\newtheorem{counterexample}[definition]{Counterexample}
+\newtheorem{exercise}[definition]{Exercise}
+
+\theoremstyle{procstyle}
+\newtheorem{procedure}[definition]{Procedure}
+
+\theoremstyle{remarkstyle}
+\newtheorem{remark}[definition]{Remark}
+
+\surroundwithmdframed[style=defboxstyle]{definition}
+\surroundwithmdframed[style=defboxstyle]{notation}
+\surroundwithmdframed[style=thmboxstyle]{theorem}
+\surroundwithmdframed[style=thmboxstyle]{proposition}
+\surroundwithmdframed[style=thmboxstyle]{lemma}
+\surroundwithmdframed[style=thmboxstyle]{corollary}
+\surroundwithmdframed[style=exboxstyle]{example}
+\surroundwithmdframed[style=exboxstyle]{counterexample}
+\surroundwithmdframed[style=exboxstyle]{exercise}
+\surroundwithmdframed[style=procboxstyle]{procedure}
+
+% ---------- proof and solution, both unboxed ----------
+\renewcommand{\proofname}{Proof}
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+\newenvironment{solution}[1][Solution]{%
+  \par\addvspace{4pt}\noindent\textit{#1.}\space\ignorespaces
+}{%
+  \nobreak\hfill$\lozenge$\par\addvspace{4pt}%
+}
+
+% ---------- illegible or missing source material ----------
+% \missing[page]{what cannot be read}
+\newcommand{\missing}[2][?]{%
+  \textcolor{missingred}{\textsf{\small[\,p#1: #2\,]}}}
+
+% ---------- sectioning ----------
+\titleformat{\section}{\Large\bfseries\color{accent}\raggedright}
+  {\thesection.}{0.6em}{}
+\titleformat{\subsection}{\large\bfseries\color{accentdark}\raggedright}
+  {\thesubsection.}{0.6em}{}
+\titlespacing*{\section}{0pt}{16pt}{8pt}
+\titlespacing*{\subsection}{0pt}{12pt}{6pt}
+
+% ---------- equations ----------
+\numberwithin{equation}{section}
+
+% ---------- figures: non-floating, numbered per section ----------
+\newcounter{notefig}[section]
+\renewcommand{\thenotefig}{\thesection.\arabic{notefig}}
+\newcommand{\notefigcaptiontext}{}
+% The body and its caption sit in one minipage, so a page break can
+% never separate them; these figures do not float.
+\newenvironment{nfigure}[1]{%
+  \par\addvspace{9pt}%
+  \refstepcounter{notefig}%
+  \renewcommand{\notefigcaptiontext}{#1}%
+  \noindent\begin{minipage}{\linewidth}%
+  \begin{center}%
+}{%
+  \par\addvspace{4pt}%
+  \begin{minipage}{0.86\linewidth}\centering\small\itshape
+    \textbf{Figure~\thenotefig.}\space\notefigcaptiontext
+  \end{minipage}%
+  \end{center}%
+  \end{minipage}\par
+  \addvspace{9pt}%
+}
+
+% ---------- title block and page style ----------
+\newcommand{\notestitle}[1]{%
+  \begin{center}{\Large\bfseries\color{accent}#1}\end{center}%
+  \addvspace{10pt}%
+}
+
+\newcommand{\notesrule}{%
+  \par\addvspace{6pt}{\color{rulegrey}\hrule height 0.5pt}\addvspace{6pt}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ---------- lists ----------
+\setlist[enumerate]{itemsep=2pt,topsep=3pt,parsep=0pt}
+\setlist[itemize]{itemsep=2pt,topsep=3pt,parsep=0pt}
+
+% ---------- links and bookmarks ----------
+\usepackage[bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,
+  colorlinks=true,linkcolor=accent,citecolor=accent,urlcolor=accent]{hyperref}
+
+\input{macros}

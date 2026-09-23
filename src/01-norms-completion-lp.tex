@@ -1,0 +1,436 @@
+% =====================================================================
+%  Lecture 2026-09-10
+%
+%  CORRECTED SOURCE ERRORS
+%   [p1] Hölder stated for 1 <= p <= infinity, proved only for
+%        1 < p < infinity  ->  hypothesis 1 < p < infinity, endpoint
+%        pair (1, infinity) stated and proved separately
+%   [p1] Hölder statement indexed the left sum by i and one right factor
+%        by j  ->  index j throughout
+%   [p1] final Hölder chain "= 1 = ||x||_p ||y||_q" held only under the
+%        normalisation  ->  scaling step written out, equality now true
+%        as stated
+%   [p1] (p-1)q = p rearranged to q = (p-1)/p  ->  q = p/(p-1)
+%   [p2] L_p defined with "Lebesgue integrable"  ->  measurable
+%   [p2] general measure-space remark asserted Banach for
+%        1 <= p <= infinity  ->  1 <= p < infinity, matching the norm
+%        formula the source gives
+%   [p2] completion called unique  ->  unique up to isometric isomorphism
+%   [p2] lemma proof "Goal: ||sum a_i x_i|| > C"  ->  >= C
+%   [p2] exercise 1 chain used a strict inequality between the two tail
+%        sums  ->  non-strict
+%
+%  ADDITIONS
+%   [p1] definitions of metric space, Cauchy sequence and completeness,
+%        named but not stated in the recap
+%   [p1] definition of a norm, implied by "checking the normed
+%        properties" but never stated
+%   [p1] connectedness hypothesis in the shortest-path example
+%   [p1] Young's inequality: cases a = 0 and b = 0 separated, positivity
+%        of u_1 and u_2 noted, concavity of log justified by its second
+%        derivative
+%   [p1] Minkowski: the degenerate case sum |x_j + y_j|^p = 0 excluded
+%        before dividing, and 1 - 1/q = 1/p made explicit
+%   [p2] L_p[0,1] defined as the completion of (C[0,1], ||.||_p); the
+%        source's set description kept as a remark
+%   [p2] exercise 1: the existence of N justified by convergence of the
+%        series
+%   [p2] exercise 2: the bound on the second integral attributed to
+%        mu([0,1]) = 1, and a pointer to the representation remark
+%   [p2] definition of equivalent norms, named in "Recall" but not stated
+%   [p2] lemma proof: reduction to sum |a_i| = 1 by homogeneity,
+%        Bolzano-Weierstrass named, continuity of the norm and of the
+%        coefficient map named
+%   [p3] max over i = 1, ..., n quantified; transitivity of equivalence
+%        written out
+%
+%  REPORTED BUT UNMODIFIED GAPS
+%   [p1] concavity of log is used, not proved
+%   [p2] incompleteness of (C[0,1], ||.||_p) asserted without a
+%        counterexample
+%   [p2] that C[0,1] is dense in L_p[0,1] is implicit in the definition
+%        by completion and is not discussed
+%   [p2] Hölder and Minkowski for sequences and for functions stated
+%        without proof, as in the source and the syllabus
+%   [p2] completion proposition stated without proof
+%   [p2] exercise 2 argues on representatives; that the induced map
+%        L_{p'}[0,1] -> L_p[0,1] is injective is not established
+%   [p3] ||.||_1 asserted to be a norm without verification
+%
+%  OMITTED
+%   [p1] the Wasserstein distance passage in full, with its two figures
+%   [p2] boxed homework note on L_p(R) and L_{p'}(R), one word illegible
+%   [p3] closing exercise on the equivalence of ||.||_1 and ||.||_2 on
+%        ell_1, unsolved in the source
+%   [p1, p2] doodles unconnected to the material
+% =====================================================================
+
+% [p1]
+\section{Metric spaces}
+
+\begin{definition}[Metric space]\label{def:metric}
+Let $X$ be a set. A function $d \colon X \times X \to \R$ is a \emph{metric}
+if for all $x, y, z \in X$ it satisfies $d(x,y) \ge 0$ with equality exactly
+when $x = y$, the symmetry $d(x,y) = d(y,x)$, and the triangle inequality
+$d(x,z) \le d(x,y) + d(y,z)$. The pair $(X,d)$ is a \emph{metric space}.
+\end{definition}
+
+\begin{definition}[Cauchy sequence]\label{def:cauchy}
+A sequence $(x_n)$ in a metric space $(X,d)$ is \emph{Cauchy} if for every
+$\eps > 0$ there is an $N \in \N$ such that $d(x_n, x_m) < \eps$ for all
+$n, m > N$.
+\end{definition}
+
+\begin{definition}[Completeness]\label{def:complete}
+A metric space $(X,d)$ is \emph{complete} if every Cauchy sequence in $X$
+converges to a limit lying in $X$.
+\end{definition}
+
+\begin{example}[Shortest-path metric]\label{ex:graph}
+Let $G = (V,E)$ be a connected graph and let $d(v_1, v_2)$ be the length of a
+shortest path between $v_1$ and $v_2$. Then $d$ is a metric on $V$.
+Connectedness is what makes $d$ finite.
+\end{example}
+
+\begin{proposition}[Completion]\label{prop:completion}
+For every metric space $(X,d)$ there is a complete metric space
+$(\cl{X}, \cl{d})$ together with a map $i \colon X \to \cl{X}$ such that
+$\cl{d}(i(x), i(y)) = d(x,y)$ for all $x, y \in X$ and $i(X)$ is dense in
+$\cl{X}$. It is unique up to isometric isomorphism: any two such spaces are
+related by a bijective isometry carrying one copy of $X$ onto the other.
+$(\cl{X}, \cl{d})$ is the \emph{completion} of $(X,d)$.
+\end{proposition}
+
+\begin{example}
+The space $(\Q, \abs{\cdot})$ is not complete; its completion is
+$(\R, \abs{\cdot})$.
+\end{example}
+
+\begin{remark}
+It is common to suppress $i$ and assume outright that $X \subset \cl{X}$, in
+which case the last condition reads: $X$ is dense in $\cl{X}$.
+\end{remark}
+
+% [p1]
+\section{Normed spaces and the \texorpdfstring{$p$}{p}-norms}
+
+\begin{definition}[Norm]\label{def:norm}
+Let $X$ be a vector space over $\K$, where $\K$ is $\R$ or $\C$. A function
+$\norm{\cdot} \colon X \to \R$ is a \emph{norm} if for all $x, y \in X$ and
+$\lambda \in \K$ it satisfies $\norm{x} \ge 0$ with equality exactly when
+$x = 0$, the homogeneity $\norm{\lambda x} = \abs{\lambda}\norm{x}$, and the
+triangle inequality $\norm{x+y} \le \norm{x} + \norm{y}$. Then
+$(X, \norm{\cdot})$ is a \emph{normed space}, and $d(x,y) = \norm{x-y}$ is a
+metric on $X$.
+\end{definition}
+
+\begin{example}\label{ex:spaces}
+\leavevmode
+\begin{enumerate}
+  \item $X = \K^n$ with the $p$-norm $\norm{x}_p = (\sum_{j=1}^n
+    \abs{x_j}^p)^{1/p}$ for $1 \le p < \infty$, or with
+    $\norm{x}_\infty = \max_{1 \le j \le n} \abs{x_j}$.
+  \item $X = \Cont{0,1}$ with the supremum norm
+    $\norm{f}_\infty = \max_{t \in [0,1]} \abs{f(t)}$, or with the $p$-norm
+    $\norm{f}_p = (\int_0^1 \abs{f}^p)^{1/p}$.
+  \item $X = \Contk{1}{0,1}$ with
+    $\norm{f} = \max_t \abs{f(t)} + \max_t \abs{f'(t)}$.
+  \item $\lp{p} = \set[\big]{x = (x_n) \,\big|\, \sum_{n=1}^{\infty}
+    \abs{x_n}^p < \infty}$ with
+    $\norm{x}_p = (\sum_{n=1}^{\infty}\abs{x_n}^p)^{1/p}$.
+  \item $\lp{\infty}$, the bounded sequences, with
+    $\norm{x}_\infty = \sup_n \abs{x_n}$.
+\end{enumerate}
+\end{example}
+
+Of the norm axioms, only the triangle inequality for the $p$-norm is not
+immediate. The next two theorems supply it.
+
+\begin{theorem}[Hölder's inequality]\label{thm:holder}
+Let $1 < p < \infty$ and let $q$ be its \emph{conjugate exponent}, defined by
+$\frac{1}{p} + \frac{1}{q} = 1$. Then for all $x, y \in \K^n$,
+\begin{equation}\label{eq:holder}
+  \norm{x \cdot y}_1 \;=\; \sum_{j=1}^{n} \abs{x_j y_j}
+  \;\le\; \Bigl(\sum_{j=1}^{n} \abs{x_j}^p\Bigr)^{1/p}
+          \Bigl(\sum_{j=1}^{n} \abs{y_j}^q\Bigr)^{1/q}
+  \;=\; \norm{x}_p \norm{y}_q ,
+\end{equation}
+where $x \cdot y = (x_1y_1, \dots, x_ny_n)$. The inequality also holds for the
+endpoint pair $(p,q) = (1,\infty)$ and, by symmetry, for $(\infty, 1)$.
+\end{theorem}
+
+\begin{remark}
+For $p = q = 2$ the inequality is the Cauchy--Schwarz inequality.
+\end{remark}
+
+\begin{proof}
+The endpoint case is immediate:
+$\sum_j \abs{x_j y_j} \le (\max_j \abs{y_j}) \sum_j \abs{x_j}
+= \norm{x}_1 \norm{y}_\infty$.
+
+Let now $1 < p < \infty$. The first step is Young's inequality: for all
+$a, b \ge 0$,
+\begin{equation}\label{eq:young}
+  ab \le \frac{a^p}{p} + \frac{b^q}{q}.
+\end{equation}
+If $a = 0$ or $b = 0$ the left side vanishes and the right side is
+non-negative, so assume $a, b > 0$ and put $u_1 = a^p > 0$, $u_2 = b^q > 0$,
+$\alpha_1 = \frac{1}{p}$, $\alpha_2 = \frac{1}{q}$, so that
+$\alpha_1 + \alpha_2 = 1$. The logarithm is concave on $(0,\infty)$, since
+$(\log)''(t) = -1/t^2 < 0$, and concavity applied to the convex combination
+$\alpha_1 u_1 + \alpha_2 u_2$ gives
+\[
+  \log\bigl(u_1^{\alpha_1} u_2^{\alpha_2}\bigr)
+  = \alpha_1 \log u_1 + \alpha_2 \log u_2
+  \le \log(\alpha_1 u_1 + \alpha_2 u_2).
+\]
+The logarithm is increasing, so
+$u_1^{\alpha_1} u_2^{\alpha_2} \le \alpha_1 u_1 + \alpha_2 u_2$, which is
+exactly \eqref{eq:young}, because
+$u_1^{\alpha_1}u_2^{\alpha_2} = (a^p)^{1/p}(b^q)^{1/q} = ab$.
+
+\begin{nfigure}{Concavity of the logarithm: the chord over $u_1$ and $u_2$
+lies below the graph, so
+$\alpha_1 \log u_1 + \alpha_2 \log u_2 \le \log(\alpha_1 u_1 + \alpha_2 u_2)$.}
+\begin{tikzpicture}[scale=0.95]
+  \draw[rulegrey] (0,0) -- (5.0,0);
+  \draw[rulegrey] (0.25,-0.9) -- (0.25,1.6);
+  \draw[accent, thick] plot[domain=0.32:4.8, samples=90] (\x, {ln(\x)});
+  \draw[thmaccent, thick] (1.0,{ln(1.0)}) -- (4.2,{ln(4.2)});
+  \draw[rulegrey, dashed] (1.0,{ln(1.0)}) -- (1.0,-0.15);
+  \draw[rulegrey, dashed] (4.2,{ln(4.2)}) -- (4.2,0);
+  \node[below] at (1.0,-0.15) {$u_1$};
+  \node[below] at (4.2,0) {$u_2$};
+  \node[accent] at (4.6,1.75) {$\log$};
+\end{tikzpicture}
+\end{nfigure}
+
+The second step is a reduction by scaling. If $x = 0$ or $y = 0$ both sides of
+\eqref{eq:holder} vanish, so assume $\norm{x}_p > 0$ and $\norm{y}_q > 0$ and
+put $\tilde{x} = x / \norm{x}_p$ and $\tilde{y} = y / \norm{y}_q$, so that
+$\norm{\tilde{x}}_p = \norm{\tilde{y}}_q = 1$. Both sides of
+\eqref{eq:holder} are positively homogeneous of degree one in $x$ and in $y$
+separately, so \eqref{eq:holder} for the pair $x, y$ is equivalent to
+\eqref{eq:holder} for the normalised pair $\tilde{x}, \tilde{y}$. It therefore
+suffices to treat the case
+$\sum_j \abs{x_j}^p = \sum_j \abs{y_j}^q = 1$.
+
+In that case, applying \eqref{eq:young} with $a = \abs{x_j}$ and
+$b = \abs{y_j}$ and summing over $j$,
+\[
+  \sum_{j=1}^{n} \abs{x_j y_j}
+  \le \sum_{j=1}^{n} \Bigl(\frac{\abs{x_j}^p}{p}
+      + \frac{\abs{y_j}^q}{q}\Bigr)
+  = \frac{1}{p} + \frac{1}{q} = 1 = \norm{x}_p \norm{y}_q . \qedhere
+\]
+\end{proof}
+
+\begin{theorem}[Minkowski's inequality]\label{thm:minkowski}
+Let $1 \le p < \infty$. Then $\norm{x+y}_p \le \norm{x}_p + \norm{y}_p$ for
+all $x, y \in \K^n$.
+\end{theorem}
+
+\begin{proof}
+For $p = 1$ the claim is the triangle inequality in $\K$ applied termwise. Let
+$1 < p < \infty$ and let $q$ be the conjugate exponent, so that
+$q = \frac{p}{p-1}$ and hence $(p-1)q = p$. If
+$\sum_j \abs{x_j + y_j}^p = 0$ the left side vanishes and the claim is
+trivial, so assume the sum is positive; being a finite sum, it is also finite.
+Using $\abs{x_j+y_j} \le \abs{x_j} + \abs{y_j}$ and then Hölder
+\eqref{eq:holder} on each of the two resulting sums, with exponents $q$ and
+$p$,
+\[
+  \begin{aligned}
+    \sum_j \abs{x_j+y_j}^p
+    &\le \sum_j \abs{x_j+y_j}^{p-1}\abs{x_j}
+       + \sum_j \abs{x_j+y_j}^{p-1}\abs{y_j} \\
+    &\le \Bigl(\sum_j \abs{x_j+y_j}^{(p-1)q}\Bigr)^{1/q}
+         \biggl[\Bigl(\sum_j \abs{x_j}^p\Bigr)^{1/p}
+              + \Bigl(\sum_j \abs{y_j}^p\Bigr)^{1/p}\biggr] \\
+    &= \Bigl(\sum_j \abs{x_j+y_j}^{p}\Bigr)^{1/q}
+       \bigl(\norm{x}_p + \norm{y}_p\bigr).
+  \end{aligned}
+\]
+Dividing by the positive finite number
+$(\sum_j \abs{x_j+y_j}^p)^{1/q}$ and using $1 - \frac{1}{q} = \frac{1}{p}$,
+\[
+  \norm{x+y}_p = \Bigl(\sum_j \abs{x_j+y_j}^p\Bigr)^{1/p}
+  \le \norm{x}_p + \norm{y}_p . \qedhere
+\]
+\end{proof}
+
+% [p2]
+\subsection{Infinite sequences and functions}
+
+Both inequalities carry over from $\K^n$ to $\lp{p}$ and to $\Cont{0,1}$.
+
+\begin{theorem}\label{thm:holder-inf}
+Let $1 < p < \infty$ and $\frac{1}{p} + \frac{1}{q} = 1$. For all
+$x \in \lp{p}$ and $y \in \lp{q}$,
+$\norm{x \cdot y}_1 \le \norm{x}_p \norm{y}_q$, and for all
+$f, g \in \Cont{0,1}$,
+\[
+  \norm{fg}_1 = \int_0^1 \abs{fg}
+  \le \Bigl(\int_0^1 \abs{f}^p\Bigr)^{1/p}
+      \Bigl(\int_0^1 \abs{g}^q\Bigr)^{1/q}
+  = \norm{f}_p \norm{g}_q .
+\]
+\end{theorem}
+
+\begin{theorem}\label{thm:minkowski-inf}
+Let $1 \le p < \infty$. For all $x, y \in \lp{p}$,
+$\norm{x+y}_p \le \norm{x}_p + \norm{y}_p$, and for all
+$f, g \in \Cont{0,1}$, $\norm{f+g}_p \le \norm{f}_p + \norm{g}_p$.
+\end{theorem}
+
+\subsection{The spaces \texorpdfstring{$L_p[0,1]$}{Lp[0,1]}}
+
+\begin{definition}[{$\Lp{p}[0,1]$}]\label{def:lp}
+Let $1 \le p < \infty$. On $\Cont{0,1}$ the $p$-norm is a norm, but the space
+$(\Cont{0,1}, \norm{\cdot}_p)$ is not complete. Its completion, in the sense
+of Proposition~\ref{prop:completion}, is denoted $\Lp{p}[0,1]$.
+\end{definition}
+
+\begin{remark}\label{rem:lp-repr}
+The space $\Lp{p}[0,1]$ has a concrete description. Its elements are
+represented by those measurable functions $f \colon [0,1] \to \K$ for which
+$\int_0^1 \abs{f}^p < \infty$, and two such functions represent the same
+element exactly when they agree outside a set of measure zero.
+\end{remark}
+
+\begin{remark}\label{rem:lp-measure}
+More generally, let $(X, \mathcal{A}, \mu)$ be a measure space and
+$1 \le p < \infty$. Then
+\[
+  \Lp{p}(X, \mathcal{A}, \mu) = \set[\Big]{f \colon X \to \K \,\Big|\,
+    f \text{ measurable}, \ \int_X \abs{f}^p \dd\mu < \infty},
+  \qquad
+  \norm{f}_p = \Bigl(\int_X \abs{f}^p \dd\mu\Bigr)^{1/p},
+\]
+and $\Lp{p}(X, \mathcal{A}, \mu)$ is a Banach space.
+\end{remark}
+
+\begin{exercise}\label{exc:lp-inclusion}
+Let $1 \le p < p' < \infty$. Show that $\lp{p} \subset \lp{p'}$.
+\end{exercise}
+
+\begin{solution}
+Let $x \in \lp{p}$. The series $\sum_j \abs{x_j}^p$ converges, so
+$\abs{x_j} \to 0$, and there is an $N$ with $\abs{x_j} < 1$ for all $j > N$.
+For such $j$ the larger exponent gives the smaller value,
+$\abs{x_j}^{p'} \le \abs{x_j}^{p}$, whence
+\[
+  \sum_{j > N} \abs{x_j}^{p'} \le \sum_{j > N} \abs{x_j}^{p} < \infty .
+\]
+The remaining finitely many terms are finite, so
+$\sum_j \abs{x_j}^{p'} < \infty$, that is $x \in \lp{p'}$. In particular
+$\lp{1} \subset \lp{3/2} \subset \lp{2} \subset \dots \subset \lp{\infty}$.
+\end{solution}
+
+\begin{exercise}\label{exc:Lp-inclusion}
+Let $1 \le p < p' < \infty$. Show that
+$\Lp{p}[0,1] \supset \Lp{p'}[0,1]$, the inclusion running the other way than
+in Exercise~\ref{exc:lp-inclusion}.
+\end{exercise}
+
+\begin{solution}
+Work with the representatives of Remark~\ref{rem:lp-repr}, so that
+$f \in \Lp{p'}[0,1]$ means $\int_0^1 \abs{f}^{p'} < \infty$. Split the domain
+according to the size of $\abs{f}$:
+\[
+  \int_0^1 \abs{f}^p
+  = \int_{\set{\abs{f} > 1}} \abs{f}^p
+    + \int_{\set{\abs{f} \le 1}} \abs{f}^p
+  \le \int_0^1 \abs{f}^{p'} + 1 < \infty .
+\]
+On the first set $\abs{f}^p \le \abs{f}^{p'}$, since $p < p'$ and
+$\abs{f} > 1$ there; the second integral is at most the measure of $[0,1]$,
+which is $1$. Hence $f \in \Lp{p}[0,1]$.
+\end{solution}
+
+% [p2]
+\section{Equivalent norms}
+
+\begin{definition}[Equivalent norms]\label{def:equiv}
+Two norms $\norm{\cdot}_a$ and $\norm{\cdot}_b$ on a vector space $X$ are
+\emph{equivalent} if there are constants $c, C > 0$ such that
+$c\norm{x}_a \le \norm{x}_b \le C\norm{x}_a$ for all $x \in X$.
+\end{definition}
+
+Equivalent norms induce the same topology, hence the same convergent
+sequences with the same limits, and the same Cauchy sequences. As a rule of
+thumb, the norms occurring naturally on an infinite-dimensional space are not
+equivalent; the finite-dimensional case is the opposite extreme.
+
+\begin{lemma}\label{lem:independent}
+Let $(X, \norm{\cdot})$ be a normed space over $\K$ and let
+$x_1, \dots, x_n \in X$ be linearly independent. Then there is a $C > 0$ such
+that
+\[
+  \Bigl\lVert \sum_{i=1}^{n} \alpha_i x_i \Bigr\rVert
+  \;\ge\; C \sum_{i=1}^{n} \abs{\alpha_i}
+  \qquad \text{for all } \alpha_1, \dots, \alpha_n \in \K .
+\]
+\end{lemma}
+
+\begin{proof}
+Both sides are positively homogeneous of degree one in $(\alpha_1, \dots,
+\alpha_n)$, and both vanish when every $\alpha_i$ is zero, so it suffices to
+find a $C > 0$ that works for all coefficient vectors with
+$\sum_i \abs{\alpha_i} = 1$.
+
+Suppose no such $C$ exists. Then for every $m \in \N$ there are coefficients
+$\alpha^{(m)}_1, \dots, \alpha^{(m)}_n$ with $\sum_i \abs{\alpha^{(m)}_i} = 1$
+and
+\[
+  \Bigl\lVert \sum_{i=1}^{n} \alpha^{(m)}_i x_i \Bigr\rVert < \frac{1}{m}.
+\]
+Each coordinate sequence $(\alpha^{(m)}_i)_m$ is bounded by $1$, so by the
+Bolzano--Weierstrass theorem it has a convergent subsequence. Extracting
+successively for $i = 1, \dots, n$ and passing to the last subsequence, we may
+assume $\alpha^{(m)}_i \to \alpha_i$ for every $i$ simultaneously. Then
+$\sum_i \abs{\alpha_i} = \lim_m \sum_i \abs{\alpha^{(m)}_i} = 1$, so not every
+$\alpha_i$ is zero. The map $(\alpha_1, \dots, \alpha_n) \mapsto
+\sum_i \alpha_i x_i$ is continuous, and so is the norm, hence
+\[
+  \Bigl\lVert \sum_{i=1}^{n} \alpha_i x_i \Bigr\rVert
+  = \lim_{m \to \infty}
+    \Bigl\lVert \sum_{i=1}^{n} \alpha^{(m)}_i x_i \Bigr\rVert = 0,
+\]
+so $\sum_i \alpha_i x_i = 0$ with coefficients not all zero. This contradicts
+the independence of $x_1, \dots, x_n$.
+\end{proof}
+
+% [p3]
+\begin{theorem}\label{thm:finite-dim}
+If $X$ is a finite-dimensional vector space over $\K$, then any two norms on
+$X$ are equivalent.
+\end{theorem}
+
+\begin{proof}
+Let $x_1, \dots, x_n$ be a basis of $X$ and, for
+$x = \sum_{i=1}^{n} \alpha_i x_i$, set $\norm{x}_1 = \sum_{i=1}^n
+\abs{\alpha_i}$, which is a norm on $X$. Let $\norm{\cdot}$ be any norm on
+$X$. By Lemma~\ref{lem:independent} there is a $C > 0$ with
+$\norm{x} \ge C \norm{x}_1$ for all $x \in X$. In the other direction,
+\[
+  \norm{x} = \Bigl\lVert \sum_{i=1}^n \alpha_i x_i \Bigr\rVert
+  \le \sum_{i=1}^n \abs{\alpha_i} \norm{x_i}
+  \le \Bigl(\max_{1 \le i \le n} \norm{x_i}\Bigr) \sum_{i=1}^n
+      \abs{\alpha_i}
+  = c' \norm{x}_1 ,
+\]
+with $c' = \max_{1 \le i \le n} \norm{x_i} > 0$, the maximum being positive
+because the basis vectors are non-zero. So every norm on $X$ is equivalent to
+$\norm{\cdot}_1$.
+
+Equivalence of norms is transitive: if
+$c_a \norm{x}_1 \le \norm{x}_a \le C_a \norm{x}_1$ and
+$c_b \norm{x}_1 \le \norm{x}_b \le C_b \norm{x}_1$ for all $x$, then
+\[
+  \frac{c_b}{C_a} \norm{x}_a \le \norm{x}_b
+  \le \frac{C_b}{c_a} \norm{x}_a .
+\]
+Applying this to two arbitrary norms on $X$, each equivalent to
+$\norm{\cdot}_1$ by the first part, gives the claim.
+\end{proof}

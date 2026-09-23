@@ -1,0 +1,459 @@
+% =====================================================================
+%  Lecture 2026-09-17
+%
+%  CORRECTED SOURCE ERRORS
+%   [p1] "closed and finite" in the last line of the local-compactness
+%        proof  ->  closed and bounded
+%   [p3] definition of countable admitted only infinite listings  ->
+%        finite sets admitted
+%   [p3] separability of ell_p and the ell_p completeness theorem stated
+%        with no range for p  ->  1 <= p < infinity
+%   [p3] dense subset of K^n given as Q^n  ->  Q^n for K = R, and
+%        (Q + iQ)^n for K = C
+%   [p4] L^p(R) written with a superscript  ->  L_p(R), the subscript
+%        used everywhere else
+%
+%  ADDITIONS
+%   [p1] Riesz lemma: the membership x_1 in M, and the passage from the
+%        bound for each x in M to a bound on the infimum
+%   [p1] local compactness: the translation-and-scaling step identifying
+%        local compactness with compactness of the closed unit ball
+%   [p1] local compactness: finite-dimensional subspaces are closed, via
+%        Theorem 3.3 and completeness of K^n
+%   [p1] converse direction: the transfer of Heine-Borel to a general
+%        finite-dimensional normed space, via Theorem 3.3
+%   [p3] ell_p proof: the coordinatewise estimate from the norm bound,
+%        and the appeal to Minkowski for membership
+%   [p3] the ramp of the counterexample given by a formula; the Cauchy
+%        property estimated; the non-existence of a continuous limit
+%        proved, where the source draws it
+%   [p3] the reason the x^n attempt fails, namely that its limit is
+%        continuous
+%   [p6] Arzelà-Ascoli: finiteness of the minimum of the delta_i and of
+%        the maximum of the N_j; the rational point chosen in each
+%        covering set; the appeal to completeness of C[a,b]; the passage
+%        from sequences in S to sequences in the closure
+%
+%  REPORTED BUT UNMODIFIED GAPS
+%   [p1] the three-way equivalence theorem is stated without proof
+%   [p1] Heine-Borel is stated without proof
+%   [p3] separability of ell_p is a sketch: the approximating sequences
+%        are given, the estimate is not
+%   [p4] separability of L_p is reduced to Bernstein's theorem, which
+%        gives uniform approximation; the passage to the p-norm is not
+%        written
+%   [p4] that the C^r_p norm is a norm, that it is not complete, and
+%        that the completion is the Sobolev space are all asserted
+%
+%  OMITTED
+%   [p3] the small x^n sketch, which the computation already carries
+%   [p1, p2] doodles unconnected to the material
+% =====================================================================
+
+% [p3]
+\section{Separable spaces}
+
+\begin{definition}[Countable set]\label{def:countable}
+A set $S$ is \emph{countable} if it is finite or can be listed as
+$S = \set{s_1, s_2, s_3, \dots}$.
+\end{definition}
+
+\begin{definition}[Dense set]\label{def:dense}
+A set $S \subset (X,d)$ is \emph{dense} if $\cl{S} = X$.
+\end{definition}
+
+\begin{definition}[Separable space]\label{def:separable}
+A metric space $(X,d)$ is \emph{separable} if it contains a countable dense
+set.
+\end{definition}
+
+\begin{remark}\label{rem:dense-seq}
+$S \subset (X,d)$ is dense if and only if for every $x \in X$ there is a
+sequence $(s_n) \subset S$ with $s_n \to x$.
+\end{remark}
+
+The spaces introduced so far are now checked for completeness and for
+separability.
+
+\begin{example}\label{ex:R-sep}
+$(\R, \abs{\cdot})$ is Banach and separable, with $\Q$ as a countable dense
+set.
+\end{example}
+
+\begin{example}\label{ex:Kn-sep}
+Let $\K = \R$ or $\C$. Then $(\K^n, \norm{\cdot}_2)$ is Banach and separable:
+$\Q^n$ is a countable dense set for $\K = \R$, and $(\Q + i\Q)^n$ for
+$\K = \C$.
+\end{example}
+
+\begin{example}\label{ex:Kn-p-sep}
+$(\K^n, \norm{\cdot}_p)$ for $1 \le p < \infty$ and $(\K^n,
+\norm{\cdot}_\infty)$ are Banach and separable, because these norms are
+equivalent to $\norm{\cdot}_2$ by Theorem~\ref{thm:finite-dim}, and
+equivalent norms have the same convergent sequences and the same dense sets.
+\end{example}
+
+\begin{remark}\label{rem:euclidean}
+On a finite-dimensional space any such argument may be carried out in the
+Euclidean norm, since all norms there are equivalent.
+\end{remark}
+
+\begin{example}\label{ex:lp-sep}
+$(\lp{p}, \norm{\cdot}_p)$ is separable for $1 \le p < \infty$. The countable
+dense set consists of the finitely supported rational sequences
+$q = (q_1, \dots, q_m, 0, 0, \dots)$ with $q_i \in \Q$, or with
+$q_i \in \Q + i\Q$ when $\K = \C$: an $x = (x_1, x_2, \dots) \in \lp{p}$ is
+approximated by truncating it and then approximating the first $m$
+coordinates.
+\end{example}
+
+\begin{theorem}\label{thm:lp-banach}
+$(\lp{p}, \norm{\cdot}_p)$ is a Banach space for $1 \le p < \infty$.
+\end{theorem}
+
+\begin{proof}
+Let $(x_m) \subset \lp{p}$ be Cauchy, $x_m = (\xi_{1,m}, \xi_{2,m}, \dots)$.
+Given $\eps > 0$ there is an $N$ such that
+\[
+  \Bigl(\sum_{j=1}^{\infty} \abs{\xi_{j,m} - \xi_{j,n}}^p\Bigr)^{1/p}
+  \le \eps \qquad \text{for all } n, m > N .
+\]
+A single term is at most the whole sum, so
+$\abs{\xi_{j,m} - \xi_{j,n}} \le \eps$ for every $j$ and all $n,m > N$. Thus
+each coordinate sequence $(\xi_{j,m})_m$ is Cauchy in $\K$ and converges;
+write $\xi_j = \lim_{m \to \infty} \xi_{j,m}$ and
+$x = (\xi_1, \xi_2, \dots)$.
+
+Fix $k$. For all $n, m > N$ the partial sum satisfies
+$\sum_{j=1}^{k} \abs{\xi_{j,m} - \xi_{j,n}}^p \le \eps^p$. Fix $m > N$ and let
+$n \to \infty$; the sum is finite, so the limit may be taken termwise, and
+\[
+  \sum_{j=1}^{k} \abs{\xi_{j,m} - \xi_j}^p \le \eps^p .
+\]
+The bound does not depend on $k$, so letting $k \to \infty$ gives
+$\sum_{j=1}^{\infty} \abs{\xi_{j,m} - \xi_j}^p \le \eps^p$, that is
+$x_m - x \in \lp{p}$ and $\norm{x_m - x}_p \le \eps$ for every $m > N$.
+
+Consequently $x = (x - x_m) + x_m$ lies in $\lp{p}$, by
+Theorem~\ref{thm:minkowski-inf} and $x_m \in \lp{p}$. The estimate
+$\norm{x_m - x}_p \le \eps$ for all $m > N$ is convergence in the norm, not
+merely coordinatewise, so $x_m \to x$ in $\lp{p}$.
+\end{proof}
+
+\begin{counterexample}\label{cex:Cp-not-banach}
+$(\Cont{0,1}, \norm{\cdot}_p)$ is not complete, for $1 \le p < \infty$.
+\end{counterexample}
+
+\begin{solution}[Discussion]
+A first attempt takes $f_n(x) = x^n$. These are continuous, and
+\[
+  \norm{f_n - 0}_p = \Bigl(\int_0^1 x^{np} \dd x\Bigr)^{1/p}
+  = \Bigl(\frac{1}{np+1}\Bigr)^{1/p} \longrightarrow 0 ,
+\]
+so $(f_n)$ is Cauchy but converges in $\norm{\cdot}_p$ to the function $0$,
+which is continuous. The attempt establishes nothing: a Cauchy sequence whose
+limit is continuous is no obstruction to completeness.
+
+Take instead the ramps
+\[
+  f_n(x) =
+  \begin{cases}
+    0, & 0 \le x \le \tfrac{1}{2} - \tfrac{1}{n}, \\[2pt]
+    n\bigl(x - \tfrac{1}{2} + \tfrac{1}{n}\bigr),
+      & \tfrac{1}{2} - \tfrac{1}{n} \le x \le \tfrac{1}{2}, \\[2pt]
+    1, & \tfrac{1}{2} \le x \le 1,
+  \end{cases}
+  \qquad n \ge 3 .
+\]
+For $n < m$ the functions $f_n$ and $f_m$ agree outside
+$[\frac{1}{2} - \frac{1}{n}, \frac{1}{2}]$ and differ by at most $1$ on it, so
+$\norm{f_n - f_m}_p \le n^{-1/p}$ and $(f_n)$ is Cauchy in
+$\norm{\cdot}_p$.
+
+Suppose $g \in \Cont{0,1}$ satisfied $\norm{f_n - g}_p \to 0$. Fix
+$\delta > 0$. For $n > 1/\delta$ the function $f_n$ vanishes on
+$[0, \frac{1}{2} - \delta]$, so
+\[
+  \int_0^{1/2-\delta} \abs{g}^p \le \norm{f_n - g}_p^p \longrightarrow 0,
+\]
+whence $g \equiv 0$ on $[0, \frac{1}{2} - \delta]$, and since $\delta > 0$ was
+arbitrary, $g \equiv 0$ on $[0, \frac{1}{2})$; continuity gives
+$g(\frac{1}{2}) = 0$. The same estimate on $[\frac{1}{2}, 1]$, where
+$f_n \equiv 1$, gives $g \equiv 1$ there, so $g(\frac{1}{2}) = 1$. This is a
+contradiction, so no continuous limit exists.
+\end{solution}
+
+\begin{nfigure}{The ramps $f_n$ and the step function they approach. The step
+function is not continuous, so the limit leaves $C[0,1]$.}
+\begin{tikzpicture}[scale=0.95]
+  \draw[rulegrey, -{Stealth[length=1.6mm]}] (-0.1,0) -- (3.3,0);
+  \draw[rulegrey, -{Stealth[length=1.6mm]}] (0,-0.1) -- (0,1.9);
+  \draw[accent, thick] (0,0) -- (0.8,0) -- (1.8,1.3) -- (3.0,1.3);
+  \draw[rulegrey, dashed] (0,1.3) -- (1.8,1.3);
+  \node[left] at (0,1.3) {$1$};
+  \node[below=5pt] at (0.8,0) {$\frac{1}{2}-\frac{1}{n}$};
+  \node[below] at (1.8,-0.02) {$\frac{1}{2}$};
+  \node[below] at (3.0,0) {$1$};
+  \begin{scope}[xshift=5.0cm]
+    \draw[rulegrey, -{Stealth[length=1.6mm]}] (-0.1,0) -- (3.3,0);
+    \draw[rulegrey, -{Stealth[length=1.6mm]}] (0,-0.1) -- (0,1.9);
+    \draw[thmaccent, thick] (0,0) -- (1.5,0);
+    \draw[thmaccent, thick] (1.5,1.3) -- (3.0,1.3);
+    \draw[rulegrey, dashed] (1.5,0) -- (1.5,1.3);
+    \node[left] at (0,1.3) {$1$};
+    \node[below] at (1.5,-0.02) {$\frac{1}{2}$};
+    \node[below] at (3.0,0) {$1$};
+  \end{scope}
+\end{tikzpicture}
+\end{nfigure}
+
+% [p4]
+\begin{example}\label{ex:Lp-sep}
+$\Lp{p}[0,1]$ and $\Lp{p}(\R)$ are Banach and separable for
+$1 \le p < \infty$. For $\Lp{p}[0,1]$ either description may be used: the
+completion of $(\Cont{0,1}, \norm{\cdot}_p)$, or the Lebesgue measurable $f$
+with $(\int \abs{f}^p)^{1/p} < \infty$. Separability comes from the
+polynomials with rational coefficients,
+$p(x) = q_m x^m + \dots + q_1 x + q_0$ with $q_i \in \Q$, which are dense by
+Bernstein's theorem.
+\end{example}
+
+\begin{theorem}\label{thm:C-sup-banach}
+$(\Cont{0,1}, \norm{\cdot}_\infty)$ is a Banach space.
+\end{theorem}
+
+\begin{proof}
+Let $(f_n) \subset \Cont{0,1}$ be a Cauchy sequence. Given $\eps > 0$
+there is an $N$ such that
+$\norm{f_n - f_m}_\infty = \max_{x \in [0,1]} \abs{f_n(x) - f_m(x)} < \eps$
+for all $n, m > N$, and hence $\abs{f_n(x) - f_m(x)} < \eps$ for every $x$. So for fixed $x \in [0,1]$ the
+sequence $(f_n(x))$ is Cauchy in $\K$ and converges; write
+$f(x) = \lim_{n \to \infty} f_n(x)$. It remains to show that $f$ is
+continuous and that $f_n \to f$ uniformly.
+
+Let $n > N$. For all $m > N$ one has $\abs{f_n(x) - f_m(x)} < \eps$; letting
+$m \to \infty$ gives $\abs{f_n(x) - f(x)} \le \eps$ for all $n > N$ and all
+$x \in [0,1]$, which is uniform convergence.
+
+Now fix $x \in [0,1]$ and $\eps > 0$, and choose $N$ with
+$\abs{f_N(z) - f(z)} < \frac{\eps}{3}$ for all $z \in [0,1]$. The function
+$f_N$ is continuous on the compact interval $[0,1]$, hence uniformly
+continuous, so there is a $\delta > 0$ with
+$\abs{f_N(x) - f_N(y)} < \frac{\eps}{3}$ whenever $\abs{x-y} < \delta$. For
+such $x, y$,
+\[
+  \abs{f(x) - f(y)}
+  \le \abs{f(x) - f_N(x)} + \abs{f_N(x) - f_N(y)} + \abs{f_N(y) - f(y)}
+  < \frac{\eps}{3} + \frac{\eps}{3} + \frac{\eps}{3} = \eps ,
+\]
+so $f \in \Cont{0,1}$.
+\end{proof}
+
+\begin{example}\label{ex:C-sup-sep}
+$(\Cont{0,1}, \norm{\cdot}_\infty)$ is also separable: the separability
+argument of Example~\ref{ex:Lp-sep}, with polynomials with rational
+coefficients, applies here as well.
+\end{example}
+
+\begin{example}\label{ex:Crp}
+Let $C^r_p[0,1]$ carry
+$\norm{f} := \norm{f}_p + \norm{f'}_p + \dots + \norm{f^{(r)}}_p$. This is a
+norm, but the space is not complete. Its completion is the Sobolev space
+$\Lp{p}^{\,r}[0,1]$.
+\end{example}
+
+% [p1]
+\section{Compact sets}
+
+\begin{definition}[Compactness]\label{def:compact}
+A set $K \subset (X,d)$ is \emph{compact} if every open covering of $K$
+admits a finite subcovering.
+\end{definition}
+
+\begin{theorem}\label{thm:compact-tfae}
+For $K \subset (X,d)$ the following are equivalent.
+\begin{enumerate}
+  \item $K$ is compact.
+  \item Every sequence in $K$ has a convergent subsequence whose limit lies
+    in $K$.
+  \item $K$ is complete and totally bounded, that is, for every $\eps > 0$
+    there are finitely many balls $B(x_1, \eps), \dots, B(x_N, \eps)$ with
+    $K \subset \bigcup_{i=1}^{N} B(x_i, \eps)$.
+\end{enumerate}
+\end{theorem}
+
+\begin{lemma}\label{lem:compact-closed-bounded}
+A compact $K \subset (X, \norm{\cdot})$ is closed and bounded.
+\end{lemma}
+
+\begin{proof}
+For closedness, let $(x_n) \subset K$ with $x_n \to x$. By
+Theorem~\ref{thm:compact-tfae} the sequence has a subsequence converging to a
+point of $K$, and that limit is $x$, so $x \in K$.
+
+For boundedness, suppose $K$ were unbounded. Then there is a sequence
+$(x_n) \subset K$ with $\norm{x_n} \ge n$, which has no convergent
+subsequence, contradicting Theorem~\ref{thm:compact-tfae}.
+\end{proof}
+
+\begin{theorem}[Heine--Borel]\label{thm:heine-borel}
+A set $K \subset \R^n$ is compact if and only if it is closed and bounded.
+\end{theorem}
+
+\begin{definition}[Local compactness]\label{def:locally-compact}
+A metric space $(X,d)$ is \emph{locally compact} if every $x \in X$ has a
+neighbourhood $B(x, \eps)$ whose closure $\cl{B(x,\eps)}$ is compact.
+\end{definition}
+
+\begin{definition}[Relative compactness]\label{def:rel-compact}
+A set $S \subset (X,d)$ is \emph{relatively compact} if $\cl{S}$ is compact.
+\end{definition}
+
+\begin{lemma}[Riesz]\label{lem:riesz}
+Let $M \subset (X, \norm{\cdot})$ be a proper closed subspace and let
+$t \in (0,1)$. Then there is an $x_t \in X$ with $\norm{x_t} = 1$ and
+$\operatorname{dist}(x_t, M) \ge t$, where
+$\operatorname{dist}(x, M) = \inf\set{\norm{x - m} : m \in M}$.
+\end{lemma}
+
+\begin{proof}
+Since $M$ is a proper subspace there is a $u \in X \setminus M$, and since $M$
+is closed, $d := \operatorname{dist}(u, M) > 0$. As $t \in (0,1)$ we have
+$d/t > d$, so by the definition of the infimum there is an $x_0 \in M$ with
+\[
+  d \le \norm{u - x_0} \le \frac{d}{t} .
+\]
+Put $x_t = (u - x_0)/\norm{u - x_0}$, a unit vector. Let $x \in M$ be
+arbitrary and set $x_1 = \norm{u - x_0}\,x + x_0$, which lies in $M$ because
+$M$ is a subspace. Then
+\[
+  \norm{x - x_t}
+  = \frac{1}{\norm{u-x_0}}\bigl\lVert \norm{u-x_0}\,x - u + x_0 \bigr\rVert
+  = \frac{\norm{x_1 - u}}{\norm{u - x_0}}
+  \ge \frac{d}{\norm{u-x_0}}
+  \ge \frac{d}{d/t} = t ,
+\]
+using $\norm{x_1 - u} \ge \operatorname{dist}(u,M) = d$. As $x \in M$ was
+arbitrary, $\operatorname{dist}(x_t, M) \ge t$.
+\end{proof}
+
+\begin{theorem}\label{thm:locally-compact}
+A normed space $(X, \norm{\cdot})$ is locally compact if and only if
+$\dim X < \infty$.
+\end{theorem}
+
+\begin{proof}
+For $x \in X$ and $\eps > 0$ the map $y \mapsto x + \eps y$ is a
+homeomorphism of $X$ carrying $\cl{B(0,1)}$ onto $\cl{B(x,\eps)}$. All closed
+balls are therefore compact together with $\cl{B(0,1)}$, and $X$ is locally
+compact if and only if $\cl{B(0,1)}$ is compact.
+
+Assume $\dim X = \infty$. Choose a unit vector $x_1 \in X$ and put
+$M_1 = \operatorname{span}\set{x_1}$. Each
+$M_i = \operatorname{span}\set{x_1, \dots, x_i}$ is finite-dimensional, hence
+closed: by Theorem~\ref{thm:finite-dim} its norm is equivalent to the norm
+transported from $\K^i$, which is complete, so $M_i$ is complete and therefore
+closed in $X$. It is proper because $\dim X = \infty$. So
+Lemma~\ref{lem:riesz} with $t = \frac{1}{2}$ yields a unit vector $x_{i+1}$
+with $\operatorname{dist}(x_{i+1}, M_i) \ge \frac{1}{2}$. This produces a
+sequence of unit vectors with
+\[
+  \norm{x_n - x_m} \ge \tfrac{1}{2} \qquad \text{for } n \ne m,
+\]
+since for $n > m$ one has $x_m \in M_{n-1}$. The sequence lies in
+$\cl{B(0,1)}$ and has no convergent subsequence, so $\cl{B(0,1)}$ is not
+compact by Theorem~\ref{thm:compact-tfae}, and $X$ is not locally compact.
+
+Assume $\dim X = n < \infty$. Fixing a basis identifies $X$ with $\K^n$, and
+by Theorem~\ref{thm:finite-dim} the norm of $X$ is equivalent to the
+Euclidean norm transported by that identification, so the two have the same
+closed sets and the same bounded sets. The set $\cl{B(0,1)}$ is closed and
+bounded, hence compact by Theorem~\ref{thm:heine-borel}, and $X$ is locally
+compact.
+\end{proof}
+
+\begin{corollary}\label{cor:unit-ball}
+$\cl{B(0,1)} \subset (X, \norm{\cdot})$ is compact if and only if
+$\dim X < \infty$.
+\end{corollary}
+
+% [p1]
+\section{Compact sets in \texorpdfstring{$(C[a,b], \norm{\cdot}_\infty)$}{C[a,b]}}
+
+\begin{definition}[Uniform boundedness]\label{def:unif-bounded}
+A set $S \subset \Cont{a,b}$ is \emph{uniformly bounded} if there is a
+$K > 0$ with $\norm{f}_\infty \le K$ for every $f \in S$.
+\end{definition}
+
+\begin{definition}[Uniform equicontinuity]\label{def:equicont}
+A set $S \subset \Cont{a,b}$ is \emph{uniformly equicontinuous} if for every
+$\eps > 0$ there is a $\delta > 0$ such that for every $f \in S$ and all
+$x, y \in [a,b]$ with $\abs{x-y} < \delta$ one has
+$\abs{f(x) - f(y)} < \eps$.
+\end{definition}
+
+\begin{theorem}[Arzelà--Ascoli]\label{thm:arzela-ascoli}
+A set $S \subset (\Cont{a,b}, \norm{\cdot}_\infty)$ is relatively compact if
+and only if it is uniformly bounded and uniformly equicontinuous. If $S$ is
+in addition closed, it is compact.
+\end{theorem}
+
+\begin{proof}
+Assume first that $S$ is relatively compact. Then $\cl{S}$ is compact, hence
+bounded by Lemma~\ref{lem:compact-closed-bounded}, so $S$ is uniformly
+bounded. Fix $\eps > 0$. By Theorem~\ref{thm:compact-tfae} the compact set
+$\cl{S}$ is totally bounded, so there are finitely many
+$f_1, \dots, f_r$ with
+$\cl{S} \subset \bigcup_{i=1}^{r} B(f_i, \frac{\eps}{3})$. Each $f_i$ is
+continuous on the compact interval $[a,b]$, hence uniformly continuous, so
+there is a $\delta_i > 0$ with
+$\abs{f_i(x) - f_i(y)} < \frac{\eps}{3}$ whenever $\abs{x - y} < \delta_i$.
+Put $\delta = \min_{1 \le i \le r} \delta_i$, which is positive because the
+minimum is over finitely many indices. Given $f \in S$, choose $i$ with
+$\norm{f - f_i}_\infty < \frac{\eps}{3}$. Then for $\abs{x-y} < \delta$,
+\[
+  \abs{f(x) - f(y)}
+  \le \abs{f(x) - f_i(x)} + \abs{f_i(x) - f_i(y)} + \abs{f_i(y) - f(y)}
+  < \eps ,
+\]
+so $S$ is uniformly equicontinuous.
+
+Assume now that $S$ is uniformly bounded, by $K$, and uniformly
+equicontinuous, and let $(f_n) \subset S$. The goal is to select a convergent
+subsequence. Enumerate the rationals of the interval,
+$\Q \cap [a,b] = \set{x_1, x_2, \dots}$. The values $f_n(x_1)$ satisfy
+$\abs{f_n(x_1)} \le K$, so some subsequence $(f^{(1)}_n)$ converges at $x_1$.
+Along it, the values at $x_2$ are again bounded, so a further subsequence
+$(f^{(2)}_n)$ converges at $x_2$, and so on. Let $g_m = f^{(m)}_m$ be the
+diagonal sequence. It is a subsequence of the original $(f_n)$, and from the
+index $k$ onwards it is a subsequence of $(f^{(k)}_n)$, so $(g_m(x_k))$
+converges for every $k$.
+
+The claim is that $(g_m)$ is uniformly Cauchy. Fix $\eps > 0$ and let
+$\delta > 0$ be given by uniform equicontinuity for $\frac{\eps}{3}$. Cover
+$[a,b]$ by finitely many sets $U_1, \dots, U_s$ of diameter less than
+$\delta$, and pick in each $U_j$ a rational point $x_{k_j}$, which exists
+because the rationals are dense. For each $j$ the sequence
+$(g_m(x_{k_j}))_m$ converges, hence is Cauchy, so there is an $N_j$ with
+$\abs{g_n(x_{k_j}) - g_m(x_{k_j})} < \frac{\eps}{3}$ for $n, m > N_j$. Put
+$N = \max_{1 \le j \le s} N_j$, finite because there are finitely many $j$.
+Let $t \in [a,b]$ and choose $j$ with $t \in U_j$; then
+$\abs{t - x_{k_j}} < \delta$, so for $n, m > N$,
+\[
+  \abs{g_n(t) - g_m(t)}
+  \le \abs{g_n(t) - g_n(x_{k_j})}
+    + \abs{g_n(x_{k_j}) - g_m(x_{k_j})}
+    + \abs{g_m(x_{k_j}) - g_m(t)}
+  < \eps .
+\]
+Hence $\norm{g_n - g_m}_\infty \le \eps$ for $n,m > N$. The space
+$(\Cont{a,b}, \norm{\cdot}_\infty)$ is complete, by the proof of
+Theorem~\ref{thm:C-sup-banach} with $[a,b]$ in place of $[0,1]$, so $(g_m)$
+converges in it.
+
+Finally, $\cl{S}$ has the same uniform bound $K$ and the same modulus of
+equicontinuity as $S$, so the selection above applies verbatim to a sequence
+in $\cl{S}$, and its limit lies in $\cl{S}$ because $\cl{S}$ is closed. By
+Theorem~\ref{thm:compact-tfae} the set $\cl{S}$ is compact, that is, $S$ is
+relatively compact.
+\end{proof}
