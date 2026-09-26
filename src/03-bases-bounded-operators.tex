@@ -1,0 +1,597 @@
+% =====================================================================
+%  Lecture 2026-09-24
+
+%  CORRECTED SOURCE ERRORS
+%   [p1] algebraic basis defined in a normed space  ->  in a vector
+%        space; the norm plays no role, as the source itself warns on p2
+%   [p1] partial sum s_n := sum_{n=1}^N x_n  ->  s_N := sum_{n=1}^N x_n
+%   [p1] Schauder basis given as a set  ->  a sequence, since the
+%        series depends on the order
+%   [p1] ||x - s_N||_p = sum_{i>N} |a_i|^p  ->  ||x - s_N||_p^p
+%   [p2] complex Fourier system 1, e^{ix}, e^{2ix}, ... with the sum
+%        from k = 1  ->  e^{ikx} for all k in Z, symmetric partial sums
+%   [p2] ||f - sum c_k e^{ikx}||_2 = integral of |.|^2  ->  its square
+%   [p2] rational coefficients for separability  ->  Q + iQ when K = C
+%   [p4] finite-dimensional example: ||Tx|| bounded by ||sum a_i e_i||,
+%        without T, and the bound |a_i| <= ||x|| of the boxed revision
+%        ->  ||sum a_i T e_i||, with the coefficient bound from Lemma 3.2
+%   [p5] f_x(y) = <x,y>  ->  f_x(y) = sum x_i y_i, linear over R and C
+%   [p5] sup [f(x) g(x)] without absolute values  ->  sup |f(x) g(x)|
+%   [p6] evaluation functional called I in two places  ->  E
+%   [p6] integral kernel example: X = C([0,1] x [0,1])  ->  the operator
+%        acts on C[0,1]; only the kernel lives on the square
+%   [p8] converse: ||x|| <= delta => ||Tx|| <= 1 from continuity at 0,
+%        which only gives it for ||x|| < delta  ->  delta/2 used, bound
+%        2/delta
+%   [p10] B(X,X) a Banach algebra for normed X  ->  for Banach X
+%
+%  ADDITIONS
+%   [p1] E not an algebraic basis of ell_p: the witness (2^{-n})
+%   [p1] E a Schauder basis of ell_p: uniqueness via the coordinate
+%        bound |y_j| <= ||y||_p
+%   [p1] ell_infty: any representation of (1,1,...) must have all
+%        coefficients 1, so none converges
+%   [p1] the definition of series convergence moved before the Schauder
+%        basis, which uses it
+%   [p2] ell_infty not separable: distinct 0-1 sequences give distinct
+%        points of the dense set
+%   [p2] Schauder basis implies separable: the two-step density estimate;
+%        promoted from remark to proposition, since a corollary rests on it
+%   [p2, p3] Zorn's lemma stated before the theorem that uses it, with
+%        chain and maximal element glossed; in the proof: the family is
+%        non-empty, the union of a chain is an independent upper bound,
+%        a maximal independent set spans
+%   [p3] absolute convergence: the index N from convergence of
+%        sum ||x_i||
+%   [p4] ||Tx|| <= ||T|| ||x||: the case x = 0
+%   [p5] the restated examples I and II merged into the first two
+%   [p5] multiplication on ell_p: termwise estimate, which also shows
+%        M_x y in ell_p; p range 1 <= p < infinity
+%   [p7] integral operator: T_K f continuous, by uniform continuity of K
+%   [p7] bounded implies continuous: the case T = 0
+%   [p8] corollary on continuity at 0: the converse used only that
+%   [p8] B(X,Y) is a vector space: supplied in place of the homework box
+%   [p8] norm axioms: ||T|| = 0 => T = 0 via ||Tx|| <= ||T|| ||x||;
+%        homogeneity written out
+%   [p9] completeness of B(X,Y): linearity of the limit, and boundedness
+%        of T from T = T_n - (T_n - T)
+%   [p10] Banach algebra glossed in the sentence that uses it
+%
+%  REPORTED BUT UNMODIFIED GAPS
+%   [p2] completeness of the trigonometric systems in L_2 stated without
+%        proof; so is the failure of pointwise convergence
+%   [p7] incompleteness of the polynomials under ||.||_infty asserted
+%
+%  OMITTED
+%   [p5, p6, p7] homework boxes ||M_f|| = ||f||_infty,
+%        ||M_x|| = ||x||_infty, ||I|| = 1, ||T_K|| = ||K||_infty, as
+%        unsolved exercises. The last is false: ||T_K|| =
+%        sup_x int |K(x,y)| dy, and K(x,y) = y has ||K||_infty = 1,
+%        ||T_K|| = 1/2.
+%   [p6] the matrix sketches, including "T^T = T", and the kernel square;
+%        the matrix analogy is kept as a formula
+%   [p10] the invertibility sketch
+%   [p4, p7, p9] the writer's asides and crossed-out lines
+% =====================================================================
+
+% [p1]
+\section{Bases}
+
+\begin{definition}[Algebraic basis]\label{def:hamel}
+Let $X$ be a vector space. A set $S \subset X$ is an \emph{algebraic basis},
+or \emph{Hamel basis}, if $S$ is linearly independent and every $x \in X$ has
+a representation $x = \sum_{i \in I} \alpha_i s_i$ with $s_i \in S$,
+$\alpha_i \in \K$ and $I$ finite.
+\end{definition}
+
+\begin{example}\label{ex:E-not-hamel}
+Let $1 \le p < \infty$ and $e_n = (0, \dots, 0, 1, 0, \dots)$, with the $1$
+in position $n$. The set $E = \set{e_1, e_2, \dots}$ is not an algebraic
+basis of $\lp{p}$: a finite combination of the $e_n$ has only finitely many
+non-zero coordinates, while $(2^{-n})_n \in \lp{p}$ has infinitely many.
+\end{example}
+
+\begin{definition}[Convergent series]\label{def:series}
+In a normed space $X$ a series $\sum_{n=1}^{\infty} x_n$ \emph{converges} to
+$x \in X$ if its partial sums $s_N := \sum_{n=1}^{N} x_n$ satisfy
+$s_N \to x$.
+\end{definition}
+
+\begin{definition}[Schauder basis]\label{def:schauder}
+In a Banach space $X$ a sequence $(s_n)$ is a \emph{Schauder basis} if every
+$x \in X$ has a unique representation $x = \sum_{i=1}^{\infty} \alpha_i s_i$
+with $\alpha_i \in \K$, the series converging in the sense of
+Definition~\ref{def:series}.
+\end{definition}
+
+\begin{example}\label{ex:E-schauder}
+$E = (e_n)$ is a Schauder basis of $\lp{p}$ for $1 \le p < \infty$.
+\end{example}
+
+\begin{proof}
+Let $x = (\alpha_1, \alpha_2, \dots) \in \lp{p}$ and
+$s_N = \sum_{i=1}^{N} \alpha_i e_i = (\alpha_1, \dots, \alpha_N, 0, \dots)$.
+Then
+\[
+  \norm{x - s_N}_p^p
+  = \norm{(0, \dots, 0, \alpha_{N+1}, \alpha_{N+2}, \dots)}_p^p
+  = \sum_{i=N+1}^{\infty} \abs{\alpha_i}^p \longrightarrow 0,
+\]
+being the tail of a convergent series, so $x = \sum_i \alpha_i e_i$. For
+uniqueness, suppose $x = \sum_i \beta_i e_i$. The $j$-th coordinate of the
+$N$-th partial sum is $\beta_j$ once $N \ge j$, and a coordinate satisfies
+$\abs{y_j} \le \norm{y}_p$, so coordinates pass to the limit and
+$\beta_j = \alpha_j$.
+\end{proof}
+
+\begin{remark}\label{rem:E-linfty}
+$E$ is not a Schauder basis of $\lp{\infty}$. Take $x = (1, 1, \dots)$.
+Since $\abs{y_j} \le \norm{y}_\infty$, the argument above shows that any
+representation $x = \sum_i \beta_i e_i$ must have $\beta_i = 1$ for all $i$.
+But then
+\[
+  \norm{x - s_N}_\infty = \norm{(0, \dots, 0, 1, 1, \dots)}_\infty = 1
+\]
+for every $N$, so the partial sums do not converge to $x$, and $x$ has no
+representation at all.
+\end{remark}
+
+% [p2]
+\begin{remark}\label{rem:linfty-nonsep}
+$\lp{\infty}$ is not separable. The sequences with every term $0$ or $1$ form
+an uncountable set, and any two distinct ones have $\norm{\cdot}_\infty$
+distance $1$. The balls of radius $\frac{1}{3}$ around them are therefore
+pairwise disjoint: a common point would put the two centres at distance at
+most $\frac{2}{3}$. A dense set meets every one of these balls, and meets
+distinct balls in distinct points, so it is uncountable.
+\end{remark}
+
+\begin{nfigure}{Around the uncountably many $0$--$1$ sequences, the balls of
+radius $\frac{1}{3}$ in $\lp{\infty}$ are pairwise disjoint, and a dense set
+needs a point in each.}
+\begin{tikzpicture}[scale=0.9]
+  \draw[rulegrey] (0,0) ellipse (2.4 and 1.25);
+  \foreach \x/\y in {-1.6/0.2, -0.9/-0.6, -0.6/0.55, 0.1/-0.2,
+                      0.6/0.6, 1.0/-0.7, 1.6/0.15} {
+    \draw[accent] (\x,\y) circle (0.2);
+    \fill[accent] (\x,\y) circle (0.03);
+  }
+  \node[rulegrey] at (2.75,1.05) {$\lp{\infty}$};
+\end{tikzpicture}
+\end{nfigure}
+
+\begin{example}\label{ex:fourier}
+The Fourier systems are Schauder bases. In the real space $\Lp{2}[0,2\pi]$ the
+system $1, \cos x, \sin x, \cos 2x, \sin 2x, \dots$ is one: every $f$ has a
+unique representation
+\[
+  f = a_0 + \sum_{k=1}^{\infty} \bigl(a_k \cos(kx) + b_k \sin(kx)\bigr).
+\]
+In the complex space $\Lp{2}[0,2\pi]$ the system $e^{ikx}$, $k \in \Z$,
+enumerated as $1, e^{ix}, e^{-ix}, e^{2ix}, e^{-2ix}, \dots$, is one: every
+$f$ has a unique representation $f = \sum_{k=-\infty}^{\infty} c_k e^{ikx}$,
+meaning
+\[
+  \Bigl\lVert f - \sum_{k=-N}^{N} c_k e^{ikx} \Bigr\rVert_2^2
+  = \int_0^{2\pi} \Bigl\lvert f(x) - \sum_{k=-N}^{N} c_k e^{ikx}
+    \Bigr\rvert^2 \dd x
+  \xrightarrow[N \to \infty]{} 0 .
+\]
+Convergence in $\norm{\cdot}_2$ does not guarantee pointwise convergence.
+\end{example}
+
+\begin{proposition}\label{prop:schauder-sep}
+A Banach space with a Schauder basis is separable.
+\end{proposition}
+
+\begin{proof}
+Let $(s_i)$ be a Schauder basis and let $D$ be the set of finite sums
+$\sum_{i=1}^{N} q_i s_i$ with $N \in \N$ and $q_i \in \Q$, or
+$q_i \in \Q + i\Q$ when $\K = \C$. For each $N$ these sums form a countable
+set, so $D$ is countable. Given $x = \sum_i \alpha_i s_i$ and $\eps > 0$,
+choose $N$ with $\norm{x - \sum_{i=1}^{N} \alpha_i s_i} < \frac{\eps}{2}$, and
+then rational $q_i$ with
+$\abs{\alpha_i - q_i}\,\norm{s_i} < \frac{\eps}{2N}$ for $i \le N$. The
+triangle inequality gives $\norm{x - \sum_{i=1}^{N} q_i s_i} < \eps$, so $D$
+is dense.
+\end{proof}
+
+\begin{corollary}\label{cor:linfty-no-schauder}
+$\lp{\infty}$ has no Schauder basis.
+\end{corollary}
+
+\begin{proof}
+It is not separable, by Remark~\ref{rem:linfty-nonsep}, so
+Proposition~\ref{prop:schauder-sep} excludes a Schauder basis.
+\end{proof}
+
+\begin{lemma}[Zorn]\label{lem:zorn}
+Let $(P, \le)$ be a partially ordered set in which every chain, that is every
+totally ordered subset, has an upper bound in $P$. Then $P$ has a maximal
+element, an $m \in P$ such that $m \le p$ implies $p = m$.
+\end{lemma}
+
+% [p3]
+\begin{remark}
+The \emph{axiom of choice} states that $\prod_{i \in I} A_i$ is non-empty
+whenever every $A_i$ is non-empty, that is, that there is a family
+$(a_i)_{i \in I}$ with $a_i \in A_i$ for every $i$.
+\end{remark}
+
+% [p2]
+\begin{theorem}\label{thm:hamel-exists}
+Every vector space has an algebraic basis.
+\end{theorem}
+
+\begin{remark}
+An algebraic basis has no connection to any norm on the space.
+\end{remark}
+
+\begin{proof}[Proof of Theorem~\ref{thm:hamel-exists}]
+Let $P$ be the family of linearly independent subsets of the vector space
+$X$, and write $I \le J$ if $I \subseteq J$. This is a partial order: it is
+reflexive, $I \le I$; antisymmetric, $I \le J$ and $J \le I$ give $I = J$;
+and transitive, $I \le J$ and $J \le K$ give $I \le K$. The family is
+non-empty, since $\emptyset \in P$.
+
+% [p3]
+Let $\mathcal{C} \subset P$ be a chain. Its union $U$ is linearly
+independent: finitely many $u_1, \dots, u_k \in U$ lie in members
+$C_1, \dots, C_k$ of $\mathcal{C}$, which are totally ordered, so the largest
+of them contains all $u_j$, and these are therefore independent. Thus
+$U \in P$ is an upper bound of $\mathcal{C}$; for the empty chain,
+$\emptyset$ is one. By Lemma~\ref{lem:zorn} there is a maximal independent
+set $S$.
+
+$S$ spans $X$. Otherwise there is an $x \notin \operatorname{span} S$, and
+$S \cup \set{x}$ is independent: in a vanishing combination the coefficient
+of $x$ must be $0$, since otherwise $x \in \operatorname{span} S$, and then
+the remaining coefficients vanish by independence of $S$. This contradicts
+maximality, so $S$ is an algebraic basis.
+\end{proof}
+
+\begin{definition}[Absolute convergence]\label{def:abs-conv}
+A series $\sum_{i=1}^{\infty} x_i$ in a normed space $X$ is
+\emph{absolutely convergent} if $\sum_{i=1}^{\infty} \norm{x_i} < \infty$.
+\end{definition}
+
+\begin{lemma}[Absolute convergence]\label{lem:abs-conv}
+If $X$ is a Banach space and $\sum_{i=1}^{\infty} x_i$ is absolutely
+convergent, then $\sum_{i=1}^{\infty} x_i$ converges.
+\end{lemma}
+
+\begin{proof}
+As $X$ is complete, it suffices to show that the partial sums
+$s_N = \sum_{i=1}^{N} x_i$ form a Cauchy sequence. Let $\eps > 0$. The real
+series $\sum_i \norm{x_i}$ converges, so there is an $N$ with
+$\sum_{i=m+1}^{n} \norm{x_i} < \eps$ for all $n > m > N$. For such $n, m$,
+\[
+  \norm{s_n - s_m} = \Bigl\lVert \sum_{i=m+1}^{n} x_i \Bigr\rVert
+  \le \sum_{i=m+1}^{n} \norm{x_i} < \eps . \qedhere
+\]
+\end{proof}
+
+% [p4]
+\section{Bounded linear operators}
+
+\begin{definition}[Linear operator]\label{def:linear-op}
+Let $X$ and $Y$ be vector spaces over $\K$. A map $T \colon X \to Y$ is
+\emph{linear} if $T(x_1 + x_2) = Tx_1 + Tx_2$ for all $x_1, x_2 \in X$ and
+$T(\alpha x) = \alpha\, Tx$ for all $\alpha \in \K$ and $x \in X$.
+\end{definition}
+
+\begin{definition}[Bounded operator, operator norm]\label{def:bounded-op}
+A linear operator $T \colon (X, \norm{\cdot}) \to (Y, \norm{\cdot})$ between
+normed spaces is \emph{bounded} if
+$\sup_{\norm{x} \le 1} \norm{Tx} < \infty$. In that case
+\[
+  \norm{T} = \sup_{\norm{x} \le 1} \norm{Tx}
+\]
+is the \emph{operator norm} of $T$.
+\end{definition}
+
+\begin{nfigure}{A bounded operator maps the closed unit ball to a bounded set,
+here an ellipse; $\norm{T}$ is the radius of the smallest ball about $0$
+containing the image.}
+\begin{tikzpicture}[scale=0.85]
+  \draw[rulegrey, -{Stealth[length=1.6mm]}] (-1.6,0) -- (1.6,0);
+  \draw[rulegrey, -{Stealth[length=1.6mm]}] (0,-1.4) -- (0,1.4);
+  \draw[accent, thick] (0,0) circle (0.8);
+  \node[accent] at (1.25,-0.95) {$B(0,1)$};
+  \node at (-1.3,1.3) {$X$};
+  \draw[-{Stealth[length=2mm]}] (1.8,0.9) to[bend left=25]
+    node[above] {$T$} (3.4,0.9);
+  \begin{scope}[xshift=5.4cm]
+    \draw[rulegrey, -{Stealth[length=1.6mm]}] (-1.9,0) -- (1.9,0);
+    \draw[rulegrey, -{Stealth[length=1.6mm]}] (0,-1.6) -- (0,1.6);
+    \draw[thmaccent, thick, rotate=30] (0,0) ellipse (1.4 and 0.6);
+    \node[thmaccent] at (1.75,1.2) {$T(B(0,1))$};
+    \node at (-1.6,1.5) {$Y$};
+  \end{scope}
+\end{tikzpicture}
+\end{nfigure}
+
+\begin{remark}\label{rem:op-norm-bound}
+For every $x \in X$, $\norm{Tx} \le \norm{T}\,\norm{x}$.
+\end{remark}
+
+\begin{proof}
+For $x = 0$ both sides vanish, since $T0 = 0$ by linearity. For $x \ne 0$,
+linearity gives $Tx = \norm{x}\, T\bigl(x / \norm{x}\bigr)$, and
+$x / \norm{x}$ has norm $1$, so
+\[
+  \norm{Tx} = \norm{x}\, \Bigl\lVert T\Bigl(\frac{x}{\norm{x}}\Bigr)
+  \Bigr\rVert
+  \le \norm{x} \sup_{\norm{x'} \le 1} \norm{Tx'} = \norm{x}\,\norm{T} .
+  \qedhere
+\]
+\end{proof}
+
+\begin{example}\label{ex:finite-dim-bounded}
+Every linear operator $T \colon X \to Y$ on a finite-dimensional normed space
+$X$ is bounded. In particular every linear $T \colon \K^n \to \K^m$, which is
+given by an $m \times n$ matrix, is bounded.
+\end{example}
+
+\begin{proof}
+Let $e_1, \dots, e_n$ be a basis of $X$. By Lemma~\ref{lem:independent}
+there is a $C > 0$ with $\norm{\sum_i \alpha_i e_i} \ge C \sum_i
+\abs{\alpha_i}$ for all coefficients. For $x = \sum_{i=1}^{n} \alpha_i e_i$,
+\[
+  \norm{Tx} = \Bigl\lVert \sum_{i=1}^{n} \alpha_i\, T e_i \Bigr\rVert
+  \le \sum_{i=1}^{n} \abs{\alpha_i}\,\norm{T e_i}
+  \le \Bigl(\max_{1 \le i \le n} \norm{T e_i}\Bigr)
+      \sum_{i=1}^{n} \abs{\alpha_i}
+  \le \frac{1}{C} \max_{1 \le i \le n} \norm{T e_i}\; \norm{x},
+\]
+so $\norm{T} \le C^{-1} \max_i \norm{T e_i} < \infty$.
+\end{proof}
+
+% [p5]
+\begin{example}\label{ex:fx}
+For fixed $x \in \K^n$ let $f_x \colon \K^n \to \K$,
+$f_x(y) = \sum_{i=1}^{n} x_i y_i$. Then $f_x$ is linear, and bounded by
+Example~\ref{ex:finite-dim-bounded} with $m = 1$.
+\end{example}
+
+\begin{definition}[Linear functional]\label{def:functional}
+A linear operator from $X$ to $\K$ is a \emph{linear functional}.
+\end{definition}
+
+\begin{example}[Multiplication operator on $C{[0,1]}$]\label{ex:mult-C}
+Fix $f \in \Cont{0,1}$ and let $M_f \colon \Cont{0,1} \to \Cont{0,1}$,
+$g \mapsto f g$, with the norm $\norm{\cdot}_\infty$. Then $M_f$ is linear
+and bounded, with $\norm{M_f} \le \norm{f}_\infty$.
+\end{example}
+
+\begin{proof}
+$\norm{f}_\infty < \infty$ because $f$ is continuous on the compact $[0,1]$.
+For $\norm{g}_\infty \le 1$,
+\[
+  \norm{M_f g}_\infty = \sup_{x \in [0,1]} \abs{f(x) g(x)}
+  \le \norm{f}_\infty \norm{g}_\infty \le \norm{f}_\infty . \qedhere
+\]
+\end{proof}
+
+\begin{example}[Multiplication operator on $\ell_p$]\label{ex:mult-lp}
+Let $1 \le p < \infty$, fix $x = (x_1, x_2, \dots) \in \lp{\infty}$, and let
+$M_x \colon \lp{p} \to \lp{p}$,
+$y = (y_1, y_2, \dots) \mapsto (x_1 y_1, x_2 y_2, \dots)$. Then $M_x$ is
+linear and bounded, with $\norm{M_x} \le \norm{x}_\infty$.
+\end{example}
+
+\begin{proof}
+Linearity is immediate. Termwise
+$\abs{x_i y_i}^p \le \norm{x}_\infty^p \abs{y_i}^p$, and summing gives
+$\norm{M_x y}_p \le \norm{x}_\infty \norm{y}_p$. This shows first that
+$M_x y \in \lp{p}$, so that $M_x$ is well defined, and then that
+$\norm{M_x y}_p \le \norm{x}_\infty$ whenever $\norm{y}_p \le 1$.
+\end{proof}
+
+\begin{remark}
+Multiplication operators are the simplest operators. They are the
+counterpart of diagonal matrices: $D = \operatorname{diag}(\alpha_1, \dots,
+\alpha_n)$ acts by $y \mapsto Dy = (\alpha_1 y_1, \dots, \alpha_n y_n)$,
+which is multiplication by $(\alpha_1, \dots, \alpha_n)$, and diagonalizing a
+matrix in linear algebra reduces it to such an operator.
+\end{remark}
+
+% [p6]
+\begin{example}[Integral functional]\label{ex:integral-functional}
+Let $I \colon \Cont{0,1} \to \K$, $I(f) = \int_0^1 f(t) \dd t$, with the
+norm $\norm{\cdot}_\infty$. Then $I$ is linear and bounded, with
+$\norm{I} \le 1$: for $\norm{f}_\infty \le 1$,
+\[
+  \abs{I f} = \Bigl\lvert \int_0^1 f(t) \dd t \Bigr\rvert
+  \le \int_0^1 \abs{f(t)} \dd t \le \int_0^1 \dd t = 1 .
+\]
+\end{example}
+
+\begin{example}[Evaluation functional]\label{ex:evaluation}
+Fix $t_0 \in [0,1]$ and let $E \colon \Cont{0,1} \to \K$, $E f = f(t_0)$,
+with the norm $\norm{\cdot}_\infty$. Then $E$ is linear and bounded, with
+$\norm{E} \le 1$: for $\norm{f}_\infty \le 1$,
+$\abs{E f} = \abs{f(t_0)} \le \norm{f}_\infty \le 1$.
+\end{example}
+
+\begin{example}[Integral operator]\label{ex:integral-kernel}
+Fix a \emph{kernel} $K \in C([0,1] \times [0,1])$ and let
+$T_K \colon \Cont{0,1} \to \Cont{0,1}$,
+\[
+  (T_K f)(x) = \int_0^1 K(x,y) f(y) \dd y ,
+\]
+with the norm $\norm{\cdot}_\infty$ on both sides. This is the continuous
+analogue of matrix multiplication, $(Kf)_j = \sum_{m=1}^{n} K_{jm} f_m$.
+Then $T_K$ is linear and bounded, with $\norm{T_K} \le \norm{K}_\infty$,
+where $\norm{K}_\infty = \max_{[0,1]^2} \abs{K}$ is finite because $K$ is
+continuous on a compact set.
+\end{example}
+
+% [p7]
+\begin{proof}
+$T_K f$ is continuous: $K$ is uniformly continuous on the compact square, and
+$\abs{(T_K f)(x) - (T_K f)(x')}
+\le \sup_{y} \abs{K(x,y) - K(x',y)}\,\norm{f}_\infty$. Linearity is
+immediate. For $\norm{f}_\infty \le 1$,
+\[
+  \norm{T_K f}_\infty
+  = \sup_{x \in [0,1]} \Bigl\lvert \int_0^1 K(x,y) f(y) \dd y \Bigr\rvert
+  \le \sup_{x \in [0,1]} \int_0^1 \abs{K(x,y)}\,\abs{f(y)} \dd y
+  \le \norm{K}_\infty \int_0^1 \dd y = \norm{K}_\infty . \qedhere
+\]
+\end{proof}
+
+\begin{example}[Differentiation]\label{ex:differentiation}
+Let $X$ be the space of polynomials on $[0,1]$ with the norm
+$\norm{\cdot}_\infty$, a subspace of $\Cont{0,1}$; it is not a Banach space.
+Let $D \colon X \to X$, $f \mapsto f'$. Then $D$ is linear but not bounded:
+for $f_n(t) = t^n$ one has $\norm{f_n}_\infty = 1$ for all $n$, while
+$\norm{D f_n}_\infty = \norm{n t^{n-1}}_\infty = n \to \infty$.
+\end{example}
+
+\begin{remark}
+As a rule of thumb, integration is bounded and differentiation is not.
+\end{remark}
+
+\section{The space of bounded operators}
+
+\begin{theorem}\label{thm:bounded-continuous}
+A linear operator $T \colon (X, \norm{\cdot}) \to (Y, \norm{\cdot})$ is
+bounded if and only if it is continuous.
+\end{theorem}
+
+\begin{proof}
+Assume $T$ is bounded. If $T = 0$ it is continuous, so let $\norm{T} > 0$.
+Given $\eps > 0$ put $\delta = \eps / \norm{T}$. For all $x_1, x_2 \in X$
+with $\norm{x_1 - x_2} < \delta$, Remark~\ref{rem:op-norm-bound} gives
+\[
+  \norm{T x_1 - T x_2} = \norm{T(x_1 - x_2)}
+  \le \norm{T}\,\norm{x_1 - x_2}
+  < \norm{T} \frac{\eps}{\norm{T}} = \eps .
+\]
+
+% [p8]
+Assume $T$ is continuous; only continuity at $0$ will be used. Since
+$T0 = 0$, the choice $\eps = 1$ gives a $\delta > 0$ with $\norm{Tx} < 1$
+whenever $\norm{x} < \delta$. For $\norm{z} \le 1$ the vector
+$\frac{\delta}{2} z$ has norm less than $\delta$, so
+\[
+  \norm{T z} = \frac{2}{\delta} \Bigl\lVert T\Bigl(\frac{\delta}{2} z\Bigr)
+  \Bigr\rVert < \frac{2}{\delta} .
+\]
+Hence $T$ is bounded, with $\norm{T} \le 2/\delta$.
+\end{proof}
+
+\begin{corollary}\label{cor:cont-at-0}
+A linear operator $T \colon (X, \norm{\cdot}) \to (Y, \norm{\cdot})$ is
+continuous everywhere if and only if it is continuous at $0$.
+\end{corollary}
+
+\begin{proof}
+The second half of the proof of Theorem~\ref{thm:bounded-continuous} used
+only continuity at $0$ to obtain boundedness, and the first half turns
+boundedness into continuity everywhere.
+\end{proof}
+
+\begin{definition}\label{def:BXY}
+$\Bop{X}{Y}$ denotes the set of all bounded linear operators from $X$ to $Y$.
+\end{definition}
+
+\begin{theorem}\label{thm:BXY-normed}
+$\Bop{X}{Y}$ is a vector space under pointwise operations, and the operator
+norm is a norm on it. Therefore $(\Bop{X}{Y}, \norm{\cdot})$ is a normed
+space.
+\end{theorem}
+
+\begin{proof}
+Pointwise sums and scalar multiples of linear maps are linear, and the zero
+operator is bounded. For $S, T \in \Bop{X}{Y}$, $\alpha \in \K$ and
+$\norm{x} \le 1$,
+\[
+  \norm{(S + T)x} \le \norm{Sx} + \norm{Tx} \le \norm{S} + \norm{T},
+  \qquad
+  \norm{(\alpha T)x} = \abs{\alpha}\,\norm{Tx} \le \abs{\alpha}\,\norm{T},
+\]
+so $S + T$ and $\alpha T$ are bounded, and $\Bop{X}{Y}$ is a subspace of
+the vector space of linear maps from $X$ to $Y$.
+
+For the norm axioms, $\norm{T} \ge 0$ is clear. If $\norm{T} = 0$, then
+Remark~\ref{rem:op-norm-bound} gives $\norm{Tx} \le \norm{T}\,\norm{x} = 0$
+for every $x$, so $T = 0$. Homogeneity follows from
+$\norm{\alpha T} = \sup_{\norm{x} \le 1} \abs{\alpha}\,\norm{Tx}
+= \abs{\alpha}\,\norm{T}$. For the triangle inequality, the triangle
+inequality in $Y$ gives
+\[
+  \norm{T + S} = \sup_{\norm{x} \le 1} \norm{(T + S)x}
+  \le \sup_{\norm{x} \le 1} \bigl(\norm{Tx} + \norm{Sx}\bigr)
+  \le \sup_{\norm{x} \le 1} \norm{Tx} + \sup_{\norm{x} \le 1} \norm{Sx}
+  = \norm{T} + \norm{S} . \qedhere
+\]
+\end{proof}
+
+% [p9]
+\begin{theorem}\label{thm:BXY-banach}
+If $(Y, \norm{\cdot})$ is a Banach space, then so is
+$(\Bop{X}{Y}, \norm{\cdot})$.
+\end{theorem}
+
+\begin{corollary}\label{cor:dual-banach}
+$(\Bop{X}{\K}, \norm{\cdot})$ is a Banach space for every normed space $X$.
+\end{corollary}
+
+\begin{notation}
+$X' = (\Bop{X}{\K}, \norm{\cdot})$ is the \emph{dual space} of $X$.
+\end{notation}
+
+\begin{proof}[Proof of Theorem~\ref{thm:BXY-banach}]
+Let $(T_n) \subset \Bop{X}{Y}$ be a Cauchy sequence: for every $\eps > 0$
+there is an $N$ with $\norm{T_n - T_m} \le \eps$ for all $n, m > N$. For
+each $x \in X$, Remark~\ref{rem:op-norm-bound} gives
+\[
+  \norm{T_n x - T_m x} = \norm{(T_n - T_m)x}
+  \le \norm{T_n - T_m}\,\norm{x} \le \eps \norm{x},
+\]
+and since $\eps$ is arbitrary, $(T_n x)$ is Cauchy in $Y$. As $Y$ is
+complete, the pointwise limit $Tx := \lim_{n \to \infty} T_n x$ exists. It
+is linear, because
+$T(\alpha x + \beta y) = \lim_n (\alpha T_n x + \beta T_n y)
+= \alpha Tx + \beta Ty$.
+
+It remains to show that $T$ is bounded and that $T_n \to T$ in norm. Fix
+$n > N$ and let $m \to \infty$ in $\norm{T_n x - T_m x} \le \eps\norm{x}$;
+continuity of the norm gives
+\[
+  \norm{(T_n - T)x} \le \eps \norm{x} \qquad \text{for all } x \in X .
+\]
+Thus $T_n - T$ is bounded with $\norm{T_n - T} \le \eps$, so
+$T = T_n - (T_n - T) \in \Bop{X}{Y}$ by Theorem~\ref{thm:BXY-normed}, and
+$\norm{T_n - T} \le \eps$ for all $n > N$ means $T_n \to T$.
+\end{proof}
+
+\begin{proposition}[Composition]\label{prop:composition}
+If $T \in \Bop{Y}{Z}$ and $S \in \Bop{X}{Y}$, then $TS \in \Bop{X}{Z}$ and
+$\norm{TS} \le \norm{T}\,\norm{S}$.
+\end{proposition}
+
+% [p10]
+\begin{proof}
+$TS$ is linear as a composition of linear maps. By
+Remark~\ref{rem:op-norm-bound},
+\[
+  \norm{TS} = \sup_{\norm{x} \le 1} \norm{T(Sx)}
+  \le \sup_{\norm{x} \le 1} \norm{T}\,\norm{Sx}
+  = \norm{T} \sup_{\norm{x} \le 1} \norm{Sx} = \norm{T}\,\norm{S} .
+  \qedhere
+\]
+\end{proof}
+
+\begin{remark}
+In particular, for a Banach space $X$ the space $\Bop{X}{X}$ is a Banach
+algebra: a Banach space, by Theorem~\ref{thm:BXY-banach}, which is also an
+algebra under composition, with $\norm{TS} \le \norm{T}\,\norm{S}$.
+\end{remark}
+
+\begin{definition}[Invertible operator]\label{def:invertible}
+$T \in \Bop{X}{X}$ is \emph{invertible} if $T$ is a bijection from $X$ to
+$X$ and $T^{-1}$ is bounded.
+\end{definition}
