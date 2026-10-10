@@ -1,0 +1,375 @@
+% =====================================================================
+%  Lecture 2026-10-01
+%
+%  Reordered: the proof of the ell_p-ell_q duality theorem follows its
+%  statement directly, and the reflexivity block comes after it; in the
+%  source the reflexivity block sits between statement and proof. Within
+%  that block, the remark introducing the natural map j precedes the
+%  definition of reflexivity, which uses j.
+%
+%  CORRECTED SOURCE ERRORS
+%   [p1] finite-dimensional duality proof: gamma_k = f(alpha_k)  ->
+%        gamma_k = f(e_k)
+%   [p1] identification remark: a norm-preserving bijection  ->  a
+%        linear norm-preserving bijection
+%   [p2] reflexivity defined by ((X)')' = X  ->  the natural map j is
+%        bijective, the source's own reading of that equation
+%   [p2] j called the natural injection  ->  the natural map; its
+%        injectivity rests on the announced norm equality
+%   [p2] bounded variation: sum |w(t_j - t_{j-1})|  ->
+%        sum |w(t_j) - w(t_{j-1})|
+%   [p2] representation of (C[a,b])': "if w is differentiable"  ->
+%        w in C^1[a,b], so that w' is integrable
+%   [p2] L_p-L_q duality "for function spaces"  ->
+%        (L_p[0,1])' = L_q[0,1] for 1 < p < infinity
+%
+%  ADDITIONS
+%   [p1] notation B(X) = B(X,X), used by the source without definition
+%   [p1] finite dimensions: T^{-1} linear as the inverse of a linear
+%        bijection; boundedness cited from Example 8.4
+%   [p1] Neumann series: B(X) Banach cited from Theorem 9.5; norm
+%        convergence S_N -> S turned into pointwise convergence; the
+%        telescoping identity written for both orders; continuity of
+%        I - T, from Theorem 9.1, used to pass it inside the limit
+%   [p1] bounded below: T^{-1} linear
+%   [p1] finite-dimensional duality: the standard inner product written
+%        out; the map gamma -> f_gamma linear and injective; the case
+%        gamma = 0; the maximizer x = gamma / ||gamma||_2
+%   [p2] ell_p-ell_q proof: absolute convergence named; the extremal
+%        vector replacing the epsilon step; the proof that
+%        (f(e_k)) lies in ell_q; the passage f(sum) = sum f via
+%        Example 7.5 and continuity of f; linearity and injectivity of
+%        beta -> f_beta
+%   [p2] natural map: g_x linear, and j linear
+%   [p2] reflexive implies Banach: proof supplied, resting on the
+%        announced norm equality ||g_x|| = ||x||
+%
+%  REPORTED BUT UNMODIFIED GAPS
+%   [p1] equivalence of injectivity, surjectivity and det T != 0 is
+%        left to linear algebra, as in the source
+%   [p2] (ell_1)' = ell_infty and (ell_infty)' != ell_1 are stated
+%        without proof
+%   [p2] ||g_x|| = ||x|| is announced, not proved
+%   [p2] reflexivity of ell_p for 1 < p < infinity, and non-reflexivity
+%        of ell_1 and ell_infty, are asserted
+%   [p2] (L_p[0,1])' = L_q[0,1] is asserted
+%   [p2] the Riemann-Stieltjes integral is used without definition;
+%        the norm ||w|| is defined and not used; ||f|| is not related
+%        to w
+%
+%  OMITTED
+%   [p1] course logistics in the right margin; two quotations
+%   [p1] the f <-> gamma box diagram, which the formula carries
+%   [p1, p2] doodles unconnected to the material
+% =====================================================================
+
+% [p1]
+\section{Invertible operators}
+
+\begin{notation}\label{not:BX}
+$\Bopone{X} = \Bop{X}{X}$.
+\end{notation}
+
+\begin{definition}[Invertible operator, general case]\label{def:invertible-general}
+Extending Definition~\ref{def:invertible}, an operator $T \in \Bop{X}{Y}$ is
+\emph{invertible} if $T$ is a bijection from $X$ to $Y$ and
+$T^{-1} \in \Bop{Y}{X}$.
+\end{definition}
+
+Three criteria for invertibility follow.
+
+\begin{proposition}[Finite dimensions]\label{prop:inv-finite}
+For a linear map $T \colon \K^n \to \K^n$, that is
+$T \in \operatorname{End}(\K^n)$, the following are equivalent.
+\begin{enumerate}
+  \item $T$ is injective.
+  \item $T$ is surjective.
+  \item $\det T \ne 0$.
+  \item $T$ is invertible.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+The equivalence of (i), (ii) and (iii) is a result of linear algebra. An
+invertible $T$ is bijective, so (iv) implies (i). Conversely, if (i), and
+hence (ii), holds, then $T$ is a bijection, and $T^{-1}$ is linear as the
+inverse of a linear bijection. It is bounded automatically, because $\K^n$
+is finite-dimensional, by Example~\ref{ex:finite-dim-bounded}. So $T$ is
+invertible.
+\end{proof}
+
+\begin{proposition}[Neumann series]\label{prop:neumann}
+Let $X$ be a Banach space and $T \in \Bopone{X}$ with $\norm{T} < 1$. Then
+$I - T$ is invertible, and
+\[
+  (I - T)^{-1} = \sum_{k=0}^{\infty} T^k .
+\]
+\end{proposition}
+
+\begin{remark}
+Many calculations with bounded linear operators are similar to those with
+complex numbers. For example, if $z \in \C$ and $\abs{z} < 1$, then
+$\frac{1}{1-z} = \sum_{k=0}^{\infty} z^k$.
+\end{remark}
+
+\begin{proof}[Proof of Proposition~\ref{prop:neumann}]
+Let $S_N = \sum_{k=0}^{N} T^k$. For $N > M$,
+\[
+  \norm{S_N - S_M}
+  = \Bigl\lVert \sum_{k=M+1}^{N} T^k \Bigr\rVert
+  \le \sum_{k=M+1}^{N} \norm{T^k}
+  \le \sum_{k=M+1}^{N} \norm{T}^k ,
+\]
+which is a piece of the tail of the series $\sum_{k=0}^{\infty} \norm{T}^k$.
+That series converges because $\norm{T} < 1$, so given $\eps > 0$ the right
+side is less than $\eps$ for all $N > M$ large enough. Thus $(S_N)$ is
+Cauchy in $\Bopone{X}$. As $X$ is a Banach space, so is $\Bopone{X}$, by
+Theorem~\ref{thm:BXY-banach}, and $S_N$ converges; let
+$S = \lim_{N \to \infty} S_N \in \Bopone{X}$. Norm convergence gives
+pointwise convergence, since
+$\norm{S_N y - S y} \le \norm{S_N - S}\,\norm{y}$ for every $y \in X$.
+
+The sum telescopes, and the two orders of multiplication give the same
+result, $S_N(I - T) = (I - T)S_N = I - T^{N+1}$. For $x \in X$,
+$\norm{T^{N+1} x} \le \norm{T}^{N+1}\norm{x} \to 0$, so
+\[
+  S(I-T)x = \lim_{N \to \infty} S_N (I-T) x
+  = \lim_{N \to \infty} (I - T^{N+1}) x = x .
+\]
+The operator $I - T$ is bounded, hence continuous by
+Theorem~\ref{thm:bounded-continuous}, and may therefore be taken inside the
+limit:
+\[
+  (I-T)Sx = (I-T)\lim_{N \to \infty} S_N x
+  = \lim_{N \to \infty} (I-T)S_N x
+  = \lim_{N \to \infty} (I - T^{N+1}) x = x .
+\]
+So $S(I-T) = (I-T)S = I$. Hence $I - T$ is a bijection with inverse
+$S \in \Bopone{X}$.
+\end{proof}
+
+\begin{proposition}\label{prop:bounded-below}
+Let $T \in \Bop{X}{Y}$ be surjective, and suppose there is a $b > 0$ such
+that $\norm{Tx} \ge b\norm{x}$ for all $x \in X$, that is, $T$ is bounded
+away from zero. Then $T$ is invertible, and $\norm{T^{-1}} \le \frac{1}{b}$.
+\end{proposition}
+
+\begin{proof}
+$T$ is injective, that is $\ker T = \set{0}$: if $Tx = 0$, then
+$b\norm{x} \le \norm{Tx} = 0$, so $x = 0$. Being also surjective, $T$ is a
+bijection, so $T^{-1}$ exists, and it is linear as the inverse of a linear
+bijection. It remains to show $T^{-1} \in \Bop{Y}{X}$. For every $y \in Y$
+there is an $x \in X$ with $Tx = y$, and then
+\[
+  \norm{T^{-1} y} = \norm{x} \le \frac{1}{b}\norm{Tx} = \frac{1}{b}\norm{y},
+\]
+so $\norm{T^{-1}} \le \frac{1}{b}$.
+\end{proof}
+
+% [p1]
+\section{Dual spaces}
+
+The dual space $X' = \Bop{X}{\K}$ of a normed space $X$ was introduced in
+Notation~\ref{not:dual}. In some cases $X'$ can be described explicitly.
+
+\begin{remark}\label{rem:identify}
+An equation $(X, \norm{\cdot}) = (Y, \norm{\cdot}')$ between normed spaces
+means that the two can be identified with each other: there is a natural
+linear bijection $i \colon X \to Y$ with $\norm{i(x)}' = \norm{x}$ for all
+$x \in X$.
+\end{remark}
+
+\begin{theorem}[Finite dimensions]\label{thm:dual-Rn}
+$(\R^n, \norm{\cdot}_2)' = (\R^n, \norm{\cdot}_2)$.
+\end{theorem}
+
+\begin{proof}
+The identification is given by the standard inner product
+$\langle x, \gamma \rangle = \sum_{k=1}^{n} x_k \gamma_k$. Let $f$ be a
+linear functional on $(\R^n, \norm{\cdot}_2)$ and $e_1, \dots, e_n$ the
+standard basis. For $x = \sum_{k=1}^{n} \alpha_k e_k$ linearity gives
+$f(x) = \sum_{k=1}^{n} \alpha_k f(e_k)$. Let $\gamma_k = f(e_k)$; then
+\[
+  f(x) = \sum_{k=1}^{n} \alpha_k \gamma_k = \langle \alpha, \gamma \rangle ,
+\]
+where $\alpha = x$, since the coordinates of $x$ in the standard basis are
+its entries. So every linear functional is represented by an inner product
+with a vector $\gamma \in \R^n$. Conversely, each $\gamma$ defines the
+functional $f_\gamma = \langle \cdot\,, \gamma \rangle$, which is bounded by
+Example~\ref{ex:finite-dim-bounded}. The map $\gamma \mapsto f_\gamma$ is
+linear, and injective because $f_\gamma(e_k) = \gamma_k$. It is therefore a
+linear bijection between $\R^n$ and $(\R^n, \norm{\cdot}_2)'$.
+
+It remains to check $\norm{f} = \norm{\gamma}_2$. By the Cauchy--Schwarz
+inequality,
+\[
+  \norm{f} = \sup_{\norm{x}_2 \le 1} \abs{f(x)}
+  = \sup_{\norm{x}_2 \le 1} \abs{\langle x, \gamma \rangle}
+  \le \sup_{\norm{x}_2 \le 1} \norm{x}_2 \norm{\gamma}_2
+  \le \norm{\gamma}_2 .
+\]
+If $\gamma = 0$ both sides vanish. Otherwise Cauchy--Schwarz attains
+equality at $x = \gamma / \norm{\gamma}_2$, which has $\norm{x}_2 = 1$ and
+$\langle x, \gamma \rangle = \norm{\gamma}_2$. So
+$\norm{f} \ge \norm{\gamma}_2$, and hence $\norm{f} = \norm{\gamma}_2$.
+\end{proof}
+
+% [p2]
+\begin{theorem}[$\ell_p$--$\ell_q$ duality]\label{thm:lp-duality}
+Let $1 < p < \infty$ and $\frac{1}{p} + \frac{1}{q} = 1$. Then
+$(\lp{p})' = \lp{q}$. Moreover $(\lp{1})' = \lp{\infty}$, but
+$(\lp{\infty})' \ne \lp{1}$.
+\end{theorem}
+
+\begin{proof}[Proof of the first statement]
+Let $\beta = (\beta_1, \beta_2, \dots) \in \lp{q}$, and define $f_\beta$ on
+$\lp{p}$ by
+\[
+  x = (\alpha_1, \alpha_2, \dots) \longmapsto
+  f_\beta(x) = \alpha_1 \beta_1 + \alpha_2 \beta_2 + \dots
+  = \sum_{k=1}^{\infty} \alpha_k \beta_k .
+\]
+By Hölder's inequality, Theorem~\ref{thm:holder-inf},
+$\sum_k \abs{\alpha_k \beta_k} \le \norm{x}_p \norm{\beta}_q < \infty$, so
+the series converges absolutely. Thus $f_\beta$ is well defined, it is
+linear, and
+\[
+  \norm{f_\beta} = \sup_{\norm{x}_p \le 1} \abs{f_\beta(x)}
+  = \sup_{\norm{x}_p \le 1} \Bigl\lvert \sum_k \alpha_k \beta_k \Bigr\rvert
+  \le \sup_{\norm{x}_p \le 1} \norm{x}_p \norm{\beta}_q
+  \le \norm{\beta}_q .
+\]
+
+Equality can be attained in Hölder's inequality. If $\beta = 0$ there is
+nothing to show. Otherwise, for each $k$ choose $\sigma_k \in \K$ with
+$\abs{\sigma_k} = 1$ and $\sigma_k \beta_k = \abs{\beta_k}$, and put
+\[
+  \alpha_k = \frac{\sigma_k \abs{\beta_k}^{q-1}}{\norm{\beta}_q^{q-1}} .
+\]
+From $\frac{1}{p} + \frac{1}{q} = 1$ one gets $(q-1)p = q$, so
+$\abs{\alpha_k}^p = \abs{\beta_k}^q / \norm{\beta}_q^q$ and
+$\norm{x}_p = 1$, while
+\[
+  \sum_k \alpha_k \beta_k
+  = \frac{\sum_k \abs{\beta_k}^q}{\norm{\beta}_q^{q-1}}
+  = \norm{\beta}_q .
+\]
+Hence $\norm{f_\beta} \ge \norm{\beta}_q$, and $\norm{f_\beta} = \norm{\beta}_q$.
+
+It remains to check whether every $f \in (\lp{p})'$ arises as $f = f_\beta$.
+Let $f \in (\lp{p})'$, let $e_k$ be the standard basis vectors, and let
+$\beta_k = f(e_k)$. First, $\beta \in \lp{q}$. Fix $N$, choose $\sigma_k$ as
+above, and let $x^{(N)}$ have coordinates $\sigma_k \abs{\beta_k}^{q-1}$ for
+$k \le N$ and $0$ for $k > N$. By linearity of $f$ on this finite sum, and
+by $(q-1)p = q$,
+\[
+  \sum_{k=1}^{N} \abs{\beta_k}^q = f\bigl(x^{(N)}\bigr)
+  \le \norm{f}\,\norm{x^{(N)}}_p
+  = \norm{f} \Bigl(\sum_{k=1}^{N} \abs{\beta_k}^q\Bigr)^{1/p} .
+\]
+If the left side is positive, dividing by its $\frac{1}{p}$-th power gives
+$(\sum_{k=1}^{N} \abs{\beta_k}^q)^{1/q} \le \norm{f}$, and the bound holds
+trivially otherwise. As $N$ is arbitrary, $\beta \in \lp{q}$.
+
+Second, $f = f_\beta$. Let $x = (\alpha_1, \alpha_2, \dots) \in \lp{p}$. By
+Example~\ref{ex:E-schauder}, $x = \sum_k \alpha_k e_k$ with convergence in
+$\lp{p}$, and $f$ is continuous by Theorem~\ref{thm:bounded-continuous}, so
+\[
+  f(x) = f\Bigl(\sum_{k} \alpha_k e_k\Bigr)
+  = \lim_{N \to \infty} \sum_{k=1}^{N} \alpha_k f(e_k)
+  = \sum_{k} \alpha_k \beta_k = f_\beta(x) .
+\]
+
+The map $\beta \mapsto f_\beta$ is linear and, by the norm identity,
+norm-preserving, hence injective. It is surjective by the last step. So it is
+a linear norm-preserving bijection from $\lp{q}$ onto $(\lp{p})'$, and the
+two spaces are identified in the sense of Remark~\ref{rem:identify}.
+\end{proof}
+
+\begin{remark}\label{rem:Lp-duality}
+The analogous duality holds for function spaces: for $1 < p < \infty$ and
+$\frac{1}{p} + \frac{1}{q} = 1$, $(\Lp{p}[0,1])' = \Lp{q}[0,1]$.
+\end{remark}
+
+\subsection{Reflexivity}
+
+\begin{remark}[The natural map into the bidual]\label{rem:natural-map}
+For $x \in X$ define $g_x \colon X' \to \K$ by $g_x(f) = f(x)$. This is
+linear, and $\abs{g_x(f)} = \abs{f(x)} \le \norm{f}\,\norm{x}$ by
+Remark~\ref{rem:op-norm-bound}, so $g_x \in X'' = (X')'$ with
+\[
+  \norm{g_x} = \sup_{\norm{f} \le 1} \abs{g_x(f)}
+  = \sup_{\norm{f} \le 1} \abs{f(x)} \le \norm{x} .
+\]
+The \emph{natural map} $j \colon X \to X''$, $x \mapsto g_x$, is linear. It
+will be shown that $\norm{g_x} = \norm{x}$ holds with equality, so that $j$
+is norm-preserving, and in particular injective.
+\end{remark}
+
+\begin{nfigure}{The natural map $j$ sends $x \in X$ to the functional
+$g_x \in X''$, which evaluates every $f \in X'$ at $x$: $g_x(f) = f(x)$.}
+\begin{tikzpicture}[scale=0.9]
+  \draw[rulegrey, rounded corners=6pt] (0,0) rectangle (1.6,2.4);
+  \draw[rulegrey, rounded corners=6pt] (4.4,0) rectangle (6.0,2.4);
+  \node at (0.8,2.75) {$X$};
+  \node at (5.2,2.75) {$X''$};
+  \fill[accent] (0.8,1.2) circle (0.04);
+  \node[below] at (0.8,1.15) {$x$};
+  \fill[thmaccent] (5.2,1.2) circle (0.04);
+  \node[below] at (5.2,1.15) {$g_x$};
+  \draw[-{Stealth[length=2mm]}] (0.95,1.25) to[bend left=20]
+    node[above] {$j$} (5.05,1.25);
+\end{tikzpicture}
+\end{nfigure}
+
+\begin{definition}[Reflexive space]\label{def:reflexive}
+A normed space $(X, \norm{\cdot})$ is \emph{reflexive} if the natural map
+$j \colon X \to X''$ is bijective, that is, if every element of $X''$ can be
+written as $g_x$ for some $x \in X$. In the sense of
+Remark~\ref{rem:identify} this is written
+$((X, \norm{\cdot})')' = (X, \norm{\cdot})$.
+\end{definition}
+
+\begin{proposition}\label{prop:reflexive-banach}
+Every reflexive space is a Banach space.
+\end{proposition}
+
+\begin{proof}
+The proof rests on the norm equality $\norm{g_x} = \norm{x}$ announced in
+Remark~\ref{rem:natural-map}. The bidual $X'' = \Bop{X'}{\K}$ is a Banach
+space by Corollary~\ref{cor:dual-banach}, applied to the normed space $X'$.
+Let $(x_n)$ be a Cauchy sequence in $X$. Since
+$\norm{g_{x_n} - g_{x_m}} = \norm{j(x_n - x_m)} = \norm{x_n - x_m}$, the
+sequence $(g_{x_n})$ is Cauchy in $X''$ and converges to some
+$\varphi \in X''$. As $X$ is reflexive, $\varphi = g_x$ for some $x \in X$,
+and then $\norm{x_n - x} = \norm{g_{x_n} - g_x} \to 0$. So $X$ is complete.
+\end{proof}
+
+\begin{example}\label{ex:reflexive}
+$\lp{p}$ is reflexive for $1 < p < \infty$; $\lp{1}$ and $\lp{\infty}$ are
+not.
+\end{example}
+
+% [p2]
+\subsection{The dual of \texorpdfstring{$C[a,b]$}{C[a,b]}}
+
+\begin{definition}[Bounded variation]\label{def:bv}
+A function $w \colon [a,b] \to \K$ is \emph{of bounded variation} if
+\[
+  \operatorname{Var}(w) = \sup \sum_{j=1}^{n} \abs{w(t_j) - w(t_{j-1})}
+  < \infty ,
+\]
+where the supremum is taken over all partitions
+$a = t_0 < t_1 < \dots < t_n = b$ of $[a,b]$. Such functions carry the norm
+$\norm{w} = \abs{w(a)} + \operatorname{Var}(w)$.
+\end{definition}
+
+\begin{theorem}[Representation of {$(C[a,b])'$}]\label{thm:dual-C}
+For every $f \in (\Cont{a,b})'$ there is a $w$ of bounded variation on
+$[a,b]$ such that
+\[
+  f(g) = \int_a^b g(t) \dd w(t) \qquad \text{for all } g \in \Cont{a,b} .
+\]
+The function $w$ is not unique. If $w \in \Contk{1}{a,b}$, then
+$f(g) = \int_a^b g(t)\, w'(t) \dd t$.
+\end{theorem}

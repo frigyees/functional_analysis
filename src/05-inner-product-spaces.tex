@@ -1,0 +1,527 @@
+% =====================================================================
+%  Lecture 2026-10-08
+%
+%  Normalized silently to the conventions of the earlier lectures:
+%   - the ambient space is X, a Hilbert space H, a subspace M; the
+%     source's V, U, W, the script Y and the script H are renamed, and
+%     a pair of complementary subspaces is M, N with components x_M, x_N
+%   - functionals are f, as in Sections 9 to 11; the source's phi, the
+%     representing vector v and the auxiliary vector w are renamed f, y
+%     and z
+%   - dist(x, M), argument order as in Lemma 5.7; the source writes
+%     dist(M, x)
+%   - the standard basis vectors of ell_2 are e_i, as in Example 7.2;
+%     the source writes e^{(i)}
+%   - boxed implication arrows in proofs become prose
+%   - "inner product space" throughout, "pre-Hilbert space" given once
+%     as a synonym
+%   - the item "1 and 2 => im P = M" becomes the item im P = M, proved
+%     from the two items before it
+%   - ell_2 indexed from 1, as ell_p in Section 2
+%
+%  CORRECTED SOURCE ERRORS
+%   [p1] inner product space defined over C  ->  over K; conjugation is
+%        the identity when K = R, and no statement changes
+%   [p1] minimizing vector, Cauchy estimate: -4 delta and the limit
+%        2 delta + 2 delta - 4 delta = 0  ->  delta^2 throughout
+%   [p1] "if X is complete, M must be convex and closed instead"  ->  in
+%        a complete X a subset is complete exactly when it is closed, so
+%        the hypothesis reads: convex and closed
+%   [p2] minimizing vector, uniqueness: delta in place of delta^2, and a
+%        missing square on ||y_2 - x||  ->  delta^2 throughout
+%   [p2] orthogonality lemma: ||y-x||^2 = ||y-x||^2 - |<y_1,y-x>|^2 /
+%        ||y_1||^2  ->  <= , which is what minimality of y gives
+%   [p4] "if w~ in W"  ->  z~ in M^perp
+%   [p4] "<x,w> = 0 = lambda ||w||^2"  ->  <x,z> = <x_M,z> +
+%        lambda ||z||^2 = lambda ||z||^2
+%   [p4] final step f(x) = <x, f(z)/||z||^2 z>  ->  the conjugate
+%        \overline{f(z)} in the second slot; the source drops it where
+%        the scalar moves into the conjugate-linear slot. Every earlier
+%        step of the proof uses the first-slot-linear convention, so
+%        exchanging the slots would not repair it.
+%   [p4] ||<.,v>|| = sup |<x,v>|/||x|| = ||v|| asserted from the upper
+%        bound alone  ->  the lower bound from x = y/||y||, and y = 0
+%        separately
+%
+%  ADDITIONS
+%   [p1] proposition on the induced norm and the induced metric merged
+%        into one; the metric is that of Definition 2.1
+%   [p1] Cauchy-Schwarz inequality: statement and proof, where the
+%        source names it only
+%   [p1] triangle inequality for the induced norm: statement and proof,
+%        where the source names it only
+%   [p1] ell_2 example: convergence of the series by Hoelder
+%   [p1] L_2[a,b] example: L_2[a,b] defined as L_2[0,1] with [a,b] in
+%        place of [0,1]
+%   [p1] definition of a convex set
+%   [p1] minimizing vector: the reference to the infimum of Lemma 5.7;
+%        the lower bound ||x - y|| >= delta, from y in M
+%   [p2] definition of x perp M, before the orthogonality lemma
+%   [p2] orthogonality lemma: existence and uniqueness of the closest
+%        point by Theorem 13.2, a subspace being convex; the case
+%        y_1 = 0; y + alpha y_1 in M; the passage from
+%        <y_1, y-x> = 0 to x - y perp M
+%   [p3] linearity of the projection, proved
+%   [p3] definition of a projection as a linear map, before the
+%        idempotent characterization
+%   [p3] one-line proofs of the six projection properties
+%   [p3] idempotent characterization: im P and ker P are subspaces, and
+%        Px is the im P component of x
+%   [p3] definition of the orthogonal complement, before its first use
+%   [p3] one-line proofs of the four properties of M^perp
+%   [p3] counterexample: M != ell_2, witnessed by (2^{-n})
+%   [p3] complete M: M nonempty, as 0 in M; <x_M, x - x_M> = 0 in the
+%        proof of (M^perp)^perp subset M
+%   [p4] Riesz representation: the theorem named on instruction; ker f
+%        closed via Theorem 9.1; M^perp != {0} from M + M^perp = H;
+%        f(z) != 0; K z subset M^perp; the uniqueness of y, proved
+%
+%  REPORTED BUT UNMODIFIED GAPS
+%   [p1] that the induced norm is a norm is stated as a proposition; the
+%        triangle inequality is proved after it, the other axioms are
+%        not checked
+%   [p1] the characterization of inner-product norms by the
+%        parallelogram identity is stated without proof
+%   [p1] neither ell_2 nor L_2[a,b] is shown to be a Hilbert space
+%
+%  OMITTED
+%   [p2] a crossed-out heading, and a crossed-out first proof attempt of
+%        the orthogonality lemma
+%   [p4] a blacked-out box; doodles unconnected to the material
+% =====================================================================
+
+% [p1]
+\section{Inner product spaces}
+
+In three-dimensional Euclidean space there is a dot product, also called
+inner or scalar product. Inner product spaces generalize this concept.
+
+\begin{definition}[Inner product space]\label{def:ip-space}
+Let $X$ be a vector space over $\K$. A map
+$\ip{\cdot}{\cdot} \colon X \times X \to \K$ is an \emph{inner product}, and
+$(X, \ip{\cdot}{\cdot})$ is an \emph{inner product space}, or
+\emph{pre-Hilbert space}, if for all $x, y, z \in X$ and $\alpha \in \K$:
+\begin{enumerate}
+  \item $\ip{x + y}{z} = \ip{x}{z} + \ip{y}{z}$ and
+    $\ip{\alpha x}{y} = \alpha \ip{x}{y}$, that is, $\ip{\cdot}{\cdot}$ is
+    linear in the first variable;
+  \item $\ip{x}{y} = \overline{\ip{y}{x}}$, conjugate symmetry;
+  \item $\ip{x}{x} \ge 0$, and $\ip{x}{x} = 0$ if and only if $x = 0$,
+    positive definiteness.
+\end{enumerate}
+For $\K = \R$ the conjugation is the identity.
+\end{definition}
+
+\begin{remark}\label{rem:conj-linear}
+An inner product is conjugate linear in its second variable:
+$\ip{x}{y + z} = \ip{x}{y} + \ip{x}{z}$ and
+$\ip{x}{\alpha y} = \bar{\alpha}\ip{x}{y}$, by conjugate symmetry and
+linearity in the first variable.
+\end{remark}
+
+\begin{definition}[Hilbert space]\label{def:hilbert}
+A \emph{Hilbert space} is an inner product space that is complete with
+respect to the norm $\norm{x} = \sqrt{\ip{x}{x}}$, $x \in X$.
+\end{definition}
+
+\begin{proposition}\label{prop:induced-norm}
+$\norm{x} = \sqrt{\ip{x}{x}}$ is a norm on $X$, the \emph{induced norm}. Its
+metric $d(x,y) = \norm{x - y} = \sqrt{\ip{x - y}{x - y}}$, as in
+Definition~\ref{def:norm}, is the \emph{induced metric}.
+\end{proposition}
+
+\begin{definition}[Orthogonality]\label{def:orthogonal}
+Vectors $x, y \in X$ are \emph{orthogonal}, written $x \perp y$, if
+$\ip{x}{y} = 0$.
+\end{definition}
+
+\begin{proposition}[Parallelogram identity]\label{prop:parallelogram}
+For all $x, y \in X$,
+$\norm{x + y}^2 + \norm{x - y}^2 = 2\norm{x}^2 + 2\norm{y}^2$.
+\end{proposition}
+
+\begin{proof}
+Expanding by linearity in each variable,
+\[
+  \norm{x \pm y}^2 = \ip{x \pm y}{x \pm y}
+  = \norm{x}^2 \pm \ip{x}{y} \pm \ip{y}{x} + \norm{y}^2 .
+\]
+Summing the two cases, the mixed terms cancel, and the sum is
+$2\norm{x}^2 + 2\norm{y}^2$.
+\end{proof}
+
+\begin{theorem}\label{thm:jvn}
+A norm is induced by an inner product if and only if it satisfies the
+parallelogram identity of Proposition~\ref{prop:parallelogram}.
+\end{theorem}
+
+\begin{example}\label{ex:l2-ip}
+$\lp{2} = \set[\big]{x = (x_1, x_2, \dots) \,\big|\,
+\sum_{n=1}^{\infty} \abs{x_n}^2 < \infty}$ is an inner product space with
+\[
+  \ip{x}{y} = \sum_{n=1}^{\infty} x_n \overline{y_n} ,
+\]
+the series converging absolutely by Hölder's inequality,
+Theorem~\ref{thm:holder-inf}, with $p = q = 2$.
+\end{example}
+
+\begin{example}\label{ex:L2-ip}
+Let $\Lp{2}[a,b]$ be defined as $\Lp{2}[0,1]$ in Definition~\ref{def:lp},
+with $[a,b]$ in place of $[0,1]$. It is an inner product space with
+$\ip{f}{g} = \int_a^b f \bar{g}$.
+\end{example}
+
+\begin{theorem}[Cauchy--Schwarz inequality]\label{thm:cauchy-schwarz}
+For all $x, y$ in an inner product space $X$,
+\[
+  \abs{\ip{x}{y}} \le \norm{x}\,\norm{y} .
+\]
+\end{theorem}
+
+\begin{proof}
+If $y = 0$ both sides vanish, so let $y \ne 0$. For every $\lambda \in \K$,
+by positivity and Remark~\ref{rem:conj-linear},
+\[
+  0 \le \norm{x - \lambda y}^2
+  = \norm{x}^2 - \bar{\lambda}\ip{x}{y} - \lambda\ip{y}{x}
+    + \abs{\lambda}^2 \norm{y}^2 .
+\]
+Choose $\lambda = \ip{x}{y} / \norm{y}^2$. Then each of the last three terms
+has absolute value $\abs{\ip{x}{y}}^2 / \norm{y}^2$, the first two with a
+minus sign, so
+\[
+  0 \le \norm{x}^2 - \frac{\abs{\ip{x}{y}}^2}{\norm{y}^2} .
+\]
+Multiplying by $\norm{y}^2$ and taking square roots gives the claim.
+\end{proof}
+
+\begin{theorem}[Triangle inequality for the induced norm]\label{thm:ip-triangle}
+For all $x, y$ in an inner product space $X$,
+$\norm{x + y} \le \norm{x} + \norm{y}$.
+\end{theorem}
+
+\begin{proof}
+By conjugate symmetry $\ip{x}{y} + \ip{y}{x} = 2 \operatorname{Re}\ip{x}{y}$,
+so Theorem~\ref{thm:cauchy-schwarz} gives
+\[
+  \norm{x + y}^2 = \norm{x}^2 + 2\operatorname{Re}\ip{x}{y} + \norm{y}^2
+  \le \norm{x}^2 + 2\norm{x}\,\norm{y} + \norm{y}^2
+  = \bigl(\norm{x} + \norm{y}\bigr)^2 .
+\]
+Taking square roots gives the claim, which is the triangle inequality of
+Proposition~\ref{prop:induced-norm}.
+\end{proof}
+
+% [p1]
+\section{Best approximation and orthogonal complements}
+
+\begin{definition}[Convex set]\label{def:convex}
+A set $M$ in a vector space is \emph{convex} if $t x + (1-t) y \in M$ for all
+$x, y \in M$ and $t \in [0,1]$.
+\end{definition}
+
+\begin{theorem}[Minimizing vector]\label{thm:minimizing}
+Let $X$ be an inner product space and $M \subset X$ a nonempty, convex and
+complete subset. Then for every $x \in X$ there is a unique $y \in M$ with
+\[
+  \norm{x - y} = \operatorname{dist}(x, M) ,
+\]
+where $\operatorname{dist}(x, M) = \inf\set{\norm{x - m} : m \in M}$, as in
+Lemma~\ref{lem:riesz}.
+\end{theorem}
+
+\begin{remark}\label{rem:minimizing-closed}
+If $X$ is complete, a subset of $X$ is complete exactly when it is closed, so
+in a Hilbert space the hypothesis reads: $M$ is nonempty, convex and closed.
+\end{remark}
+
+\begin{nfigure}{The closest point $y \in M$ to a point $x$ outside the convex
+set $M$.}
+\begin{tikzpicture}[scale=0.9]
+  \draw[rulegrey, rounded corners=4pt] (-0.4,-0.6) rectangle (6.4,3.0);
+  \node at (6.05,2.7) {$X$};
+  \draw[accent, thick, fill=defbg] (1.8,1.2) ellipse (1.3 and 0.95);
+  \node[accent] at (1.15,1.9) {$M$};
+  \fill (3.1,1.2) circle (0.045);
+  \fill (4.9,1.2) circle (0.045);
+  \draw (3.1,1.2) -- (4.9,1.2);
+  \node[left] at (3.05,1.15) {$y$};
+  \node[right] at (4.95,1.2) {$x$};
+\end{tikzpicture}
+\end{nfigure}
+
+\begin{proof}[Proof of Theorem~\ref{thm:minimizing}]
+As $M$ is nonempty, $\delta = \operatorname{dist}(x, M)$ is finite, and by the
+definition of the infimum there are $y_n \in M$ with
+$\norm{y_n - x} \to \delta$. We show that $(y_n)$ is Cauchy. Apply the
+parallelogram identity, Proposition~\ref{prop:parallelogram}, to $y_n - x$
+and $y_m - x$:
+\[
+  \norm{y_n + y_m - 2x}^2 + \norm{y_n - y_m}^2
+  = 2\norm{y_n - x}^2 + 2\norm{y_m - x}^2 .
+\]
+By convexity $\frac{y_n + y_m}{2} \in M$, so
+$\norm{y_n + y_m - 2x}^2 = 4 \norm[\big]{\frac{y_n + y_m}{2} - x}^2
+\ge 4\delta^2$, and therefore
+\[
+  \norm{y_n - y_m}^2
+  \le 2\norm{y_n - x}^2 + 2\norm{y_m - x}^2 - 4\delta^2
+  \xrightarrow[n, m \to \infty]{} 2\delta^2 + 2\delta^2 - 4\delta^2 = 0 .
+\]
+So $(y_n)$ is Cauchy, and as $M$ is complete, $y = \lim_{n \to \infty} y_n$
+exists and lies in $M$. Then $\delta \le \norm{x - y}$ because $y \in M$, and
+$\norm{x - y} \le \norm{x - y_n} + \norm{y_n - y} \to \delta$, so
+$\norm{x - y} = \delta$.
+
+% [p2]
+The point $y$ is unique. Let $y_1, y_2 \in M$ with
+$\norm{y_1 - x} = \norm{y_2 - x} = \delta$. The same estimate, with $y_1$ and
+$y_2$ in place of $y_n$ and $y_m$, gives
+\[
+  \norm{y_1 - y_2}^2
+  \le 2\norm{y_1 - x}^2 + 2\norm{y_2 - x}^2 - 4\delta^2
+  = 2\delta^2 + 2\delta^2 - 4\delta^2 = 0 ,
+\]
+so $y_1 = y_2$.
+\end{proof}
+
+\begin{definition}\label{def:orth-set}
+A vector $x \in X$ is \emph{orthogonal} to a set $M \subset X$, written
+$x \perp M$, if $x \perp m$ for every $m \in M$.
+\end{definition}
+
+\begin{lemma}[Orthogonality]\label{lem:orthogonality}
+Let $M$ be a complete subspace of an inner product space $X$, let $x \in X$,
+and let $y \in M$ be the closest point of $M$ to $x$, which exists and is
+unique by Theorem~\ref{thm:minimizing}, a subspace being convex. Then
+$x - y \perp M$.
+\end{lemma}
+
+\begin{proof}
+Let $y_1 \in M$; we show $\ip{y_1}{y - x} = 0$. If $y_1 = 0$ this holds, so
+let $y_1 \ne 0$. For $\alpha \in \K$ the vector $y + \alpha y_1$ lies in the
+subspace $M$, so by the minimality of $y$,
+\[
+  \begin{aligned}
+    \norm{y - x}^2 \le \norm{y + \alpha y_1 - x}^2
+    &= \norm{y - x}^2 + \alpha\ip{y_1}{y - x} + \bar{\alpha}\ip{y - x}{y_1}
+       + \alpha\bar{\alpha}\norm{y_1}^2 \\
+    &= \norm{y - x}^2 + \alpha\bigl(\ip{y_1}{y - x}
+       + \bar{\alpha}\norm{y_1}^2\bigr) + \bar{\alpha}\ip{y - x}{y_1} .
+  \end{aligned}
+\]
+Choose $\bar{\alpha} = -\ip{y_1}{y - x} / \norm{y_1}^2$. The bracket vanishes,
+and
+\[
+  \norm{y - x}^2 \le \norm{y - x}^2
+    - \frac{\ip{y_1}{y - x}}{\norm{y_1}^2}\,\ip{y - x}{y_1}
+  = \norm{y - x}^2 - \frac{\abs{\ip{y_1}{y - x}}^2}{\norm{y_1}^2} .
+\]
+Hence $\abs{\ip{y_1}{y - x}}^2 \le 0$, that is $\ip{y_1}{y - x} = 0$. By
+conjugate symmetry and linearity, $\ip{x - y}{y_1} = 0$. As $y_1 \in M$ was
+arbitrary, $x - y \perp M$.
+\end{proof}
+
+% [p3]
+\subsection{Complementary subspaces and projections}
+
+\begin{definition}[Complementary subspaces]\label{def:complementary}
+Let $X$ be a vector space. Subspaces $M, N \subset X$ are
+\emph{complementary} if $M \cap N = \set{0}$ and
+$\operatorname{span}(M \cup N) = X$.
+\end{definition}
+
+\begin{remark}
+For any two subspaces $M$ and $N$,
+$\operatorname{span}(M \cup N) = M + N = \set{u + w \mid u \in M, w \in N}$.
+\end{remark}
+
+\begin{lemma}\label{lem:complementary}
+Subspaces $M$ and $N$ are complementary in $X$ if and only if every
+$x \in X$ has a unique decomposition $x = x_M + x_N$ with $x_M \in M$ and
+$x_N \in N$.
+\end{lemma}
+
+\begin{proof}
+Assume $M$ and $N$ are complementary. Existence is immediate from
+$M + N = X$. If $x = u_1 + w_1 = u_2 + w_2$ with $u_1, u_2 \in M$ and
+$w_1, w_2 \in N$, then $u_1 - u_2 = w_2 - w_1 \in M \cap N$, so
+$u_1 - u_2 = w_2 - w_1 = 0$, and the decomposition is unique.
+
+Conversely, $M + N = X$ is immediate from existence. If
+$x \in M \cap N$, then $x = x + 0 = 0 + x$ are two decompositions, with the
+first summand in $M$ and the second in $N$, so by uniqueness $x = 0$, and
+$M \cap N = \set{0}$.
+\end{proof}
+
+\begin{definition}[Projection]\label{def:projection}
+Let $M$ and $N$ be complementary in $X$. The map $P \colon X \to X$,
+$x \mapsto x_M$, given by Lemma~\ref{lem:complementary}, is the
+\emph{projection onto $M$ along $N$}. A linear map $P \colon X \to X$ is a
+\emph{projection} if it is the projection onto some subspace along a
+complementary one.
+\end{definition}
+
+\begin{remark}
+The projection onto $M$ along $N$ is linear: for $x, x' \in X$ and
+$\alpha \in \K$, the sum $(x_M + \alpha x'_M) + (x_N + \alpha x'_N)$ is a
+decomposition of $x + \alpha x'$, so by uniqueness
+$P(x + \alpha x') = Px + \alpha P x'$.
+\end{remark}
+
+\begin{proposition}\label{prop:projection-properties}
+Let $P$ be the projection onto $M$ along $N$. Then:
+\begin{enumerate}
+  \item $Pu = u$ for every $u \in M$, since $u = u + 0$ is its
+    decomposition;
+  \item $\operatorname{im} P \subset M$, since $Px = x_M \in M$;
+  \item $\operatorname{im} P = M$, by item 2 and by item 1, which writes each
+    $u \in M$ as $Pu$;
+  \item $P^2 = P$, since $Px \in M$, so $P(Px) = Px$ by item 1;
+  \item $\ker P = N$, since $Px = 0$ exactly when $x_M = 0$, that is, when
+    $x = x_N \in N$;
+  \item $I - P$ is the projection onto $N$ along $M$, since
+    $(I - P)x = x - x_M = x_N$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proposition}\label{prop:idempotent}
+A linear map $P \colon X \to X$ is a projection if and only if $P^2 = P$,
+that is, $P$ is \emph{idempotent}.
+\end{proposition}
+
+\begin{proof}
+If $P$ is a projection, $P^2 = P$ by
+Proposition~\ref{prop:projection-properties}.
+
+Conversely, let $P^2 = P$. The image and the kernel of the linear map $P$ are
+subspaces. For $x \in X$ write $x = Px + (x - Px)$. Here
+$Px \in \operatorname{im} P$, and $x - Px \in \ker P$ because
+$P(x - Px) = Px - P^2 x = 0$. So $\operatorname{im} P + \ker P = X$. If
+$x \in \operatorname{im} P \cap \ker P$, then $Px = 0$ and $x = Pz$ for some
+$z \in X$, so $x = Pz = P^2 z = Px = 0$. Thus $\operatorname{im} P$ and
+$\ker P$ are complementary, and since the $\operatorname{im} P$ component of
+$x$ is $Px$, $P$ is the projection onto $\operatorname{im} P$ along
+$\ker P$.
+\end{proof}
+
+\subsection{Orthogonal complements}
+
+\begin{definition}[Orthogonal complement]\label{def:orth-complement}
+Let $X$ be an inner product space and $M \subset X$ a subspace. Its
+\emph{orthogonal complement} is
+$\orth{M} = \set{x \in X \mid x \perp M}$.
+\end{definition}
+
+% [p3, p4]
+\begin{proposition}\label{prop:orth-properties}
+Let $M$ and $N$ be subspaces of an inner product space $X$. Then:
+\begin{enumerate}
+  \item $\orth{M}$ is a subspace, since
+    $\ip{\alpha x + \beta x'}{m} = \alpha\ip{x}{m} + \beta\ip{x'}{m}$;
+  \item $M \subset N$ implies $\orth{N} \subset \orth{M}$, since a vector
+    orthogonal to every element of $N$ is orthogonal to every element of
+    $M$;
+  \item $M \cap \orth{M} = \set{0}$, since $x$ in both has
+    $\ip{x}{x} = 0$;
+  \item $M \subset \orth{(\orth{M})}$, since $\ip{u}{x} =
+    \overline{\ip{x}{u}} = 0$ for $u \in M$ and $x \in \orth{M}$.
+\end{enumerate}
+\end{proposition}
+
+\begin{counterexample}\label{cex:orth}
+In general $M + \orth{M} \ne X$ and $\orth{(\orth{M})} \ne M$.
+\end{counterexample}
+
+\begin{proof}
+In $\lp{2}$ let $M$ consist of the sequences with only finitely many nonzero
+terms, and let $e_i$ be the standard basis vectors. Then $M \ne \lp{2}$,
+since $(2^{-n})_n \in \lp{2}$ has infinitely many nonzero terms. If
+$x \in \orth{M}$, then $0 = \ip{x}{e_1} = x_1$, $0 = \ip{x}{e_2} = x_2$, and
+so on, so $x = 0$ and $\orth{M} = \set{0}$. Hence
+$M + \orth{M} = M \ne \lp{2}$ and
+$\orth{(\orth{M})} = \orth{\set{0}} = \lp{2} \ne M$.
+\end{proof}
+
+\begin{proposition}\label{prop:orth-complete}
+Let $M$ be a complete subspace of an inner product space $X$. Then
+$M + \orth{M} = X$ and $\orth{(\orth{M})} = M$.
+\end{proposition}
+
+\begin{proof}
+$M$ is nonempty, as $0 \in M$, and convex, being a subspace. For $x \in X$
+let $x_M \in M$ be the closest point of $M$ to $x$, by
+Theorem~\ref{thm:minimizing}; then $x - x_M \in \orth{M}$ by
+Lemma~\ref{lem:orthogonality}. So $x = x_M + (x - x_M)$, and
+$M + \orth{M} = X$.
+
+By Proposition~\ref{prop:orth-properties} it remains to check
+$\orth{(\orth{M})} \subset M$. Let $x \in \orth{(\orth{M})}$, and take
+$x_M$ as above, so that $x - x_M \in \orth{M}$. Then
+$\ip{x}{x - x_M} = 0$, because $x \in \orth{(\orth{M})}$, and
+$\ip{x_M}{x - x_M} = 0$, because $x_M \in M$. Subtracting,
+\[
+  \norm{x - x_M}^2 = \ip{x - x_M}{x - x_M}
+  = \ip{x}{x - x_M} - \ip{x_M}{x - x_M} = 0 ,
+\]
+so $x = x_M \in M$.
+\end{proof}
+
+% [p4]
+\section{The dual of a Hilbert space}
+
+\begin{theorem}[Riesz representation]\label{thm:riesz-hilbert}
+Let $(H, \ip{\cdot}{\cdot})$ be a Hilbert space and $f \in H'$. Then there is
+a unique $y \in H$ such that $f(x) = \ip{x}{y}$ for all $x \in H$. Moreover,
+for every $y \in H$ the map $x \mapsto \ip{x}{y}$ is in $H'$. So the elements
+of $H'$ are precisely the functionals of the form $\ip{\cdot}{y}$,
+$y \in H$.
+\end{theorem}
+
+\begin{proof}
+Let $y \in H$. Then $\ip{\cdot}{y} \colon H \to \K$ is linear, and
+$\abs{\ip{x}{y}} \le \norm{x}\,\norm{y}$ for every $x \in H$ by
+Theorem~\ref{thm:cauchy-schwarz}, so it is bounded, with
+$\norm{\ip{\cdot}{y}} \le \norm{y}$. For $y = 0$ equality holds; for
+$y \ne 0$ the unit vector $x = y / \norm{y}$ gives
+$\abs{\ip{x}{y}} = \norm{y}$. Hence $\norm{\ip{\cdot}{y}} = \norm{y}$, and
+$\ip{\cdot}{y} \in H'$.
+
+Now let $f \in H'$. If $f = 0$, take $y = 0$. Let $f \ne 0$ and
+$M = \ker f \ne H$. $M$ is a closed subspace, being the preimage of the
+closed set $\set{0} \subset \K$ under the map $f$, which is continuous by
+Theorem~\ref{thm:bounded-continuous}. $H$ is complete and $M$ is closed, so
+$M$ is complete as well, and by Propositions~\ref{prop:orth-complete}
+and~\ref{prop:orth-properties} the subspaces $M$ and $\orth{M}$ are
+complementary in $H$. Since $M \ne H = M + \orth{M}$, there is a
+$z \in \orth{M}$ with $z \ne 0$. Then $z \notin M$, as
+$M \cap \orth{M} = \set{0}$, so $f(z) \ne 0$.
+
+We claim $\orth{M} = \K z$. The inclusion $\K z \subset \orth{M}$ holds
+because $\orth{M}$ is a subspace. If $\tilde{z} \in \orth{M}$, then
+\[
+  f\Bigl(\tilde{z} - \frac{f(\tilde{z})}{f(z)}\, z\Bigr)
+  = f(\tilde{z}) - \frac{f(\tilde{z})}{f(z)}\, f(z) = 0 ,
+\]
+so $\tilde{z} - \frac{f(\tilde{z})}{f(z)} z \in M \cap \orth{M} = \set{0}$,
+and $\tilde{z} = \frac{f(\tilde{z})}{f(z)} z$.
+
+We claim $f(x) = \frac{f(z)}{\norm{z}^2}\ip{x}{z}$ for all $x \in H$. Let
+$x = x_M + (x - x_M)$ with $x_M \in M$ and $x - x_M \in \orth{M}$; by the
+previous claim $x - x_M = \lambda z$ for some $\lambda \in \K$. Then
+\[
+  f(x) = f(x_M) + f(x - x_M) = 0 + \lambda f(z) ,
+\]
+and, as $x_M \perp z$,
+$\ip{x}{z} = \ip{x_M}{z} + \lambda\norm{z}^2 = \lambda\norm{z}^2$, so
+$\lambda = \ip{x}{z} / \norm{z}^2$. Moving the scalar into the second
+variable, which is conjugate linear by Remark~\ref{rem:conj-linear},
+\[
+  f(x) = \frac{f(z)}{\norm{z}^2}\ip{x}{z}
+  = \Bigl\langle x, \frac{\overline{f(z)}}{\norm{z}^2}\, z \Bigr\rangle
+  = \ip{x}{y}, \qquad y = \frac{\overline{f(z)}}{\norm{z}^2}\, z .
+\]
+
+Finally, $y$ is unique. If $\ip{x}{y} = \ip{x}{y'}$ for all $x \in H$, then
+$x = y - y'$ gives $\norm{y - y'}^2 = 0$, so $y = y'$.
+\end{proof}

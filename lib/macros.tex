@@ -28,6 +28,13 @@
 \newcommand{\eps}{\varepsilon}
 \newcommand{\dd}{\mathrm{d}}
 
-% ---------- bounded operators  ----------
+% ---------- bounded operators (added with the lecture of 2026-09-24) ----------
+% Script B keeps operator spaces apart from balls B(x, eps).
 \newcommand{\Bop}[2]{\mathcal{B}(#1, #2)}
- 
+% Shorthand for operators of a space into itself (lecture of 2026-10-01).
+\newcommand{\Bopone}[1]{\mathcal{B}(#1)}
+
+% ---------- inner product spaces (added with the lecture of 2026-10-08) ----------
+% First slot linear, second slot conjugate linear.
+\DeclarePairedDelimiterX{\ip}[2]{\langle}{\rangle}{#1, #2}
+\newcommand{\orth}[1]{#1^{\perp}}
