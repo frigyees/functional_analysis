@@ -4,7 +4,7 @@ Digitalized notes on functional analysis according to [Máté Matolcsi's lecture
 
 > **Disclaimer:** Neither I nor the lecturer take any responsibility for any errors in the material, despite efforts to correct any that are found. Use at your own discretion!
 
-## Compilation
+## Build
 
 The document is written with `XeLaTeX` in mind (the preamble uses `fontspec`).
 
@@ -21,3 +21,9 @@ latexmk # build every document
 ```
 
 The PDF lands in the repository root, auxiliary build files in `build/`.
+
+## Repo layout
+
+- `lib/macros.tex`: notation
+- `lib/preamble.tex`: page, environments, packages, etc...
+- `src/NN-title.tex`: per-lecture TeX fragments
