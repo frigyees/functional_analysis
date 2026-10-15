@@ -1,0 +1,387 @@
+% =====================================================================
+%  Lecture 2026-10-15
+%
+%  Normalized silently:
+%   - H_1, H_2 and H for Hilbert spaces, as in Section 14
+%   - the supremum variable in the norm identity of the adjoint, called
+%     z in the source as well as the representing vector, renamed u
+%   - in property (5), <Tx, Tx> = <x, T*Tx> directly from the definition
+%   - "real space" and "complex space" for L_{2,R} and L_{2,C}, as in
+%     Example 7.8
+%   - the proof of the product theorem placed directly after its
+%     statement, before the remark it precedes in the source
+%
+%  CORRECTED SOURCE ERRORS
+%   [p1] lemma hypothesis T in C(H_1, H_2)  ->  B(H_1, H_2)
+%   [p2] "if T, S are adjoint"  ->  self-adjoint
+%   [p2] product theorem proof (TS)* = S*T* = ST = TS, assuming the
+%        claim  ->  (TS)* = ST, so (TS)* = TS iff ST = TS
+%   [p2] ||U|| = 1 for every Hilbert space  ->  H != {0}
+%   [p3] Fourier systems without index sets, as families  ->
+%        enumerated as sequences e_1, e_2, ..., in the order of
+%        Example 7.8; the complex system over all k in Z
+%   [p3] index clash: the real system starts at e_0, the ONB definition
+%        at e_1  ->  every orthonormal sequence indexed from 1
+%
+%  ADDITIONS
+%   [p1] remark ||v|| = sup_{||u|| <= 1} |<v, u>|, with proof; the
+%        source's "properties of the inner product"
+%   [p1] adjoint theorem: f linear; uniqueness in Theorem 14.1 cited for
+%        well-definedness; T* linear; the uniqueness of the adjoint
+%        stated as a remark
+%   [p1] conjugate transpose example: the index computation
+%   [p1] properties (1) to (3): one-line proofs, where the source says
+%        trivial; (4) and (5): Proposition 9.8 cited, the step to
+%        equality of operators via the uniqueness remark, and
+%        ||TT*|| = ||T||^2 derived from the first part applied to T*
+%   [p1] unitary: T invertible, so that T^{-1} is bounded, as in
+%        Definition 10.2
+%   [p1] lemma (1): the identification of the supremum with ||T|| cited;
+%        lemma (2): the trivial direction, and the step from the two
+%        equations to <Tx, y> = 0
+%   [p1] rotation counterexample: the formula of the rotation
+%   [p2] <x, Tx> = <T*x, x>, justified; Lemma 16.2 cited in (2)
+%   [p2] unitary (5): the direction "unitary => surjective and
+%        isometric", from (1); T^{-1} = T* bounded
+%   [p2] unitary group remark: identity unitary, closure from (3), (4)
+%   [p2] shift example: S isometric, e_1 not in im S, S*S = I and
+%        SS* e_1 = 0, written out
+%   [p3] orthonormality of the trigonometric systems, by integration
+%   [p3] the ONB definition requires (e_n) orthonormal
+%
+%  REPORTED BUT UNMODIFIED GAPS
+%   [p2] in finite dimensions, unitary iff isometric, asserted
+%   [p3] whether the trigonometric systems are orthonormal bases is not
+%        addressed here
+%
+%  OMITTED
+%   [p1] course logistics in the top right margin
+%   [p2] a doodle
+% =====================================================================
+
+% [p1]
+\section{Adjoint operators}
+
+\begin{remark}\label{rem:norm-sup}
+In an inner product space, $\norm{v} = \sup_{\norm{u} \le 1} \abs{\ip{v}{u}}$
+for every $v$. Indeed $\abs{\ip{v}{u}} \le \norm{v}$ for $\norm{u} \le 1$ by
+the Cauchy--Schwarz inequality, Theorem~\ref{thm:cauchy-schwarz}, and for
+$v \ne 0$ the unit vector $u = v / \norm{v}$ gives $\ip{v}{u} = \norm{v}$.
+\end{remark}
+
+\begin{definition}[Adjoint operator]\label{def:adjoint}
+Let $T \in \Bop{H_1}{H_2}$. The \emph{adjoint} of $T$ is the map
+$T^* \colon H_2 \to H_1$ given by
+\[
+  \ip{Tx}{y} = \ip{x}{T^* y} \qquad \text{for all } x \in H_1,\ y \in H_2 .
+\]
+\end{definition}
+
+\begin{theorem}\label{thm:adjoint}
+$T^*$ is well defined, $T^* \in \Bop{H_2}{H_1}$, and $\norm{T} = \norm{T^*}$.
+\end{theorem}
+
+\begin{proof}
+Fix $y \in H_2$ and define $f(x) = \ip{Tx}{y}$ for $x \in H_1$. It is linear,
+since $T$ is linear and the inner product is linear in its first variable.
+By the Cauchy--Schwarz inequality,
+\[
+  \sup_{\norm{x} \le 1} \abs{f(x)} = \sup_{\norm{x} \le 1} \abs{\ip{Tx}{y}}
+  \le \sup_{\norm{x} \le 1} \norm{Tx}\,\norm{y}
+  \le \norm{T}\,\norm{y} < \infty ,
+\]
+so $f \in H_1'$. By the Riesz representation, Theorem~\ref{thm:riesz-hilbert},
+there is a unique $z \in H_1$ with $f(x) = \ip{x}{z}$ for all $x \in H_1$.
+Then $\ip{Tx}{y} = \ip{x}{z}$, and by the uniqueness of $z$ the definition
+$T^* y = z$ is meaningful.
+
+$T^*$ is linear: for $y, y' \in H_2$ and $\beta \in \K$, by
+Remark~\ref{rem:conj-linear},
+\[
+  \ip{x}{T^*(y + \beta y')} = \ip{Tx}{y + \beta y'}
+  = \ip{Tx}{y} + \bar{\beta}\ip{Tx}{y'}
+  = \ip{x}{T^* y + \beta T^* y'}
+\]
+for all $x \in H_1$, and the uniqueness in Theorem~\ref{thm:riesz-hilbert}
+gives $T^*(y + \beta y') = T^* y + \beta T^* y'$.
+
+Finally, by Remark~\ref{rem:norm-sup},
+\[
+  \norm{T} = \sup_{\norm{x} \le 1} \norm{Tx}
+  = \sup_{\substack{\norm{x} \le 1\\ \norm{u} \le 1}} \abs{\ip{Tx}{u}}
+  = \sup_{\substack{\norm{x} \le 1\\ \norm{u} \le 1}} \abs{\ip{x}{T^* u}}
+  = \sup_{\norm{u} \le 1} \norm{T^* u} = \norm{T^*} ,
+\]
+where the second and the fourth equalities are Remark~\ref{rem:norm-sup},
+applied to $Tx$ and to $T^* u$. Therefore $T^*$ is also bounded.
+\end{proof}
+
+\begin{remark}\label{rem:adjoint-unique}
+If $R \colon H_2 \to H_1$ satisfies $\ip{Tx}{y} = \ip{x}{Ry}$ for all
+$x \in H_1$ and $y \in H_2$, then $R = T^*$: for fixed $y$,
+$\ip{x}{Ry - T^* y} = 0$ for all $x$, and $x = Ry - T^* y$ gives
+$Ry = T^* y$.
+\end{remark}
+
+\begin{example}\label{ex:conj-transpose}
+Let $T \in \operatorname{End}(\C^n)$, identified with its matrix $(t_{ij})$ in
+the standard basis, and let $\C^n$ carry the inner product
+$\ip{x}{y} = \sum_{i=1}^{n} x_i \overline{y_i}$. Then
+$T^* \in \operatorname{End}(\C^n)$, and $T^* = \overline{T}^{\mathsf{T}}$,
+the conjugate transpose, since
+\[
+  \ip{Tx}{y} = \sum_{i=1}^{n} \sum_{j=1}^{n} t_{ij} x_j \overline{y_i}
+  = \sum_{j=1}^{n} x_j\, \overline{\sum_{i=1}^{n} \overline{t_{ij}}\, y_i}
+  = \ip[\big]{x}{\overline{T}^{\mathsf{T}} y} .
+\]
+\end{example}
+
+\begin{theorem}[Properties of the adjoint]\label{thm:adjoint-properties}
+Let $S, T \in \Bop{H_1}{H_2}$ and $\alpha \in \K$. Then:
+\begin{enumerate}
+  \item $(S + T)^* = S^* + T^*$;
+  \item $(\alpha T)^* = \bar{\alpha} T^*$;
+  \item $(T^*)^* = T$;
+  \item if $H_1 = H_2$, then $(ST)^* = T^* S^*$;
+  \item $\norm{T^* T} = \norm{T T^*} = \norm{T}^2$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Items (1) to (3) follow from Remark~\ref{rem:adjoint-unique}, since the
+right-hand side satisfies the defining identity of the left-hand side:
+\begin{enumerate}
+  \item $\ip{x}{(S^* + T^*)y} = \ip{Sx}{y} + \ip{Tx}{y} = \ip{(S + T)x}{y}$;
+  \item $\ip{x}{\bar{\alpha} T^* y} = \alpha\ip{x}{T^* y}
+    = \alpha\ip{Tx}{y} = \ip{(\alpha T)x}{y}$;
+  \item $\ip{T^* y}{x} = \overline{\ip{x}{T^* y}} = \overline{\ip{Tx}{y}}
+    = \ip{y}{Tx}$ for $y \in H_2$, $x \in H_1$, which is the defining
+    identity of $(T^*)^*$ with $T$ in its place.
+\end{enumerate}
+(4) For all $x, y$,
+$\ip{x}{(ST)^* y} = \ip{STx}{y} = \ip{Tx}{S^* y} = \ip{x}{T^* S^* y}$, so
+$(ST)^* = T^* S^*$ by Remark~\ref{rem:adjoint-unique}.
+
+(5) By the Cauchy--Schwarz inequality,
+\[
+  \begin{aligned}
+    \norm{T}^2 &= \sup_{\norm{x} \le 1} \norm{Tx}^2
+    = \sup_{\norm{x} \le 1} \ip{Tx}{Tx}
+    = \sup_{\norm{x} \le 1} \ip{x}{T^* T x} \\
+    &\le \sup_{\norm{x} \le 1} \norm{T^* T x}\,\norm{x}
+    \le \sup_{\norm{x} \le 1} \norm{T^* T x} = \norm{T^* T} ,
+  \end{aligned}
+\]
+and by Proposition~\ref{prop:composition} and Theorem~\ref{thm:adjoint},
+$\norm{T^* T} \le \norm{T^*}\,\norm{T} = \norm{T}^2$. So
+$\norm{T^* T} = \norm{T}^2$. Applied to $T^*$ in place of $T$, with (3) and
+$\norm{T^*} = \norm{T}$, this gives
+$\norm{T T^*} = \norm{(T^*)^* T^*} = \norm{T^*}^2 = \norm{T}^2$.
+\end{proof}
+
+\section{Self-adjoint, unitary and normal operators}
+
+\begin{definition}\label{def:operator-classes}
+An operator $T \in \Bopone{H}$ is called
+\begin{enumerate}
+  \item \emph{self-adjoint}, if $T = T^*$;
+  \item \emph{unitary}, if $T$ is invertible and $T^* = T^{-1}$;
+  \item \emph{normal}, if $T^* T = T T^*$.
+\end{enumerate}
+\end{definition}
+
+\begin{lemma}\label{lem:zero-operator}
+Let $T \in \Bop{H_1}{H_2}$. Then:
+\begin{enumerate}
+  \item $T = 0$ if and only if $\ip{Tx}{y} = 0$ for all $x \in H_1$ and
+    $y \in H_2$;
+  \item if $H_1 = H_2 = H$ is a complex Hilbert space, then $T = 0$ if and
+    only if $\ip{Tx}{x} = 0$ for all $x \in H$.
+\end{enumerate}
+\end{lemma}
+
+\begin{remark}
+Item (2) does not hold on real spaces. For example, let $T$ be the rotation
+of $\R^2$ by $90^\circ$, $T(x_1, x_2) = (-x_2, x_1)$. Then $T \ne 0$, but
+$\ip{Tx}{x} = -x_2 x_1 + x_1 x_2 = 0$ for every $x$.
+\end{remark}
+
+\begin{proof}[Proof of Lemma~\ref{lem:zero-operator}]
+(1) If $T = 0$, then $\ip{Tx}{y} = \ip{0}{y} = 0$. Conversely, if
+$\ip{Tx}{y} = 0$ for all $x, y$, then
+$\sup_{\norm{x} \le 1, \norm{y} \le 1} \abs{\ip{Tx}{y}} = 0$. By the first two
+equalities in the proof of Theorem~\ref{thm:adjoint} this supremum is
+$\norm{T}$, so $\norm{T} = 0$ and $T = 0$.
+
+(2) If $T = 0$, then $\ip{Tx}{x} = 0$. Conversely, assume $\ip{Tx}{x} = 0$
+for all $x \in H$, with $H$ complex. Let $x, y \in H$, $\alpha \in \C$, and
+write $v = \alpha x + y$. Then
+\[
+  0 = \ip{Tv}{v} = \ip{T(\alpha x + y)}{\alpha x + y}
+  = \abs{\alpha}^2 \underbrace{\ip{Tx}{x}}_{0}
+    + \underbrace{\ip{Ty}{y}}_{0}
+    + \alpha\ip{Tx}{y} + \bar{\alpha}\ip{Ty}{x} .
+\]
+% [p2]
+Now $\alpha = 1$ gives $\ip{Tx}{y} + \ip{Ty}{x} = 0$, and $\alpha = i$ gives
+$i\ip{Tx}{y} - i\ip{Ty}{x} = 0$. Dividing the second equation by $i$ and
+adding it to the first, $2\ip{Tx}{y} = 0$. So $\ip{Tx}{y} = 0$ for all
+$x, y$, and $T = 0$ by (1).
+\end{proof}
+
+\begin{theorem}\label{thm:self-adjoint-real}
+Let $T \in \Bopone{H}$. Then:
+\begin{enumerate}
+  \item if $T = T^*$, then $\ip{Tx}{x} \in \R$ for all $x \in H$;
+  \item if $H$ is complex, then $T = T^*$ if and only if
+    $\ip{Tx}{x} \in \R$ for all $x \in H$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+For every $T \in \Bopone{H}$ and $x \in H$,
+$\ip{T^* x}{x} = \overline{\ip{x}{T^* x}} = \overline{\ip{Tx}{x}}
+= \ip{x}{Tx}$.
+
+(1) If $T = T^*$, then
+$\overline{\ip{Tx}{x}} = \ip{x}{Tx} = \ip{T^* x}{x} = \ip{Tx}{x}$, so
+$\ip{Tx}{x} \in \R$.
+
+(2) One direction is (1). Assume $\ip{Tx}{x} \in \R$ for all $x$. Then
+$\ip{Tx}{x} = \overline{\ip{Tx}{x}} = \ip{x}{Tx} = \ip{T^* x}{x}$, so
+\[
+  0 = \ip{Tx}{x} - \ip{T^* x}{x} = \ip{(T - T^*)x}{x}
+  \qquad \text{for all } x \in H .
+\]
+By Lemma~\ref{lem:zero-operator} (2), $T - T^* = 0$, that is, $T = T^*$.
+\end{proof}
+
+\begin{theorem}\label{thm:product-self-adjoint}
+Let $S, T \in \Bopone{H}$ be self-adjoint. Then $TS$ is self-adjoint, that
+is $(TS)^* = TS$, if and only if $TS = ST$.
+\end{theorem}
+
+\begin{proof}
+By Theorem~\ref{thm:adjoint-properties} (4), $(TS)^* = S^* T^* = ST$. So
+$(TS)^* = TS$ if and only if $ST = TS$.
+\end{proof}
+
+\begin{remark}
+If $T$ and $S$ are self-adjoint, then so is $T + S$, as
+$(T + S)^* = T^* + S^* = T + S$. Also, for $\alpha \in \R$,
+$(\alpha T)^* = \bar{\alpha} T^* = \alpha T$.
+\end{remark}
+
+\begin{theorem}[Unitary operators]\label{thm:unitary}
+Let $H \ne \set{0}$, and let $U, V \in \Bopone{H}$ be unitary. Then:
+\begin{enumerate}
+  \item $U$ is \emph{isometric}, that is, $\norm{Ux} = \norm{x}$ for all
+    $x \in H$;
+  \item $\norm{U} = 1$;
+  \item $U^{-1} = U^*$ is unitary;
+  \item $UV$ is also unitary;
+  \item on a complex Hilbert space $H$, an operator $T \in \Bopone{H}$ is
+    unitary if and only if $T$ is surjective and isometric.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(1) As $U^* U = U^{-1} U = I$,
+$\norm{Ux}^2 = \ip{Ux}{Ux} = \ip{x}{U^* U x} = \ip{x}{x} = \norm{x}^2$.
+
+(2) By (1), $\norm{U} = \sup_{\norm{x} \le 1} \norm{Ux}
+= \sup_{\norm{x} \le 1} \norm{x} = 1$, the last supremum being $1$ because
+$H \ne \set{0}$.
+
+(3) $U^*$ is invertible, with bounded inverse $U$. It is unitary if
+$(U^*)^* = (U^*)^{-1}$, that is, by
+Theorem~\ref{thm:adjoint-properties} (3), if $U = (U^*)^{-1}$, which holds
+because $U^{-1} = U^*$.
+
+(4) $UV$ is invertible, with bounded inverse $V^{-1} U^{-1}$, and
+$(UV)^* = V^* U^* = V^{-1} U^{-1} = (UV)^{-1}$.
+
+(5) If $T$ is unitary, it is isometric by (1), and surjective, being
+invertible. Conversely, let $T$ be surjective and isometric. It is injective,
+since $Tx = 0$ gives $\norm{x} = \norm{Tx} = 0$, so $x = 0$; with the
+assumption, $T$ is bijective. For every $x$,
+\[
+  \ip{T^* T x}{x} = \overline{\ip{x}{T^* T x}} = \ip{Tx}{Tx}
+  = \norm{Tx}^2 = \norm{x}^2 = \ip{x}{x} ,
+\]
+so $\ip{(T^* T - I)x}{x} = 0$, and $T^* T = I$ by
+Lemma~\ref{lem:zero-operator} (2), since the space is complex. Moreover
+$T T^* = T T^* T T^{-1} = T T^{-1} = I$. So $T^*$ is a two-sided inverse of
+$T$, $T^{-1} = T^*$ is bounded, and $T$ is unitary.
+\end{proof}
+
+\begin{remark}
+The unitary operators form a group under composition, the \emph{unitary
+group}: $I$ is unitary, and by (3) and (4) inverses and products of unitary
+operators are unitary.
+\end{remark}
+
+\begin{remark}
+In finite dimensions, $T$ is unitary if and only if $T$ is isometric.
+\end{remark}
+
+\begin{example}[Shift operator]\label{ex:shift}
+The surjectivity assumption in Theorem~\ref{thm:unitary} (5) is necessary
+in infinite dimensions. Take the shift operator
+\[
+  S \colon \lp{2} \to \lp{2}, \qquad
+  (x_1, x_2, \dots) \longmapsto (0, x_1, x_2, \dots) .
+\]
+$S$ is isometric, since $\norm{Sx}^2 = \sum_{i} \abs{x_i}^2 = \norm{x}^2$,
+but it is not surjective, since every element of $\operatorname{im} S$ has
+first coordinate $0$, so $e_1 \notin \operatorname{im} S$. $S$ is not
+unitary either. Its adjoint is given by the “chop”
+\[
+  S^* \colon (y_1, y_2, \dots) \longmapsto (y_2, y_3, \dots) .
+\]
+This really is the adjoint of $S$:
+\[
+  \begin{aligned}
+    \ip{Sx}{y} &= \ip{(0, x_1, x_2, \dots)}{(y_1, y_2, \dots)}
+    = x_1 \overline{y_2} + x_2 \overline{y_3} + \dots \\
+    &= \ip{(x_1, x_2, \dots)}{(y_2, y_3, \dots)} = \ip{x}{S^* y} .
+  \end{aligned}
+\]
+Then $S^* S = I$, but $S S^* \ne I$, as $S S^* e_1 = S 0 = 0$. So $S$ is not
+unitary.
+\end{example}
+
+% [p3]
+\section{Orthonormal sequences}
+
+\begin{definition}[Orthonormal sequence]\label{def:orthonormal}
+A sequence $(e_n)$ in an inner product space is \emph{orthonormal} if
+$\ip{e_i}{e_j} = 0$ for all $i \ne j$, and $\ip{e_i}{e_i} = 1$ for all $i$.
+\end{definition}
+
+\begin{example}\label{ex:trig-orthonormal}
+The Fourier systems of Example~\ref{ex:fourier}, normalized, are orthonormal
+sequences. In the real space $\Lp{2}[0,2\pi]$, take
+\[
+  e_1 = \frac{1}{\sqrt{2\pi}} , \qquad
+  e_{2k}(t) = \frac{1}{\sqrt{\pi}} \cos(kt) , \qquad
+  e_{2k+1}(t) = \frac{1}{\sqrt{\pi}} \sin(kt) , \qquad k \ge 1 .
+\]
+In the complex space $\Lp{2}[0,2\pi]$, take $\frac{1}{\sqrt{2\pi}} e^{ikt}$,
+$k \in \Z$, in the order $k = 0, 1, -1, 2, -2, \dots$:
+\[
+  e_1 = \frac{1}{\sqrt{2\pi}} , \qquad
+  e_{2k}(t) = \frac{1}{\sqrt{2\pi}} e^{ikt} , \qquad
+  e_{2k+1}(t) = \frac{1}{\sqrt{2\pi}} e^{-ikt} , \qquad k \ge 1 .
+\]
+Orthonormality follows from $\int_0^{2\pi} e^{i(k-l)t} \dd t = 2\pi$ for
+$k = l$ and $0$ for $k \ne l$; in the real case, from the product-to-sum
+formulas, with $\int_0^{2\pi} \cos^2(kt) \dd t
+= \int_0^{2\pi} \sin^2(kt) \dd t = \pi$ for $k \ge 1$.
+\end{example}
+
+\begin{definition}[Orthonormal basis]\label{def:onb}
+An orthonormal sequence $(e_n)$ in a Hilbert space $H$ is an
+\emph{orthonormal basis} (ONB) if $\operatorname{span}\set{e_1, e_2, \dots}$
+is dense in $H$.
+\end{definition}
