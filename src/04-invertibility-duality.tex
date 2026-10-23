@@ -7,6 +7,18 @@
 %  that block, the remark introducing the natural map j precedes the
 %  definition of reflexivity, which uses j.
 %
+%  Cross-references added after the lecture of 2026-10-22: Remark 11.5
+%  and the proof of Proposition 11.7 cite Remark 18.4, which proves the
+%  announced equality ||g_x|| = ||x|| from Hahn-Banach.
+%
+%  Renamed after the lecture of 2026-10-08: Theorem 11.10, which the
+%  source calls the Riesz representation, is titled "Representation of
+%  (C[a,b])'", so that the name Riesz representation belongs to the
+%  Hilbert-space theorem of that lecture.
+%
+%  Presentation normalized silently: the summation index in the Neumann
+%  series proof, which switched between N and n.
+%
 %  CORRECTED SOURCE ERRORS
 %   [p1] finite-dimensional duality proof: gamma_k = f(alpha_k)  ->
 %        gamma_k = f(e_k)
@@ -302,8 +314,9 @@ Remark~\ref{rem:op-norm-bound}, so $g_x \in X'' = (X')'$ with
   = \sup_{\norm{f} \le 1} \abs{f(x)} \le \norm{x} .
 \]
 The \emph{natural map} $j \colon X \to X''$, $x \mapsto g_x$, is linear. It
-will be shown that $\norm{g_x} = \norm{x}$ holds with equality, so that $j$
-is norm-preserving, and in particular injective.
+will be shown, in Remark~\ref{rem:j-isometric}, that $\norm{g_x} = \norm{x}$
+holds with equality, so that $j$ is norm-preserving, and in particular
+injective.
 \end{remark}
 
 \begin{nfigure}{The natural map $j$ sends $x \in X$ to the functional
@@ -336,7 +349,7 @@ Every reflexive space is a Banach space.
 
 \begin{proof}
 The proof rests on the norm equality $\norm{g_x} = \norm{x}$ announced in
-Remark~\ref{rem:natural-map}. The bidual $X'' = \Bop{X'}{\K}$ is a Banach
+Remark~\ref{rem:natural-map} and proved in Remark~\ref{rem:j-isometric}. The bidual $X'' = \Bop{X'}{\K}$ is a Banach
 space by Corollary~\ref{cor:dual-banach}, applied to the normed space $X'$.
 Let $(x_n)$ be a Cauchy sequence in $X$. Since
 $\norm{g_{x_n} - g_{x_m}} = \norm{j(x_n - x_m)} = \norm{x_n - x_m}$, the

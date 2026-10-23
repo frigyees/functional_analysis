@@ -1,0 +1,289 @@
+% =====================================================================
+%  Lecture 2026-10-22
+%
+%  Normalized silently:
+%   - "ONS" written out as orthonormal sequence, as in Definition 17.1;
+%     "ONB" kept, as defined in Definition 17.3
+%   - "Z <= X" written as "Z subset X a subspace"
+%   - "Dom" set as an operator name
+%   - Zorn's lemma, recalled in the source, cited as Lemma 7.11 rather
+%     than restated
+%
+%  CORRECTED SOURCE ERRORS
+%   [p1] expansion theorem (a): y_n perp z_n, which does not make the
+%        decomposition unique (y_n = 0, z_n = x always satisfies it)
+%        ->  z_n perp V_n
+%   [p2] Hahn-Banach separation: -p(-y_1-z) - h(z) <= p(y+y_1) + h(y)
+%        ->  p(y+y_1) - h(y)
+%   [p2] normed Hahn-Banach: |f~(x)| <= p(x) taken from the vector-space
+%        theorem, which gives only f~(x) <= p(x)  ->  the absolute value
+%        from f~(-x) <= p(-x) = p(x)
+%   [p2] last line "so f~(x) = f~(y)"  ->  f~(x) != f~(y)
+%
+%  ADDITIONS
+%   [p1] expansion theorem: the setting, a Hilbert space H; in proof (a)
+%        the computation <z, e_j> = 0 for each j, and uniqueness via
+%        V_n cap V_n^perp = {0}
+%   [p1] proof (b): the Pythagoras estimate ||x - v||^2 = ||z_n||^2 +
+%        ||y_n - v||^2 behind "because of orthogonality"; the
+%        approximating combination placed in V_N; the bound for every
+%        n >= N, from V_N subset V_n
+%   [p1] orthogonal projection: identified as the projection onto V_n
+%        along V_n^perp, complementary by (a) and Lemma 13.8
+%   [p1] Bessel, Parseval: Pythagoras for y_n perp z_n stated, and
+%        ||y_n||^2 = sum |alpha_k|^2 by orthonormality
+%   [p1] Hahn-Banach on vector spaces: subadditive and positively
+%        homogeneous defined in the statement
+%   [p2] normed Hahn-Banach: ||f||_Z explained; p subadditive and
+%        positively homogeneous, one line each; f <= p on Z
+%   [p2] Corollary 18.3: proof supplied, by extension from span{x_0}
+%   [p2] remark after Corollary 18.3: ||g_x|| = ||x||, proving the
+%        equality announced in Remark 11.5, on instruction
+%
+%  REPORTED BUT UNMODIFIED GAPS
+%   [p1, p2] the Hahn-Banach proof on vector spaces is a sketch, as in
+%        the source, on instruction: the chain bound is not checked to be
+%        well defined, linear, dominated by p, or defined on a subspace;
+%        uniqueness of the representation y + alpha y_1 is not stated;
+%        the final verification that c in [m_0, m_1] gives g <= p on Y,
+%        which uses positive homogeneity, is not written
+%   [p2] normed Hahn-Banach is proved for K = R only; the complex case
+%        is stated, not proved, on instruction
+%
+%  OMITTED
+%   [p1] the sketch of the extension Z subset X -> R, on instruction
+%   [p2] a doodle
+% =====================================================================
+
+% [p1]
+\begin{theorem}[Expansion with respect to an ONB]\label{thm:onb-expansion}
+Let $(e_n)$ be an orthonormal sequence in a Hilbert space $H$, and let
+$V_n = \operatorname{span}\set{e_1, \dots, e_n}$.
+\begin{enumerate}
+  \item[(a)] For every $x \in H$ and every $n$ there is a unique
+    decomposition $x = y_n + z_n$ with $y_n \in V_n$ and $z_n \perp V_n$.
+    Moreover $y_n = \sum_{k=1}^{n} \alpha_k e_k$, where
+    $\alpha_k = \ip{x}{e_k}$.
+  \item[(b)] If $(e_n)$ is an ONB, then for every $x \in H$,
+    \[
+      x = \sum_{k=1}^{\infty} \ip{x}{e_k}\, e_k .
+    \]
+\end{enumerate}
+\end{theorem}
+
+\begin{nfigure}{The decomposition $x = y_n + z_n$, with $y_n$ in
+$V_n = \operatorname{span}\set{e_1, \dots, e_n}$ and $z_n \perp V_n$.}
+\begin{tikzpicture}[scale=1.0]
+  % V_n has direction d = (1,2)/sqrt5, normal m = (2,-1)/sqrt5;
+  % y_n = 2.2 d, x = y_n + 1.0 m.
+  \draw[rulegrey, -{Stealth[length=1.6mm]}] (-1.6,0) -- (2.8,0);
+  \draw[rulegrey, -{Stealth[length=1.6mm]}] (0,-1.4) -- (0,2.9);
+  \draw[accent, thick] (-0.537,-1.073) -- (1.342,2.683);
+  \node[accent, right] at (1.342,2.683) {$V_n$};
+  \draw[-{Stealth[length=2mm]}, thick] (0,0) -- (0.984,1.967);
+  \node[left] at (0.45,1.05) {$y_n$};
+  \draw[-{Stealth[length=2mm]}, thmaccent, thick]
+    (0.984,1.967) -- (1.878,1.520);
+  \node[thmaccent, above right] at (1.40,1.75) {$z_n$};
+  \draw (0.984,1.967) ++ (0.179,-0.089) -- ++ (-0.089,-0.179)
+    -- ++ (-0.179,0.089);
+  \fill (1.878,1.520) circle (0.04);
+  \node[right] at (1.90,1.50) {$x$};
+\end{tikzpicture}
+\end{nfigure}
+
+\begin{proof}
+(a) Let $y = \sum_{k=1}^{n} \alpha_k e_k \in V_n$ with
+$\alpha_k = \ip{x}{e_k}$, and $z = x - y$. For $j \le n$, by orthonormality,
+\[
+  \ip{z}{e_j} = \ip{x}{e_j} - \sum_{k=1}^{n} \alpha_k \ip{e_k}{e_j}
+  = \alpha_j - \alpha_j = 0 ,
+\]
+so $z$ is orthogonal to every element of $V_n$. In particular
+\[
+  \ip{z}{y} = \ip{x - y}{y} = \ip{x}{y} - \ip{y}{y}
+  = \sum_{k=1}^{n} \abs{\alpha_k}^2 - \sum_{k=1}^{n} \abs{\alpha_k}^2 = 0 .
+\]
+For uniqueness, if $x = y + z = y' + z'$ with $y, y' \in V_n$ and
+$z, z' \perp V_n$, then $y - y' = z' - z \in V_n \cap \orth{V_n} = \set{0}$
+by Proposition~\ref{prop:orth-properties}.
+
+(b) For $v \in V_n$ write $x - v = z_n + (y_n - v)$, where
+$y_n - v \in V_n$ is orthogonal to $z_n$. Expanding as in the proof of
+Proposition~\ref{prop:parallelogram}, the mixed terms vanish, so
+\[
+  \norm{x - v}^2 = \norm{z_n}^2 + \norm{y_n - v}^2 \ge \norm{z_n}^2 ,
+\]
+that is, $\norm{x - \sum_{k=1}^{n} \alpha_k e_k} \le \norm{x - v}$ for every
+$v \in V_n$. Now let $\eps > 0$. If $(e_n)$ is an ONB, $x$ can be
+approximated by finite sums: there are $N$ and $\beta_1, \dots, \beta_N$ with
+$\norm{x - \sum_{k=1}^{N} \beta_k e_k} < \eps$. This sum lies in $V_N$, and
+hence in $V_n$ for every $n \ge N$, so
+\[
+  \norm{z_n} = \Bigl\lVert x - \sum_{k=1}^{n} \alpha_k e_k \Bigr\rVert
+  \le \Bigl\lVert x - \sum_{k=1}^{N} \beta_k e_k \Bigr\rVert < \eps
+  \qquad \text{for all } n \ge N .
+\]
+So $\norm{z_n} \to 0$, the remainder vanishes, and $n \to \infty$ yields
+$x = \sum_{k=1}^{\infty} \alpha_k e_k$.
+\end{proof}
+
+\begin{remark}
+The series $\sum_{k=1}^{\infty} \ip{x}{e_k}\, e_k$ is called the
+\emph{generalized Fourier series} of $x$ with respect to the orthonormal
+sequence $(e_n)$.
+\end{remark}
+
+\begin{remark}
+The part $y_n \in V_n$ is the closest point of $V_n$ to $x$, as the proof of
+(b) shows. Therefore it is the \emph{orthogonal projection} of $x$ onto
+$V_n$: the projection onto $V_n$ along $\orth{V_n}$, the two subspaces being
+complementary by (a) and Lemma~\ref{lem:complementary}.
+\end{remark}
+
+\begin{corollary}[Bessel's inequality]\label{cor:bessel}
+If $(e_n)$ is any orthonormal sequence in $H$ and $x \in H$, then for every
+$n$,
+\[
+  \sum_{k=1}^{n} \abs{\ip{x}{e_k}}^2 \le \norm{x}^2 .
+\]
+\end{corollary}
+
+\begin{proof}
+Since $y_n \perp z_n$, the mixed terms in $\norm{y_n + z_n}^2$ vanish, and
+by orthonormality $\norm{y_n}^2 = \sum_{k=1}^{n} \abs{\alpha_k}^2$. Hence
+\[
+  \norm{x}^2 = \norm{y_n}^2 + \norm{z_n}^2
+  = \sum_{k=1}^{n} \abs{\ip{x}{e_k}}^2 + \norm{z_n}^2
+  \ge \sum_{k=1}^{n} \abs{\ip{x}{e_k}}^2 . \qedhere
+\]
+\end{proof}
+
+\begin{corollary}[Parseval's identity]\label{cor:parseval}
+If $(e_n)$ is an ONB in $H$, then for every $x \in H$,
+\[
+  \sum_{k=1}^{\infty} \abs{\ip{x}{e_k}}^2 = \norm{x}^2 .
+\]
+\end{corollary}
+
+\begin{proof}
+From the proof of Theorem~\ref{thm:onb-expansion}, $\norm{z_n}^2 \to 0$, so
+$\norm{y_n}^2 = \norm{x}^2 - \norm{z_n}^2 \to \norm{x}^2$, that is,
+$\sum_{k=1}^{n} \abs{\ip{x}{e_k}}^2 \to \norm{x}^2$ as $n \to \infty$.
+\end{proof}
+
+% [p1]
+\section{Fundamental theorems of functional analysis}
+
+\begin{theorem}[Hahn--Banach, on vector spaces]\label{thm:hb-vector}
+Let $X$ be a vector space over $\R$, $Z \subset X$ a subspace, and
+$f \colon Z \to \R$ a linear functional. Let $p \colon X \to \R$ be
+\emph{subadditive}, $p(x + y) \le p(x) + p(y)$, and \emph{positively
+homogeneous}, $p(\alpha x) = \alpha\, p(x)$ for $\alpha \ge 0$, such that
+$f(z) \le p(z)$ for all $z \in Z$. Then there is an extension
+$\tilde{f} \colon X \to \R$ that is linear, $\tilde{f}|_Z = f$, and
+$\tilde{f}(x) \le p(x)$ for all $x \in X$.
+\end{theorem}
+
+\begin{proof}[Proof (sketch)]
+Let $E = \set{g \mid g \text{ is an extension of } f \text{ with }
+g(x) \le p(x) \ \forall x \in \operatorname{Dom} g}$. $E \ne \emptyset$,
+since $f \in E$ itself. There is a partial order on $E$, defined by
+\[
+  g \le h \quad \overset{\text{def}}{\iff} \quad
+  \operatorname{Dom} g \subseteq \operatorname{Dom} h
+  \text{ and } h|_{\operatorname{Dom} g} = g .
+\]
+By Zorn's lemma, Lemma~\ref{lem:zorn}, it suffices that every chain in $E$
+is bounded above. Let $g_c$, $c \in C$, be the elements of a chain $C$.
+Define $g$ by $\operatorname{Dom} g = \bigcup_{c \in C} \operatorname{Dom}
+g_c$ and, for $x \in \operatorname{Dom} g$, $g(x) = g_c(x)$ for some
+$c \in C$ with $x \in \operatorname{Dom} g_c$. Then $g_c \le g$ for all
+$c \in C$. So $E$ has a maximal element, not necessarily unique; denote it
+by $h$.
+
+$\operatorname{Dom} h = X$. Otherwise there is a
+$y_1 \notin \operatorname{Dom} h$. Let
+$Y = \operatorname{span}(\operatorname{Dom} h \cup \set{y_1})$; then
+$Y \supsetneq \operatorname{Dom} h$. We show that $h$ can be extended to
+$Y$, which is a contradiction. Every $x \in Y$ is of the form
+$x = y + \alpha y_1$ with $y \in \operatorname{Dom} h$. Let
+$g \colon Y \to \R$, $g(y + \alpha y_1) = h(y) + \alpha c$ for some constant
+$c$, namely $c = g(y_1)$. The constant can be chosen so that
+$g(x) \le p(x)$. For all $y, z \in \operatorname{Dom} h$,
+\[
+  h(y) - h(z) = h(y - z) \le p(y - z) \le p(y + y_1) + p(-y_1 - z) ,
+\]
+% [p2]
+and therefore
+\[
+  \underbrace{-p(-y_1 - z) - h(z)}_{\sup \text{ over } z \,\in\,
+    \operatorname{Dom} h \;=\; m_0}
+  \;\le\;
+  \underbrace{p(y + y_1) - h(y)}_{\inf \text{ over } y \,\in\,
+    \operatorname{Dom} h \;=\; m_1} .
+\]
+So $m_0 \le m_1$, and any value $c \in [m_0, m_1]$ is a good choice, that
+is, $g$ will satisfy $g(x) \le p(x)$ for all $x \in Y$.
+\end{proof}
+
+\begin{theorem}[Hahn--Banach, for normed spaces]\label{thm:hb-normed}
+Let $Z$ be a subspace of $(X, \norm{\cdot})$, and let $f \colon Z \to \K$
+be a bounded linear functional, with norm $\norm{f}_Z$ as an element
+of $Z'$.
+Then there is a bounded linear extension $\tilde{f} \colon X \to \K$ of $f$
+such that $\tilde{f}|_Z = f$ and $\norm{\tilde{f}}_X = \norm{f}_Z$.
+\end{theorem}
+
+\begin{proof}[Proof for $\K = \R$]
+For $z \in Z$ we have $\abs{f(z)} \le \norm{f}_Z \norm{z}$. Let
+$p(x) = \norm{f}_Z \norm{x}$ for $x \in X$. Then $p$ is subadditive, by the
+triangle inequality, and positively homogeneous, by the homogeneity of the
+norm, and $f(z) \le p(z)$ for $z \in Z$. By
+Theorem~\ref{thm:hb-vector} there exists an extension
+$\tilde{f} \colon X \to \R$ with $\tilde{f}|_Z = f$ and
+$\tilde{f}(x) \le p(x)$. Also
+$-\tilde{f}(x) = \tilde{f}(-x) \le p(-x) = p(x)$, so
+$\abs{\tilde{f}(x)} \le p(x) = \norm{f}_Z \norm{x}$. This $\tilde{f}$ will
+do: it is bounded linear, and $\norm{\tilde{f}}_X \le \norm{f}_Z$. But
+$\tilde{f}$ is an extension of $f$, so $\norm{\tilde{f}}_X \ge \norm{f}_Z$,
+and therefore $\norm{\tilde{f}}_X = \norm{f}_Z$.
+\end{proof}
+
+\begin{corollary}\label{cor:norming-functional}
+For every $x_0 \in X$ with $x_0 \ne 0$ there is an
+$\tilde{f} \in (X, \norm{\cdot})'$ such that $\norm{\tilde{f}} = 1$ and
+$\tilde{f}(x_0) = \norm{x_0}$.
+\end{corollary}
+
+\begin{proof}
+Let $Z = \operatorname{span}\set{x_0} = \set{\alpha x_0 \mid \alpha \in \K}$
+and $f(\alpha x_0) = \alpha \norm{x_0}$. Since $x_0 \ne 0$, each element of
+$Z$ determines its $\alpha$, so $f$ is well defined, and it is linear. As
+$\abs{f(\alpha x_0)} = \abs{\alpha}\,\norm{x_0} = \norm{\alpha x_0}$,
+$f$ is bounded with $\norm{f}_Z = 1$. By Theorem~\ref{thm:hb-normed} it has
+an extension $\tilde{f} \in X'$ with $\norm{\tilde{f}} = \norm{f}_Z = 1$
+and $\tilde{f}(x_0) = f(x_0) = \norm{x_0}$.
+\end{proof}
+
+\begin{remark}\label{rem:j-isometric}
+Corollary~\ref{cor:norming-functional} proves the equality announced in
+Remark~\ref{rem:natural-map}: $\norm{g_x} = \norm{x}$ for every $x \in X$, so
+the natural map $j \colon X \to X''$ is norm-preserving. For $x = 0$ both
+sides vanish. For $x \ne 0$, take $\tilde{f}$ as in the corollary; then
+$\norm{g_x} = \sup_{\norm{f} \le 1} \abs{f(x)} \ge \abs{\tilde{f}(x)}
+= \norm{x}$, and the reverse inequality is in
+Remark~\ref{rem:natural-map}.
+\end{remark}
+
+\begin{corollary}\label{cor:separating}
+If $x \ne y$ in $(X, \norm{\cdot})$, then there is an $f \in X'$ such that
+$f(x) \ne f(y)$.
+\end{corollary}
+
+\begin{proof}
+$x_0 = x - y \ne 0$, so by Corollary~\ref{cor:norming-functional} there is
+$\tilde{f} \in X'$ with $\norm{\tilde{f}} = 1$ and
+$\tilde{f}(x_0) = \norm{x_0} \ne 0$. So $\tilde{f}(x - y) \ne 0$, and
+$\tilde{f}(x) \ne \tilde{f}(y)$.
+\end{proof}
