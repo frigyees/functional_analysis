@@ -1,0 +1,505 @@
+% =====================================================================
+%  Lecture 2026-10-29
+%
+%  Reordered:
+%   - the uniform boundedness principle is stated directly before its
+%     proof, after Baire's theorem, which the proof uses; the source
+%     states it before the category material and proves it after
+%   - the product-space proposition is placed before the definition of
+%     a closed operator, which uses the norm of X x Y
+%   - the differentiation example, claimed before the product-space
+%     proposition and verified after the sequential criterion, is given
+%     once, after the criterion it uses
+%
+%  Normalized silently:
+%   - B_r(x_0) written B(x_0, r), as everywhere else
+%   - ||phi_N(g)|| and ||f(Tx) - f(T_n x)|| written with absolute values
+%   - the question "What about R \ Q?" turned into a pointer to the
+%     corollary that answers it
+%   - the contradiction argument in the Fourier divergence proof put in
+%     order
+%   - the differentiation example on [0,1], where the verification
+%     writes [a,b] with integrals from 0
+%
+%  CORRECTED SOURCE ERRORS
+%   [p1] remark: "the other three do not have Banach in their name";
+%        the uniform boundedness principle is also called the
+%        Banach-Steinhaus theorem, and the open mapping theorem the
+%        Banach-Schauder theorem  ->  only the correct content kept,
+%        that Hahn-Banach needs no completeness and the others do
+%   [p1] representation of (C[a,b])': w(t) = f~(1_[a,t]) for all t,
+%        which shifts every Riemann-Stieltjes sum by g(a) w(a)  ->
+%        w(a) = 0
+%   [p1] geometric remark: "1 <= ||y|| for all y in V"  ->  for all
+%        y in x_0 + V; ||x_0|| = 1 made explicit
+%   [p1] Baire: every complete metric space  ->  every nonempty one,
+%        the empty space being of first category
+%   [p2] Dirichlet kernel: the underbrace labels 1/2 + sum cos(nt) as
+%        D_N, while the closed form and the factor 1/(2 pi) need
+%        D_N = 1 + 2 sum cos(nt)  ->  the latter
+%   [p2] Fourier divergence: the proof runs in all of C[0,2 pi], while
+%        the statement requires f(0) = f(2 pi)  ->  the proof runs in
+%        the closed subspace of such functions
+%   [p3] ONS example: <e_n, z> = z_n  ->  conj(z_n)
+%   [p4] strong-limit proposition: hypothesis T_n -> T, which is
+%        uniform convergence by the definition just given  ->  T_n x
+%        convergent for every x, T the pointwise limit
+%
+%  ADDITIONS
+%   [p1] representation of (C[a,b])': stated as a sharpening of
+%        Theorem 11.10, which it repeats; BV[a,b] and B[a,b] named
+%   [p1] interior glossed in the category definition
+%   [p1] corollary: the union of two first-category sets is of first
+%        category
+%   [p2] UBP proof: continuity of T_n from Theorem 9.1; the case x = 0
+%   [p2] Fourier coefficients defined, in the form of Example 7.8
+%   [p3] weak convergence: Corollary 18.5 cited for uniqueness; Remark
+%        18.4 cited in place of the source's repeated proof that j is
+%        isometric
+%   [p3] ONS example: the general case by Bessel's inequality, on
+%        instruction
+%   [p3] operator examples: strong convergence of T_n and ||T_n|| = 1
+%        attained at e_{n+1}; ||S_n x|| = ||x|| for the failure of
+%        strong convergence
+%   [p4] strong-limit proposition: linearity of the limit, and the
+%        passage ||Tx|| = lim ||T_n x||
+%   [p4] bounded inverse: T^{-1} linear; the preimage under T^{-1} of U
+%        is T(U); continuity gives boundedness by Theorem 9.1
+%   [p4] sequential criterion: convergence in X x Y is convergence of
+%        both components
+%   [p4] differentiation: g continuous as a uniform limit (Theorem
+%        4.13); limit and integral interchanged by uniform convergence
+%
+%  REPORTED BUT UNMODIFIED GAPS
+%   [p1] representation of (C[a,b])': the proof is a sketch, as in the
+%        source, and uses Hahn-Banach over K, proved here only over R
+%   [p1] category examples asserted; Baire's theorem stated without
+%        proof, on instruction
+%   [p2] that sgn(D_N) can be approximated, and that the integral of
+%        |D_N| tends to infinity, asserted, on instruction
+%   [p4] open mapping theorem stated without proof, on instruction
+%   [p4] product-space proposition: the completeness half is proved, by
+%        the proof given in the lecture of 2026-11-05 (scan
+%        funkanal_261105.pdf, p1, "Lemma 1"), moved here on instruction
+%        so that statement and proof stay together; the norm axioms for
+%        ||(x,y)|| = ||x|| + ||y|| are not checked
+%
+%  OMITTED
+%   [p2] the small sketch of a ball inside A_{k_0}
+%   [p4] the closed graph theorem and the first line of its proof, on
+%        instruction; it is typeset with the next lecture
+%   [p4] doodles
+% =====================================================================
+
+% [p1]
+\begin{remark}
+Of the four fundamental theorems of functional analysis, only the
+Hahn--Banach theorem holds in every normed space; the other three require
+Banach spaces.
+\end{remark}
+
+\begin{proposition}[Representation of {$(C[a,b])'$}, with norm]\label{prop:dual-C-norm}
+Let $BV[a,b]$ denote the functions of bounded variation on $[a,b]$,
+Definition~\ref{def:bv}. For every $f \in (\Cont{a,b})'$ the function
+$w \in BV[a,b]$ of Theorem~\ref{thm:dual-C}, with
+$f(g) = \int_a^b g(t) \dd w(t)$ for all $g \in \Cont{a,b}$, can be chosen so
+that
+\[
+  \norm{f} = \operatorname{Var}(w)
+  = \sup \sum_{j=1}^{N} \abs{w(t_j) - w(t_{j-1})} ,
+\]
+the supremum over all partitions $a = t_0 < t_1 < \dots < t_N = b$.
+\end{proposition}
+
+\begin{proof}[Proof (sketch)]
+Suppose $f$ is given; we want to construct $w$. We have
+\[
+  (\Cont{a,b}, \norm{\cdot}_\infty) \subset (B[a,b], \norm{\cdot}_\infty),
+  \qquad
+  B[a,b] = \set{g \colon [a,b] \to \K \mid g \text{ bounded}} .
+\]
+By the
+Hahn--Banach theorem, Theorem~\ref{thm:hb-normed}, there is an
+$\tilde{f} \colon B[a,b] \to \K$ with $\tilde{f}|_{\Cont{a,b}} = f$ and
+$\norm{f} = \norm{\tilde{f}}$. Then define $w(a) = 0$ and
+$w(t) = \tilde{f}(\mathbf{1}_{[a,t]})$ for $t \in (a,b]$, where
+$\mathbf{1}_{[a,t]}$ is the indicator function of $[a,t]$. Then
+$w \colon [a,b] \to \K$, and it satisfies all of the requirements for $w$.
+\end{proof}
+
+\begin{remark}\label{rem:supporting}
+Corollary~\ref{cor:norming-functional} states that for every $x_0 \ne 0$
+there is an $f \in X'$ with $\norm{f} = 1$ and $f(x_0) = \norm{x_0}$. For a
+geometric interpretation, consider the $p$-norms on $\R^d$. Let
+$\norm{x_0} = 1$, let $f$ be the functional for $x_0$ from the corollary,
+and let $V = \ker f$, a hyperplane. Every $y = x_0 + z$ with $z \in V$
+satisfies $f(y) = f(x_0) + f(z) = \norm{x_0} = 1$. Also
+$f(y) \le \norm{f}\,\norm{y} = \norm{y}$, so $1 \le \norm{y}$ for all
+$y \in x_0 + V$: no point of the hyperplane $x_0 + V$ lies inside the unit
+ball, and $x_0 + V$ touches the unit sphere at $x_0$.
+\end{remark}
+
+\begin{nfigure}{The hyperplane $x_0 + V$, $V = \ker f$, touching the unit
+sphere of $\norm{\cdot}_4$ in $\R^2$ at $x_0$, with $\norm{x_0}_4 = 1$.}
+\begin{tikzpicture}[scale=1.6]
+  \draw[rulegrey, -{Stealth[length=1.6mm]}] (-1.4,0) -- (1.9,0);
+  \draw[rulegrey, -{Stealth[length=1.6mm]}] (0,-1.4) -- (0,1.9);
+  \draw[accent, thick, smooth, samples=120, domain=0:360]
+    plot ({sign(cos(\x))*pow(abs(cos(\x)),0.5)},
+          {sign(sin(\x))*pow(abs(sin(\x)),0.5)});
+  \draw[thmaccent, thick] (0.18,1.50) -- (1.50,0.18);
+  \draw[rulegrey, dashed] (-1.05,1.05) -- (1.05,-1.05);
+  \fill (0.841,0.841) circle (0.025);
+  \node[above right] at (0.85,0.85) {$x_0$};
+  \fill (1.40,0.282) circle (0.025);
+  \node[right] at (1.42,0.30) {$y$};
+  \node[thmaccent] at (0.80,1.50) {$x_0 + V$};
+  \node at (1.15,-1.05) {$V$};
+\end{tikzpicture}
+\end{nfigure}
+
+\begin{nfigure}{The unit balls of $\norm{\cdot}_1$, $\norm{\cdot}_2$ and
+$\norm{\cdot}_\infty$ in $\R^2$.}
+\begin{tikzpicture}[scale=1.3]
+  \draw[rulegrey, -{Stealth[length=1.6mm]}] (-1.4,0) -- (1.5,0);
+  \draw[rulegrey, -{Stealth[length=1.6mm]}] (0,-1.4) -- (0,1.5);
+  \draw[accent, thick] (1,0) -- (0,1) -- (-1,0) -- (0,-1) -- cycle;
+  \draw[thmaccent, thick] (0,0) circle (1);
+  \draw[exaccent, thick] (-1,-1) rectangle (1,1);
+  \node[accent] at (0.33,0.33) {$1$};
+  \node[thmaccent] at (0.62,0.62) {$2$};
+  \node[exaccent] at (1.15,1.15) {$\infty$};
+\end{tikzpicture}
+\end{nfigure}
+
+\begin{definition}[Category]\label{def:category}
+In a metric space $(X,d)$ a subset $M \subset X$ is called
+\begin{enumerate}
+  \item \emph{nowhere dense}, if $\operatorname{int}(\cl{M}) = \emptyset$,
+    where $\operatorname{int} A$, the interior of $A$, is the set of points
+    of $A$ some ball around which lies in $A$;
+  \item \emph{of first category}, if $M = \bigcup_{k=1}^{\infty} H_k$, where
+    $H_k$ is nowhere dense for every $k$;
+  \item \emph{of second category}, if it is not of first category.
+\end{enumerate}
+\end{definition}
+
+\begin{example}
+$\Z \subset \R$ is nowhere dense. $\Q \subset \R$ is not nowhere dense, but it
+is of first category: $\Q = \bigcup_{i=1}^{\infty} \set{q_i}$. Whether
+$\R \setminus \Q$ is of first category is settled by
+Corollary~\ref{cor:irrationals}.
+\end{example}
+
+\begin{theorem}[Baire's category theorem]\label{thm:baire}
+Every nonempty complete metric space $(X,d)$ is of second category in itself,
+that is, if $X = \bigcup_{k=1}^{\infty} A_k$ where every $A_k$ is closed,
+then $\operatorname{int} A_i \ne \emptyset$ for some $i$.
+\end{theorem}
+
+\begin{corollary}\label{cor:irrationals}
+$\R \setminus \Q$ is of second category.
+\end{corollary}
+
+\begin{proof}
+If it were of first category, we could write $\R = \Q \cup (\R \setminus \Q)$
+as a union of two countable families of nowhere dense sets, which together
+form one countable family, so $\R$ would be of first category. But $\R$
+cannot be of first category, because of Theorem~\ref{thm:baire}.
+\end{proof}
+
+\begin{theorem}[Uniform boundedness principle]\label{thm:ubp}
+Let $T_n \in \Bop{X}{Y}$, where $X$ is a Banach space and $Y$ is a normed
+space, such that $(T_n)$ is \emph{pointwise bounded}: for every $x \in X$
+there is a $c_x$ with $\norm{T_n x} \le c_x$ for all $n$. Then $(T_n)$ is
+\emph{uniformly bounded}: there is a $c$ with $\norm{T_n} \le c$ for all
+$n$.
+\end{theorem}
+
+% [p2]
+\begin{proof}
+Let $A_k = \set{x \in X \mid \norm{T_n x} \le k \ \forall n}$. Then $A_k$ is
+closed: if $x_m \to x$ with $x_m \in A_k$, then $\norm{T_n x_m} \le k$ for
+all $n$, and $T_n x_m \to T_n x$, $T_n$ being continuous by
+Theorem~\ref{thm:bounded-continuous}, so $\norm{T_n x} \le k$. We cannot
+converge out of $A_k$, so $A_k$ is closed.
+
+$X = \bigcup_{k=1}^{\infty} A_k$ because $(T_n)$ is pointwise bounded: for
+every $x \in X$ and any $k \ge c_x$ we have $x \in A_k$. $X$ is a Banach
+space, so by Theorem~\ref{thm:baire} there is a $k_0$ with
+$\operatorname{int} A_{k_0} \ne \emptyset$, hence
+$B(x_0, r) \subset A_{k_0}$ for some $x_0$ and $r > 0$.
+
+For $x = 0$ there is nothing to show. For $x \in X \setminus \set{0}$ let
+$z = x_0 + \gamma x$ with $\gamma = \frac{r}{2\norm{x}}$. Then
+$\norm{z - x_0} = \frac{r}{2}$, so $z \in B(x_0, r)$ and
+$\norm{T_n z} \le k_0$ for all $n$; also $\norm{T_n x_0} \le k_0$. So
+\[
+  \norm{T_n x} = \Bigl\lVert T_n\Bigl(\frac{1}{\gamma}(z - x_0)\Bigr)
+  \Bigr\rVert = \frac{1}{\gamma}\norm{T_n(z - x_0)}
+  \le \frac{1}{\gamma}\bigl(\underbrace{\norm{T_n z}}_{\le k_0}
+    + \underbrace{\norm{T_n x_0}}_{\le k_0}\bigr)
+  \le \frac{2k_0}{\gamma} = \frac{4}{r} k_0 \norm{x} ,
+\]
+so $\norm{T_n} \le \frac{4}{r} k_0$ for all $n$.
+\end{proof}
+
+For a real $f \in \Cont{0,2\pi}$ let
+\[
+  a_0 = \frac{1}{2\pi}\int_0^{2\pi} f(t) \dd t , \qquad
+  a_n = \frac{1}{\pi}\int_0^{2\pi} f(t) \cos(nt) \dd t , \qquad
+  b_n = \frac{1}{\pi}\int_0^{2\pi} f(t) \sin(nt) \dd t , \qquad n \ge 1 ,
+\]
+so that $a_0 + \sum_{n=1}^{\infty} \bigl(a_n \cos(nt) + b_n \sin(nt)\bigr)$
+is its Fourier series, as in Example~\ref{ex:fourier}.
+
+\begin{proposition}\label{prop:fourier-divergence}
+There is an $f \in \Cont{0,2\pi}$ with $f(0) = f(2\pi)$, but
+\[
+  f(t) \ne a_0 + \sum_{n=1}^{\infty} \bigl(a_n \cos(nt) + b_n \sin(nt)\bigr)
+  \qquad \text{for } t = 0 ;
+\]
+that is, $f$ cannot be expanded in its Fourier series.
+\end{proposition}
+
+\begin{proof}
+Let $X = \set{g \in \Cont{0,2\pi} \mid g \text{ real}, \ g(0) = g(2\pi)}$
+with $\norm{\cdot}_\infty$. It is a closed subspace of a Banach space, by
+Theorem~\ref{thm:C-sup-banach} with $[0,2\pi]$ in place of $[0,1]$, hence a
+Banach space. Let $\varphi_N \colon X \to \R$ be the linear functional
+defined, for $g \in X$ with Fourier coefficients $a_n, b_n$, by
+\[
+  \varphi_N(g) = \Bigl(a_0 + \sum_{n=1}^{N}
+    \bigl(a_n \cos(nt) + b_n \sin(nt)\bigr)\Bigr)\Big|_{t=0}
+  = a_0 + \dots + a_N
+  = \frac{1}{2\pi}\int_0^{2\pi} g(t)\, D_N(t) \dd t ,
+\]
+where $D_N(t) = 1 + 2\sum_{n=1}^{N} \cos(nt)$ is the \emph{Dirichlet
+kernel}, equal to $\sin((N + \frac{1}{2})t) / \sin(\frac{t}{2})$ for
+$t \in (0, 2\pi)$. We show that $\varphi_N$ is bounded linear:
+\[
+  \abs{\varphi_N(g)}
+  = \Bigl\lvert \frac{1}{2\pi}\int_0^{2\pi} g(t) D_N(t) \dd t \Bigr\rvert
+  \le \frac{1}{2\pi}\int_0^{2\pi} \underbrace{\abs{g(t)}}_{\le
+    \norm{g}_\infty} \abs{D_N(t)} \dd t
+  \le \frac{\norm{g}_\infty}{2\pi}\int_0^{2\pi} \abs{D_N(t)} \dd t .
+\]
+So $\norm{\varphi_N} \le \frac{1}{2\pi}\int_0^{2\pi} \abs{D_N(t)} \dd t$,
+with equality achieved with $g(t) = \operatorname{sgn}(D_N(t))$, and the
+discontinuous $\operatorname{sgn}$ can be approximated, so that in fact
+$\norm{\varphi_N} = \frac{1}{2\pi}\int_0^{2\pi} \abs{D_N(t)} \dd t$. But
+\[
+  \frac{1}{2\pi}\int_0^{2\pi} \abs{D_N(t)} \dd t
+  \xrightarrow[N \to \infty]{} \infty .
+\]
+Assume, for a contradiction, that $g(0) = a_0 + \sum_{n=1}^{\infty} a_n$ for
+every $g \in X$. In that case, for every $g \in X$ the sequence
+$\varphi_N(g)$ converges, hence is bounded, so $(\varphi_N)$ is pointwise
+bounded. But then by the uniform boundedness principle,
+Theorem~\ref{thm:ubp}, there is a $c$ with $\norm{\varphi_N} \le c$ for all
+$N$, a contradiction.
+\end{proof}
+
+% [p3]
+\section{Types of convergence}
+
+In a normed space $(X, \norm{\cdot})$, $x_n \to x$ means
+$\norm{x_n - x} \to 0$. In $\Bop{X}{Y}$, $T_n \to T$ means
+$\norm{T_n - T} \to 0$.
+
+\begin{definition}[Weak convergence in $(X, \norm{\cdot})$]\label{def:weak}
+A sequence $(x_n)$ \emph{converges to $x$ weakly}, written
+$x_n \xrightarrow{w} x$, if $f(x_n) \to f(x)$ for every $f \in X'$.
+\end{definition}
+
+\begin{proposition}\label{prop:weak-limit}
+If $x_n \xrightarrow{w} x$, then
+\begin{enumerate}
+  \item the weak limit is unique;
+  \item $(\norm{x_n})$ is bounded.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(1) Assume $x_n \xrightarrow{w} x$ and $x_n \xrightarrow{w} y$. Then
+$f(x_n) \to f(x)$ and $f(x_n) \to f(y)$, therefore $f(x) = f(y)$ for every
+$f \in X'$, and therefore $x = y$ by Corollary~\ref{cor:separating}.
+
+(2) Consider the natural map $j \colon X \to X''$, $x \mapsto g_x$, with
+$g_x(f) = f(x)$. By Remark~\ref{rem:j-isometric}, $\norm{g_x} = \norm{x}$:
+$j$ is an isometric embedding. For $x_n$ consider $g_n = g_{x_n} \in X''$,
+given by $g_n(f) = f(x_n)$. We know $\norm{g_n} = \norm{x_n}$, so seeing that
+$(\norm{g_n})$ is bounded is sufficient. Now $g_n \in X'' = \Bop{X'}{\K}$, we
+know that $X'$ is a Banach space by Corollary~\ref{cor:dual-banach}, and
+$(g_n)$ is pointwise bounded: for every $f \in X'$, $g_n(f) = f(x_n)$ is
+bounded, being convergent. By the uniform boundedness principle,
+Theorem~\ref{thm:ubp}, $(\norm{g_n})$ is bounded.
+\end{proof}
+
+\begin{example}\label{ex:ons-weak}
+Let $(e_n)$ be an orthonormal sequence in a Hilbert space $H$, for example
+$e_n = (0, \dots, 0, 1, 0, \dots) \in \lp{2}$, with the $1$ in position $n$.
+Then $e_n \xrightarrow{w} 0$. Indeed, for $f \in H'$ there is a $z \in H$
+with $f = \ip{\cdot}{z}$, by Theorem~\ref{thm:riesz-hilbert}, and
+$f(e_n) = \ip{e_n}{z} = \overline{\ip{z}{e_n}} \to 0$: by Bessel's
+inequality, Corollary~\ref{cor:bessel}, the partial sums of
+$\sum_n \abs{\ip{z}{e_n}}^2$ are bounded by $\norm{z}^2$, so the series
+converges and its terms tend to $0$. In $\lp{2}$, with
+$z = (z_1, z_2, \dots)$, this reads $\ip{e_n}{z} = \overline{z_n} \to 0$,
+since $z \in \lp{2}$.
+\end{example}
+
+\begin{definition}[Types of operator convergence]\label{def:operator-convergence}
+Let $T_n, T \in \Bop{X}{Y}$. We say that
+\begin{enumerate}
+  \item $T_n \to T$ \emph{uniformly}, if $\norm{T_n - T} \to 0$;
+  \item $T_n \xrightarrow{s} T$ \emph{strongly}, if $T_n x \to Tx$ for every
+    $x \in X$;
+  \item $T_n \xrightarrow{w} T$ \emph{weakly}, if $f(T_n x) \to f(Tx)$ for
+    every $x \in X$ and every $f \in Y'$.
+\end{enumerate}
+\end{definition}
+
+\begin{proposition}\label{prop:convergence-implications}
+$T_n \to T \implies T_n \xrightarrow{s} T \implies T_n \xrightarrow{w} T$.
+\end{proposition}
+
+\begin{proof}
+For every $x$, $\norm{Tx - T_n x} \le \norm{T - T_n}\,\norm{x} \to 0$; and
+for every $x$ and $f \in Y'$,
+$\abs{f(Tx) - f(T_n x)} = \abs{f(Tx - T_n x)}
+\le \norm{f}\,\norm{Tx - T_n x} \to 0$.
+\end{proof}
+
+\begin{example}\label{ex:tail-cut}
+Let $T_n \colon \lp{2} \to \lp{2}$,
+$(x_1, x_2, x_3, \dots) \mapsto (0, \dots, 0, x_{n+1}, x_{n+2}, \dots)$. Then
+$T_n \xrightarrow{s} 0$, since $\norm{T_n x}^2 = \sum_{k > n} \abs{x_k}^2$ is
+the tail of a convergent series. But $T_n \not\to 0$, because
+$\norm{T_n} = 1$: $\norm{T_n x} \le \norm{x}$, and $T_n e_{n+1} = e_{n+1}$.
+\end{example}
+
+\begin{example}\label{ex:shift-weak}
+Let $S_n \colon \lp{2} \to \lp{2}$,
+$(x_1, x_2, \dots) \mapsto (0, \dots, 0, x_1, x_2, \dots)$, with $n$ zeros.
+Then $S_n \xrightarrow{w} 0$, but $S_n \not\xrightarrow{s} 0$. For
+$f \in (\lp{2})'$ write $f = \ip{\cdot}{z}$, by
+Theorem~\ref{thm:riesz-hilbert}; then, with $T_n$ as in
+Example~\ref{ex:tail-cut} and by the Cauchy--Schwarz inequality,
+\[
+  \abs{f(S_n x)} = \abs{\ip{S_n x}{z}}
+  = \abs{x_1 \overline{z_{n+1}} + x_2 \overline{z_{n+2}} + \dots}
+  \le \norm{x}\,\norm{T_n z} \longrightarrow 0 ,
+\]
+$\norm{T_n z}$ being the tail of a convergent series. On the other hand
+$\norm{S_n x} = \norm{x}$, which does not tend to $0$ for $x \ne 0$.
+\end{example}
+
+% [p4]
+\begin{proposition}\label{prop:strong-limit}
+Let $T_n \in \Bop{X}{Y}$, where $X$ is a Banach space, and suppose that
+$T_n x$ converges for every $x \in X$; let $Tx = \lim_{n \to \infty} T_n x$.
+Then $T \in \Bop{X}{Y}$, and $T_n \xrightarrow{s} T$.
+\end{proposition}
+
+\begin{proof}
+$T$ is linear, as a pointwise limit of linear maps. $(T_n)$ is pointwise
+bounded: for every $x \in X$, $\norm{T_n x}$ is bounded because $T_n x$ is
+convergent. By the uniform boundedness principle, Theorem~\ref{thm:ubp},
+there is a $c$ with $\norm{T_n} \le c$. Therefore
+$\norm{T_n x} \le c \norm{x}$ for all $n$, and letting $n \to \infty$,
+$\norm{Tx} \le c\norm{x}$, so $\norm{T} \le c$.
+\end{proof}
+
+\section{Open mapping and closed graph theorems}
+
+\begin{definition}[Open mapping]\label{def:open-mapping}
+A mapping $T \colon (X,d) \to (Y,d')$ is an \emph{open mapping} if the image
+$T(U)$ of every open set $U$ is also open.
+\end{definition}
+
+\begin{theorem}[Open mapping theorem]\label{thm:open-mapping}
+Let $X$ and $Y$ be Banach spaces. Every $T \in \Bop{X}{Y}$ that is
+surjective is an open mapping.
+\end{theorem}
+
+\begin{corollary}[Bounded inverse theorem]\label{cor:bounded-inverse}
+If $T \in \Bop{X}{Y}$, $X$ and $Y$ are Banach spaces, and $T$ is bijective,
+then $T^{-1} \in \Bop{Y}{X}$.
+\end{corollary}
+
+\begin{proof}
+$X$ and $Y$ are Banach spaces and $T \in \Bop{X}{Y}$ is surjective, so by
+Theorem~\ref{thm:open-mapping} $T$ is an open mapping. $T^{-1}$ is linear,
+as the inverse of a linear bijection. For an open $U \subset X$, the preimage
+of $U$ under $T^{-1}$ is $T(U)$, which is open. So $T^{-1}$ is continuous,
+since the preimages of open sets are open, and therefore bounded, by
+Theorem~\ref{thm:bounded-continuous}.
+\end{proof}
+
+\begin{proposition}\label{prop:product-space}
+If $(X, \norm{\cdot})$ and $(Y, \norm{\cdot})$ are normed spaces, then
+$(X \times Y, \norm{\cdot})$ is a normed space with
+$\norm{(x,y)} = \norm{x} + \norm{y}$. If $X$ and $Y$ are Banach spaces, then
+$X \times Y$ is also a Banach space.
+\end{proposition}
+
+% [scans/funkanal_261105.pdf, p1]
+\begin{proof}
+Let $X$ and $Y$ be Banach spaces, and take a Cauchy sequence
+$(x_n, y_n) \subset X \times Y$. Then $(x_n)$ is Cauchy in $X$, since
+$\norm{x_n - x_m} < \eps$ for all $n, m > N$ due to
+\[
+  \norm{(x_n - x_m, y_n - y_m)} = \norm{x_n - x_m} + \norm{y_n - y_m}
+  < \eps .
+\]
+$(y_n)$ is also Cauchy, by the same argument. $X$ and $Y$ are Banach spaces,
+so $x_n \to x$ and $y_n \to y$. Then $(x_n, y_n) \to (x, y)$.
+\end{proof}
+
+\begin{definition}[Closed operator]\label{def:closed-operator}
+Let $X$ and $Y$ be normed spaces, and let $T \colon \operatorname{Dom} T \to
+Y$, where $\operatorname{Dom} T \subset X$ is a subspace, and $T$ is linear.
+$T$ is a \emph{closed operator} if its \emph{graph}
+\[
+  G(T) := \set{(x, Tx) \in X \times Y \mid x \in \operatorname{Dom} T}
+\]
+is closed in $X \times Y$, normed as in Proposition~\ref{prop:product-space}.
+\end{definition}
+
+\begin{proposition}\label{prop:closed-sequential}
+Let $T \colon \operatorname{Dom} T \subset X \to Y$ be linear. Then $T$ is a
+closed operator if and only if, for every sequence
+$(x_n) \subset \operatorname{Dom} T$,
+\[
+  \bigl(x_n \to x \text{ and } T x_n \to y\bigr) \implies
+  \bigl(x \in \operatorname{Dom} T \text{ and } Tx = y\bigr) .
+\]
+\end{proposition}
+
+\begin{proof}
+This is the ``converging out'' property: $G(T)$ is closed if and only if we
+cannot converge out of it, meaning that if $(x_n, T x_n) \in G(T)$ and
+$(x_n, T x_n) \to (x, y)$, then $(x, y) \in G(T)$, which just means
+$x \in \operatorname{Dom} T$ and $y = Tx$. Convergence in $X \times Y$ is
+convergence of both components, as
+$\norm{(x_n, T x_n) - (x, y)} = \norm{x_n - x} + \norm{T x_n - y}$.
+\end{proof}
+
+\begin{example}[Differentiation]\label{ex:diff-closed}
+Let $X = Y = \Cont{0,1}$ with $\norm{\cdot}_\infty$,
+$\operatorname{Dom} T = \Contk{1}{0,1}$, and $Tf = f'$. We claim that $T$ is
+a closed operator. By Proposition~\ref{prop:closed-sequential}, let
+$f_n \in \Contk{1}{0,1}$ with $(f_n, f_n') \to (f, g)$, that is,
+$\norm{f - f_n}_\infty \to 0$ and $\norm{g - f_n'}_\infty \to 0$; we need
+$f \in \Contk{1}{0,1}$ and $f' = g$. The function $g$ is continuous, as a
+uniform limit of continuous functions, Theorem~\ref{thm:C-sup-banach}. For
+$t \in [0,1]$, interchanging limit and integral by uniform convergence,
+\[
+  \int_0^t g(\tau) \dd\tau = \int_0^t \lim_{n \to \infty} f_n'(\tau) \dd\tau
+  = \lim_{n \to \infty} \int_0^t f_n'(\tau) \dd\tau
+  = \lim_{n \to \infty} \bigl(f_n(t) - f_n(0)\bigr) = f(t) - f(0) .
+\]
+So $f(t) = f(0) + \int_0^t g(\tau) \dd\tau$, hence $f \in \Contk{1}{0,1}$ and
+$f'(t) = g(t)$.
+\end{example}

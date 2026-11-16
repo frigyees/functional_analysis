@@ -1,0 +1,293 @@
+% =====================================================================
+%  Lecture 2026-11-12
+%
+%  Reordered: the theorem that the spectrum is nonempty is placed before
+%  the definition of the spectral radius, which presupposes it.
+%
+%  Normalized silently:
+%   - B_{||T||}(0) written as the closed ball, B_r(lambda_0) as
+%     B(lambda_0, r)
+%   - R_lambda used for R_lambda(T) when T is fixed, stated once
+%   - ||h(lambda)|| for a scalar written with absolute values
+%   - in the lemma, the estimate stated for arbitrary x in H, where the
+%     source first writes x = (T - lambda I)^{-1} y
+%
+%  CORRECTED SOURCE ERRORS
+%   [p2] spectrum nonempty: no hypothesis on X; on X = {0} every lambda
+%        is regular  ->  X != {0}
+%   [p2] spectrum nonempty: |lambda| > 2||T|| makes ||R_lambda|| smaller
+%        than 1/||T||, undefined for T = 0  ->  |lambda| >= ||T|| + 1,
+%        ||R_lambda|| <= 1
+%   [p2] |f(R_lambda x)| <= ||f|| ||R_lambda x|| ||x|| = ...  ->
+%        |f(R_lambda x)| <= ||f|| ||R_lambda|| ||x||, with <=
+%   [p2] "sigma(T) subset R, i.e. sigma(T) subset [-||T||, ||T||]"  ->
+%        the second containment as a consequence of the first and
+%        Proposition 21.9
+%   [p2] ||x|| < (1/|beta|) ||T_lambda x||  ->  <=
+%   [p3] m and M defined with ||x|| <= 1, which forces m <= 0 <= M and
+%        makes Proposition 22.6 false (T = I)  ->  ||x|| = 1, H != {0}
+%
+%  ADDITIONS
+%   [p1] closed spectrum: R_{lambda_0} in B(X) by Lemma 21.7; the
+%        inverse found is everywhere defined and bounded, so lambda is
+%        regular
+%   [p1] bounded spectrum: lambda != 0; compactness by Heine-Borel
+%   [p2] spectrum nonempty: f pulled inside the series by continuity;
+%        h holomorphic as locally a power series; h bounded on the
+%        compact disk by continuity; R_lambda x independent of lambda by
+%        Corollary 18.5, and R_lambda = R_mu forcing lambda = mu
+%   [p2] eigenvalues real: x != 0
+%   [p2] real spectrum: <Tx, x> real by Theorem 16.4
+%   [p3] [m, M]: x = 0; the case lambda < m, symmetric; non-real lambda
+%        by Theorem 22.3; the lemma cited for the conclusion
+%
+%  REPORTED BUT UNMODIFIED GAPS
+%   [p1] closed spectrum uses Lemma 21.7 in the case T in B(X), which is
+%        not proved there
+%   [p2] Gelfand formula and spectral mapping theorem stated without
+%        proof, as in the source
+%   [p2] Liouville's theorem used from complex analysis
+%   [p2] the converse direction of Lemma 22.2 is not proved, as in the
+%        source
+%   [p3] Proposition 22.6 is stated without proof, as in the source; a
+%        proof may come with the next lecture
+%
+%  OMITTED
+%   none
+% =====================================================================
+
+% [p1]
+\begin{theorem}[Closed spectrum]\label{thm:closed-spectrum}
+Let $T \in \Bopone{X}$ on a Banach space $X$. Then $\sigma(T)$ is closed.
+\end{theorem}
+
+\begin{proof}
+We prove that $\rho(T)$ is open. Write $R_\lambda = R_\lambda(T)$. Let
+$\lambda_0 \in \rho(T)$, that is, $T - \lambda_0 I$ is invertible and
+$R_{\lambda_0} = (T - \lambda_0 I)^{-1} \in \Bopone{X}$, defined on all of $X$
+by Lemma~\ref{lem:resolvent-domain}. For $\lambda$ close to $\lambda_0$,
+\[
+  T - \lambda I = T - \lambda_0 I - (\lambda - \lambda_0) I
+  = (T - \lambda_0 I)\bigl(I - (\lambda - \lambda_0) R_{\lambda_0}\bigr) .
+\]
+If $\norm{(\lambda - \lambda_0) R_{\lambda_0}} < 1$, then the Neumann series,
+Proposition~\ref{prop:neumann}, gives
+\[
+  \bigl(I - (\lambda - \lambda_0) R_{\lambda_0}\bigr)^{-1}
+  = \sum_{k=0}^{\infty} (\lambda - \lambda_0)^k R_{\lambda_0}^k .
+\]
+The above norm is less than $1$ if and only if
+$\abs{\lambda - \lambda_0} < 1 / \norm{R_{\lambda_0}}$. Then
+\[
+  (T - \lambda I)^{-1}
+  = \Bigl(\sum_{k=0}^{\infty} (\lambda - \lambda_0)^k R_{\lambda_0}^k\Bigr)
+    R_{\lambda_0}
+  = \sum_{k=0}^{\infty} (\lambda - \lambda_0)^k R_{\lambda_0}^{k+1}
+  \in \Bopone{X} .
+\]
+This inverse is defined on all of $X$ and bounded, so $\lambda$ is a regular
+value, and $B(\lambda_0, 1/\norm{R_{\lambda_0}}) \subset \rho(T)$.
+\end{proof}
+
+\begin{proposition}[Bounded spectrum]\label{prop:bounded-spectrum}
+Let $T \in \Bopone{X}$ on a Banach space $X$. Then
+$\sigma(T) \subset \cl{B(0, \norm{T})}$, that is, $\abs{\lambda} \le \norm{T}$
+for all $\lambda \in \sigma(T)$.
+\end{proposition}
+
+\begin{proof}
+Let $\abs{\lambda} > \norm{T}$; in particular $\lambda \ne 0$. Then
+$(T - \lambda I)^{-1} = -\frac{1}{\lambda}\bigl(I - \frac{1}{\lambda} T\bigr)^{-1}$,
+which exists if $\norm{\frac{1}{\lambda} T} < 1$, by
+Proposition~\ref{prop:neumann}. Then it is
+\[
+  (T - \lambda I)^{-1}
+  = -\frac{1}{\lambda} \sum_{k=0}^{\infty} \Bigl(\frac{1}{\lambda} T\Bigr)^k
+  \in \Bopone{X} . \qedhere
+\]
+\end{proof}
+
+% [p2]
+\begin{corollary}\label{cor:compact-spectrum}
+For any $T \in \Bopone{X}$, the spectrum $\sigma(T) \subset \C$ is compact,
+being closed and bounded, by Theorem~\ref{thm:heine-borel} in
+$\C \cong \R^2$.
+\end{corollary}
+
+\begin{theorem}[Spectrum is nonempty]\label{thm:spectrum-nonempty}
+Let $X \ne \set{0}$ be a Banach space and $T \in \Bopone{X}$. Then
+$\sigma(T) \ne \emptyset$.
+\end{theorem}
+
+\begin{proof}
+Assume $\sigma(T) = \emptyset$. For $\abs{\lambda} > \norm{T}$, by the proof
+of Proposition~\ref{prop:bounded-spectrum}, the resolvent is
+$(T - \lambda I)^{-1} = -\frac{1}{\lambda} \sum_{k=0}^{\infty}
+(\frac{1}{\lambda} T)^k$, so
+\[
+  \norm{R_\lambda}
+  \le \frac{1}{\abs{\lambda}} \sum_{k=0}^{\infty}
+      \Bigl\lVert \frac{1}{\lambda} T \Bigr\rVert^k
+  = \frac{1}{\abs{\lambda}} \cdot
+    \frac{1}{1 - \norm{\frac{1}{\lambda} T}}
+  = \frac{1}{\abs{\lambda} - \norm{T}} .
+\]
+If $\abs{\lambda} \ge \norm{T} + 1$, this is at most $1$. Take any $x \in X$
+and $f \in X'$ fixed, and consider the function
+\[
+  h(\lambda) = f(R_\lambda x) ;
+\]
+then $h \colon \C \to \C$ is defined everywhere, since $\rho(T) = \C$. It is
+holomorphic: by the proof of Theorem~\ref{thm:closed-spectrum},
+$R_\lambda = \sum_{k=0}^{\infty} (\lambda - \lambda_0)^k R_{\lambda_0}^{k+1}$
+for $\lambda \in B(\lambda_0, 1/\norm{R_{\lambda_0}})$, and $f$ is continuous,
+so
+\[
+  h(\lambda) = \sum_{k=0}^{\infty} f\bigl(R_{\lambda_0}^{k+1} x\bigr)
+  (\lambda - \lambda_0)^k ,
+\]
+locally a power series around every $\lambda_0$. $h$ is also bounded: if
+$\abs{\lambda} \ge \norm{T} + 1$, then
+$\abs{h(\lambda)} = \abs{f(R_\lambda x)} \le \norm{f}\,\norm{R_\lambda}\,
+\norm{x} \le \norm{f}\,\norm{x}$, and on the compact disk
+$\abs{\lambda} \le \norm{T} + 1$ the continuous function $h$ is bounded.
+Therefore, by Liouville's theorem, $h(\lambda) = c$ is constant.
+
+As $f \in X'$ was arbitrary, $f(R_\lambda x - R_\mu x) = 0$ for all $f$ and
+all $\lambda, \mu$, so $R_\lambda x = R_\mu x$ by
+Corollary~\ref{cor:separating}, and as $x$ was arbitrary, $R_\lambda$ does
+not depend on $\lambda$. But $R_\lambda = R_\mu$ gives
+$T - \lambda I = T - \mu I$, so $\lambda = \mu$ since $X \ne \set{0}$, a
+contradiction.
+\end{proof}
+
+\begin{definition}[Spectral radius]\label{def:spectral-radius}
+For $T \in \Bopone{X}$, $X \ne \set{0}$, the \emph{spectral radius} of $T$ is
+$r_\sigma(T) := \sup_{\lambda \in \sigma(T)} \abs{\lambda}$.
+\end{definition}
+
+\begin{theorem}[Gelfand formula]\label{thm:gelfand}
+$r_\sigma(T) = \lim_{n \to \infty} \sqrt[n]{\norm{T^n}}$.
+\end{theorem}
+
+\begin{theorem}[Spectral mapping theorem for polynomials]\label{thm:spectral-mapping}
+For any $T \in \Bopone{X}$ and any polynomial
+$p(\lambda) = \sum_{k=0}^{n} a_k \lambda^k$, we have
+$\sigma(p(T)) = p(\sigma(T))$.
+\end{theorem}
+
+% [p2]
+\section{Spectra of self-adjoint operators}
+
+Let $H$ be a complex Hilbert space.
+
+\begin{theorem}\label{thm:sa-eigen}
+Let $T \in \Bopone{H}$ with $T = T^*$. Then:
+\begin{enumerate}
+  \item the eigenvalues of $T$, if they exist, are real;
+  \item eigenvectors corresponding to different eigenvalues are orthogonal.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(1) If $\lambda$ is an eigenvalue, $Tx = \lambda x$ with $x \ne 0$, so
+\[
+  \lambda\ip{x}{x} = \ip{\lambda x}{x} = \ip{Tx}{x} = \ip{x}{T^* x}
+  = \ip{x}{Tx} = \bar{\lambda}\ip{x}{x} ,
+\]
+and as $\ip{x}{x} \ne 0$, $\lambda = \bar{\lambda}$, so $\lambda \in \R$.
+
+(2) Now assume $\lambda \ne \mu$ are eigenvalues and $Tx = \lambda x$,
+$Ty = \mu y$. Then
+$\lambda\ip{x}{y} = \ip{Tx}{y} = \ip{x}{Ty} = \bar{\mu}\ip{x}{y}$. So
+$(\lambda - \bar{\mu})\ip{x}{y} = 0$, but $\lambda, \mu \in \R$ and
+$\lambda \ne \mu$, so $\ip{x}{y} = 0$.
+\end{proof}
+
+% [p2]
+\begin{lemma}\label{lem:sa-regular}
+Let $T \in \Bopone{H}$ with $T = T^*$, and $T_\lambda = T - \lambda I$. Then
+$\lambda \in \rho(T)$ if and only if there is a $c > 0$ such that
+$\norm{T_\lambda x} \ge c\norm{x}$ for all $x \in H$.
+\end{lemma}
+
+\begin{proof}[Proof of the forward direction]
+Assume $\lambda \in \rho(T)$; then $R_\lambda = (T - \lambda I)^{-1} \in
+\Bopone{H}$. For any $x \in H$,
+\[
+  \norm{x} = \norm{R_\lambda (T - \lambda I) x}
+  \le \underbrace{\norm{R_\lambda}}_{\text{constant}} \norm{T_\lambda x} ,
+\]
+so $\norm{T_\lambda x} \ge \frac{1}{\norm{R_\lambda}} \norm{x}$.
+\end{proof}
+
+\begin{theorem}\label{thm:sa-real-spectrum}
+Let $T \in \Bopone{H}$ with $T = T^*$. Then $\sigma(T) \subset \R$, and
+therefore, by Proposition~\ref{prop:bounded-spectrum},
+$\sigma(T) \subset [-\norm{T}, \norm{T}]$.
+\end{theorem}
+
+\begin{proof}
+Let $\lambda = \alpha + i\beta$ where $\beta \ne 0$. We claim that
+$\lambda \in \rho(T)$, so $R_\lambda \in \Bopone{H}$. By
+Lemma~\ref{lem:sa-regular} we need a $c$ with
+$\norm{(T - \lambda I)x} \ge c\norm{x}$ for all $x \in H$. We have
+\[
+  \ip{T_\lambda x}{x} = \ip{Tx}{x} - \lambda\ip{x}{x} ,
+  \qquad
+  \overline{\ip{T_\lambda x}{x}} = \ip{Tx}{x} - \bar{\lambda}\ip{x}{x} ,
+\]
+since $\ip{Tx}{x} \in \R$, by Theorem~\ref{thm:self-adjoint-real}, and
+$\ip{x}{x} \in \R$. So
+\[
+  \overline{\ip{T_\lambda x}{x}} - \ip{T_\lambda x}{x}
+  = (\lambda - \bar{\lambda})\ip{x}{x} = 2i\beta\norm{x}^2
+  = -2i \operatorname{Im}\ip{T_\lambda x}{x} .
+\]
+So, by the Cauchy--Schwarz inequality,
+\[
+  \abs{\beta}\,\norm{x}^2 = \abs{\operatorname{Im}\ip{T_\lambda x}{x}}
+  \le \abs{\ip{T_\lambda x}{x}} \le \norm{T_\lambda x}\,\norm{x} ,
+\]
+hence $\abs{\beta}\,\norm{x} \le \norm{T_\lambda x}$, that is,
+$\norm{T_\lambda x} \ge \abs{\beta}\,\norm{x}$, and $c = \abs{\beta}$ will
+do.
+\end{proof}
+
+% [p3]
+\begin{proposition}\label{prop:sa-m-M}
+Let $H \ne \set{0}$, $T \in \Bopone{H}$ with $T = T^*$, and
+\[
+  m := \inf_{\norm{x} = 1} \ip{Tx}{x} , \qquad
+  M := \sup_{\norm{x} = 1} \ip{Tx}{x} .
+\]
+Then $\sigma(T) \subset [m, M]$.
+\end{proposition}
+
+\begin{remark}
+$M \le \norm{T}$, since
+$\abs{\ip{Tx}{x}} \le \norm{Tx}\,\norm{x} \le \norm{T}\,\norm{x}^2 =
+\norm{T}$ for $\norm{x} = 1$. Similarly $m \ge -\norm{T}$.
+\end{remark}
+
+\begin{proof}[Proof of Proposition~\ref{prop:sa-m-M}]
+Non-real $\lambda$ lie in $\rho(T)$ by Theorem~\ref{thm:sa-real-spectrum}.
+Let $c > 0$ and $\lambda = M + c$; we claim $\lambda \in \rho(T)$. By
+Lemma~\ref{lem:sa-regular} we need $\norm{(T - \lambda I)x} \ge c\norm{x}$.
+For $x = 0$ this holds. For $x \ne 0$ let $v = \frac{x}{\norm{x}}$; then
+$\ip{Tx}{x} = \norm{x}^2 \ip{Tv}{v} \le \norm{x}^2 M$. So
+\[
+  \norm{T_\lambda x}\,\norm{x} \ge -\ip{T_\lambda x}{x}
+  = -\ip{Tx}{x} + \lambda\ip{x}{x}
+  \ge (-M + \lambda)\ip{x}{x} = c\norm{x}^2 .
+\]
+So $T_\lambda$ is bounded away from zero, and $R_\lambda$ exists. The case
+$\lambda = m - c$ is symmetric, with
+$\norm{T_\lambda x}\,\norm{x} \ge \ip{T_\lambda x}{x} \ge c\norm{x}^2$.
+\end{proof}
+
+\begin{proposition}\label{prop:sa-m-M-in-spectrum}
+$m$ and $M$ are in $\sigma(T)$, and
+$\norm{T} = \max\set{\abs{m}, \abs{M}} = \sup_{\norm{x} = 1}
+\abs{\ip{Tx}{x}}$.
+\end{proposition}

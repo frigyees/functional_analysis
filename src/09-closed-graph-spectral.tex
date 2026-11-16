@@ -1,0 +1,201 @@
+% =====================================================================
+%  Lecture 2026-11-05
+%
+%  Moved and reordered:
+%   - "Lemma 1" (X x Y is Banach) is the proof of Proposition 20.4; it is
+%     typeset there, in fragment 08, on instruction
+%   - "Lemma 2" is placed before the closed graph theorem, whose proof
+%     cites it
+%
+%  CORRECTED SOURCE ERRORS
+%   [p1] resolvent "of X"  ->  of T at lambda
+%   [p2] lemma on the domain of the resolvent: "T bounded or closed".
+%        False for bounded T with a non-closed domain: for a dense proper
+%        subspace D, T = 0 on D and lambda = -1, the inverse of
+%        T - lambda I is the identity on D, bounded and densely defined,
+%        so lambda is a regular value, but R_lambda(T) is defined on D
+%        only  ->  "T in B(X) or T closed"; the source's proof covers the
+%        closed case only
+%
+%  ADDITIONS
+%   [p1] the domain Ran(T - lambda I) of R_lambda(T) named, and "densely
+%        defined" glossed, since the definition of the spectrum uses them
+%   [p1] integral-equation example: Example 8.10 cited for T in B(X)
+%   [p2] shift example: Example 16.10 cited for S
+%   [p1] Lemma 20.8 noted as the subspace case of Remark 13.3
+%
+%  REPORTED BUT UNMODIFIED GAPS
+%   [p1] closed graph theorem: the implications (1) and (3) => (2) and
+%        (2) and (3) => (1) are not proved, on instruction; the source
+%        leaves them as exercises. The resolvent lemma uses the first.
+%   [p1] closed graph theorem: G(T) a subspace, and P injective and
+%        surjective, not stated
+%   [p1] Lemma 20.8: "convergent implies Cauchy" and uniqueness of
+%        limits used, not stated
+%   [p2] the three parts of the spectrum are not said to partition it
+%   [p2] shift example: injectivity of S, and the reason {y_1 = 0} is
+%        not dense, not stated, on instruction
+%   [p2] resolvent lemma: that T - lambda I and its inverse are closed
+%        is asserted, on instruction; the case T in B(X) is not proved
+%
+%  OMITTED
+%   none
+% =====================================================================
+
+% [p1]
+\begin{lemma}\label{lem:closed-banach}
+If $X$ is a Banach space and $Z \subset X$ is a subspace, then $Z$ is closed
+if and only if $Z$ is a Banach space.
+\end{lemma}
+
+\begin{proof}
+Assume $Z$ is closed, and let $(x_n) \subset Z$ be a Cauchy sequence. Then
+$x_n$ has a limit $x$ in $X$, and $x$ must be in $Z$, since $Z$ is a closed
+subspace.
+
+Now assume $Z$ is a Banach space, and let $(x_n) \subset Z$ be a sequence
+with $x_n \to x$. Then $(x_n)$ is Cauchy in $Z$, thus it converges in $Z$.
+Therefore $x \in Z$, and $Z$ is closed.
+\end{proof}
+
+\begin{remark}
+Lemma~\ref{lem:closed-banach} is the case of subspaces of the statement in
+Remark~\ref{rem:minimizing-closed}.
+\end{remark}
+
+\begin{theorem}[Closed graph theorem]\label{thm:closed-graph}
+Let $X$ and $Y$ be Banach spaces, and let
+$T \colon \operatorname{Dom} T \subset X \to Y$ be linear, with
+$\operatorname{Dom} T$ a subspace. Then any two of the following properties
+imply the third:
+\begin{enumerate}
+  \item $T$ is closed;
+  \item $\operatorname{Dom} T$ is closed;
+  \item $T$ is bounded, $T \in \Bop{\operatorname{Dom} T}{Y}$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The implications (1) and (3) $\Rightarrow$ (2), and (2) and (3)
+$\Rightarrow$ (1), are not proved here. The nontrivial case is (1) and (2)
+$\Rightarrow$ (3).
+
+If $X$ and $Y$ are Banach spaces, then so is $X \times Y$ with the norm
+$\norm{(x,y)} = \norm{x} + \norm{y}$, by
+Proposition~\ref{prop:product-space}. So $G(T) \subset X \times Y$ is a
+closed subspace of a Banach space, and is therefore a Banach space, by
+Lemma~\ref{lem:closed-banach}. Now consider the projection
+\[
+  P \colon G(T) \to \operatorname{Dom} T, \qquad (x, Tx) \mapsto x .
+\]
+$P$ is clearly linear, and it is bounded, since
+$\norm{x} \le \norm{(x, Tx)} = \norm{x} + \norm{Tx}$, with constant $1$, so
+$\norm{P} \le 1$. $P$ is also a bijection, thus $P^{-1}$ exists:
+$P^{-1} \colon x \mapsto (x, Tx)$. $G(T)$ is a Banach space, and
+$\operatorname{Dom} T$ is closed in a Banach space, therefore also a Banach
+space. So by the bounded inverse theorem,
+Corollary~\ref{cor:bounded-inverse}, $P^{-1}$ is bounded. So there is a $c$
+with
+\[
+  \norm{P^{-1}(x)} \le c\norm{x}
+  \iff \norm{x} + \norm{Tx} \le c\norm{x}
+  \iff \norm{Tx} \le (c - 1)\norm{x} ,
+\]
+and $T$ is bounded.
+\end{proof}
+
+\begin{remark}
+The class of closed linear operators is introduced because in applications
+we need differential operators, which are not bounded, but we need some
+topological substitute for boundedness.
+\end{remark}
+
+% [p1]
+\section{Spectral theory}
+
+\begin{remark}
+The spaces considered in spectral theory are always complex.
+\end{remark}
+
+\begin{definition}[Resolvent]\label{def:resolvent}
+Let $X$ be a Banach space, $T \colon \operatorname{Dom} T \subset X \to X$
+linear with $\operatorname{Dom} T$ a subspace, and $\lambda \in \C$. Then
+$R_\lambda(T) = (T - \lambda I)^{-1}$, if it exists, that is, if
+$T - \lambda I$ is injective, is called the \emph{resolvent} of $T$ at
+$\lambda$. It is defined on $\operatorname{Ran}(T - \lambda I)$, the range of
+$T - \lambda I$.
+\end{definition}
+
+\begin{example}
+Let $X = \Cont{a,b}$ and let $y \in X$ be fixed. We want to find $x \in X$
+such that
+\[
+  \int_a^b k(s,t)\, x(t) \dd t - \lambda x(s) = y(s) ,
+\]
+where the kernel $k$ is in $C([a,b] \times [a,b])$. We can write
+$T \colon X \to X$, $(Tx)(s) = \int_a^b k(s,t)\, x(t) \dd t$; then
+$T \in \Bopone{X}$, by Example~\ref{ex:integral-kernel} with $[a,b]$ in place
+of $[0,1]$. We want to solve $Tx - \lambda x = y$, and hopefully
+$x = R_\lambda(T) y$.
+\end{example}
+
+\begin{definition}[Spectrum]\label{def:spectrum}
+Let $X$ be a Banach space and $T \colon \operatorname{Dom} T \subset X \to X$
+linear. We say that $\lambda \in \C$ is a \emph{regular value} of $T$ if
+$R_\lambda(T) = (T - \lambda I)^{-1}$ exists, is bounded and is densely
+defined, that is, its domain $\operatorname{Ran}(T - \lambda I)$ is dense in
+$X$. If $\lambda$ is not a regular value, then we call it a value in the
+\emph{spectrum} of $T$.
+\[
+  \rho(T) := \set{\lambda \in \C \mid \lambda \text{ is a regular value of }
+  T}
+\]
+is the \emph{resolvent set}, and $\sigma(T) = \C \setminus \rho(T)$ is the
+\emph{spectrum} of $T$.
+\end{definition}
+
+% [p2]
+\begin{definition}[Parts of the spectrum]\label{def:spectrum-parts}
+A value $\lambda \in \sigma(T)$ is in
+\begin{enumerate}
+  \item the \emph{point spectrum}, if $(T - \lambda I)^{-1}$ does not exist,
+    that is, $T - \lambda I$ is not injective;
+  \item the \emph{continuous spectrum}, if $(T - \lambda I)^{-1}$ exists and
+    is densely defined, but not bounded;
+  \item the \emph{residual spectrum}, if $(T - \lambda I)^{-1}$ exists, but
+    is not densely defined.
+\end{enumerate}
+\end{definition}
+
+\begin{example}
+Let $S$ be the shift operator of Example~\ref{ex:shift},
+$S \colon \lp{2} \to \lp{2}$,
+$(x_1, x_2, x_3, \dots) \mapsto (0, x_1, x_2, x_3, \dots)$. We claim that
+$0 \in \sigma(S)$ is in the residual spectrum. For $\lambda = 0$,
+$(S - \lambda I)^{-1}$ exists; it is
+\[
+  S^{-1} \colon (y_1, y_2, y_3, \dots) \longmapsto (y_2, y_3, \dots) ,
+  \qquad
+  \operatorname{Dom}(S^{-1}) = \operatorname{Ran} S
+  = \set{y \in \lp{2} \mid y_1 = 0} ,
+\]
+with $S^{-1} \colon \operatorname{Dom}(S^{-1}) \to \lp{2}$. So $S^{-1}$ is not
+densely defined, and $0$ is in the residual spectrum.
+\end{example}
+
+\begin{lemma}\label{lem:resolvent-domain}
+Let $X$ be a Banach space, $T \colon \operatorname{Dom} T \subset X \to X$
+linear, and either $T \in \Bopone{X}$ or $T$ closed, and let
+$\lambda \in \rho(T)$. Then $R_\lambda(T)$ is defined on the whole space
+$X$.
+\end{lemma}
+
+\begin{proof}
+If $T$ is closed, then $T - \lambda I$ is closed, and
+$(T - \lambda I)^{-1}$ is also closed. But $(T - \lambda I)^{-1}$ is bounded
+and densely defined: $\operatorname{Dom}((T - \lambda I)^{-1})
+= \operatorname{Ran}(T - \lambda I)$ is dense. This implies that
+$\operatorname{Dom}((T - \lambda I)^{-1})$ is closed, by the closed graph
+theorem, Theorem~\ref{thm:closed-graph}. So
+$\operatorname{Dom}((T - \lambda I)^{-1}) = X$.
+\end{proof}
