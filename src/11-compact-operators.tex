@@ -1,0 +1,346 @@
+% =====================================================================
+%  Lecture 2026-11-19
+%
+%  Normalized silently:
+%   - B_1(0) and B_r(0) written B(0,1) and B(0,r)
+%   - T_lambda = T - lambda I restated for Banach spaces; Section 22
+%     introduced it for H
+%   - "Ran T_N = N" written dim Ran T_N = N; "ker(W - mu I) < infinity"
+%     written dim ker(W - mu I) < infinity
+%   - in the diagonal example, the final bound with ||x|| in place of
+%     ||x_k||
+%
+%  CORRECTED SOURCE ERRORS
+%   [p1] norm-limit proof: "we show that T x_{n,n} is compact"  ->
+%        Cauchy, which is what the estimate shows
+%   [p2] weak-to-strong proof: ||y_{n_k} - y|| >= n > 0  ->  >= eta > 0
+%   [p3] kernel proposition: ||x_n|| < 1 in the closed unit ball  ->  <=
+%   [p3] kernel corollary: the second binomial sum starts at k = 0,
+%        producing T^{-1}  ->  k = 1
+%
+%  ADDITIONS (citations only, on instruction)
+%   [p1] Volterra: Theorem 6.3 cited
+%   [p1] Lemma 23.4: Lemma 5.3 and Corollary 5.9 cited
+%   [p1] Lemma 23.5: Theorem 5.2 cited
+%   [p1] Lemma 23.7: the proof of Theorem 5.8 cited for finite-
+%        dimensional subspaces being closed, and Theorem 5.4 via
+%        Theorem 3.3 for relative compactness
+%   [p2] diagonal example: Example 8.8 cited for T bounded, Theorem 4.10
+%        for ell_2 Banach
+%   [p2] weak to strong: Proposition 19.2 cited for boundedness and
+%        uniqueness of weak limits
+%   [p2] Corollary 23.12: Lemma 23.4 (2) cited for the contradiction
+%   [p3] kernel proposition: Corollary 5.9 cited
+%
+%  REPORTED BUT UNMODIFIED GAPS
+%   [p1] Volterra: only the image of the unit ball is checked, and that
+%        Vf is continuous is not stated
+%   [p1] Lemma 23.5 (<=): sequences in T(B) are treated, not sequences in
+%        its closure
+%   [p1] Corollary 23.6: the double subsequence extraction for T_1 + T_2
+%        is not written
+%   [p1] Theorem 23.8: the bound on ||x_n||, the choice of r, and the
+%        convergence of (T_r y_n) are not written
+%   [p2] Theorem 23.10: f o T in X' and norm convergence implying weak
+%        convergence are not stated
+%   [p2] Corollary 23.12: T^{-1} in B(X) uses Lemma 21.7 in its case
+%        T in B(X), not proved there
+%   [p3] Proposition 23.13: that the limit stays in M is not stated
+%   [p3] Theorem 23.15, sigma(V) = {0} and Theorem 23.17 are stated
+%        without proof, as in the source; proofs may come with the next
+%        lecture
+%
+%  OMITTED
+%   [p1] the two kernel sketches, replaced by one figure on instruction
+%   [p1] doodles
+% =====================================================================
+
+% [p1]
+\section{Compact operators}
+
+\begin{definition}[Compact operator]\label{def:compact-operator}
+A linear operator from $(X, \norm{\cdot}_X)$ to $(Y, \norm{\cdot}_Y)$ is
+called \emph{compact} if the image of any bounded set is relatively compact
+in $Y$.
+\end{definition}
+
+\begin{example}[Volterra operator]\label{ex:volterra}
+Let $V \colon \Cont{0,1} \to \Cont{0,1}$ with $\norm{\cdot}_\infty$,
+$Vf(t) = \int_0^t f(s) \dd s$. The kernel of $V$ is
+\[
+  K(t,s) =
+  \begin{cases}
+    1, & s \le t, \\
+    0, & s > t,
+  \end{cases}
+  \qquad
+  Vf(t) = \int_0^1 K(t,s)\, f(s) \dd s .
+\]
+$V$ is compact. Check that the image $V(B)$ of $B = B(0,1)$ is relatively
+compact, by the Arzelà--Ascoli theorem, Theorem~\ref{thm:arzela-ascoli}. It is
+uniformly bounded: $\norm{f}_\infty \le 1$ gives $\norm{Vf}_\infty \le 1$,
+because
+$\abs{Vf(t)} = \abs{\int_0^t f(s) \dd s} \le \int_0^t \abs{f(s)} \dd s \le 1$.
+It is uniformly equicontinuous: for all $\eps > 0$ there is a $\delta > 0$
+such that for all $Vf \in V(B)$ and all $t, t'$ with $\abs{t - t'} < \delta$
+we have $\abs{Vf(t) - Vf(t')} < \eps$. Here $\delta = \eps$ works: for
+$t' < t$,
+\[
+  \abs{Vf(t) - Vf(t')} = \Bigl\lvert \int_{t'}^{t} f(s) \dd s \Bigr\rvert
+  \le \int_{t'}^{t} \underbrace{\abs{f(s)}}_{\le 1} \dd s
+  \le t - t' < \delta = \eps .
+\]
+\end{example}
+
+\begin{nfigure}{The Volterra operator as a matrix acting on a vector. The kernel
+$K(t,s)$ is $1$ on the lower triangle $s \le t$ and $0$ above it, a
+continuous analogue of a lower triangular matrix of ones. As in
+$(Kf)_t = \sum_s K_{ts} f_s$, the value $Vf(t)$ is row $t$ of $K$ against
+$f$, which adds up $f$ over $[0, t]$.}
+\begin{tikzpicture}[scale=1.0]
+  % the kernel as a matrix: rows t downward, columns s rightward
+  \fill[defbg] (0,3) -- (0,0) -- (3,0) -- cycle;
+  \draw[rulegrey] (0,0) rectangle (3,3);
+  \draw[accent, thick] (0,3) -- (3,0);
+  \node[accent] at (0.75,0.85) {$1$};
+  \node[rulegrey] at (2.25,2.15) {$0$};
+  \node at (1.5,3.35) {$s$};
+  \draw[-{Stealth[length=1.6mm]}] (0.2,3.2) -- (2.8,3.2);
+  \node at (-0.4,1.5) {$t$};
+  \draw[-{Stealth[length=1.6mm]}] (-0.2,2.8) -- (-0.2,0.2);
+  % row t
+  \draw[thmaccent, line width=2.2pt] (0,1.8) -- (1.2,1.8);
+  \draw[thmaccent, dashed] (1.2,1.8) -- (3,1.8);
+  \node at (1.5,-0.4) {$K(t,s)$};
+  % times
+  \node at (3.6,1.5) {$\cdot$};
+  % vector f
+  \draw[rulegrey] (4.0,0) rectangle (4.5,3);
+  \draw[thmaccent, line width=2.2pt] (4.25,3) -- (4.25,1.8);
+  \node at (4.25,-0.4) {$f(s)$};
+  % equals
+  \node at (5.1,1.5) {$=$};
+  % vector Vf
+  \draw[rulegrey] (5.6,0) rectangle (6.1,3);
+  \fill[thmaccent] (5.6,1.72) rectangle (6.1,1.88);
+  \node at (5.85,-0.4) {$Vf(t)$};
+  \node[thmaccent, right] at (6.15,1.8) {$\displaystyle\int_0^t f(s) \dd s$};
+\end{tikzpicture}
+\end{nfigure}
+
+\begin{remark}
+As a rule of thumb, integral operators are compact. Compact operators have a
+simpler spectral theory than bounded linear operators; their spectral theory
+is similar to that of matrices.
+\end{remark}
+
+% [p1]
+\begin{lemma}\label{lem:compact-basic}
+\leavevmode
+\begin{enumerate}
+  \item Every compact operator $T$ is bounded, that is,
+    $T \in \Bop{X}{Y}$.
+  \item $I \colon X \to X$, $x \mapsto x$, is not compact if
+    $\dim X = \infty$, and compact if $\dim X < \infty$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(1) Let $B = B(0,1)$. $T(B)$ is relatively compact, so $\cl{T(B)}$ is
+compact, then it is bounded, by Lemma~\ref{lem:compact-closed-bounded}, so
+$T(B)$ is bounded. Say $\norm{y} \le K$ for all $y \in T(B)$; then
+$\norm{T} = \sup_{\norm{x} \le 1} \norm{Tx} \le K$, so $T$ is bounded.
+
+(2) $I(B) = B$, and $B$ is relatively compact if and only if
+$\dim X < \infty$, by Corollary~\ref{cor:unit-ball}.
+\end{proof}
+
+\begin{lemma}\label{lem:compact-sequential}
+$T \in \Bop{X}{Y}$ is compact if and only if for every bounded sequence
+$(x_n)$ the image $(Tx_n)$ has a convergent subsequence.
+\end{lemma}
+
+\begin{proof}
+Assume $T$ is compact and $(x_n)$ is bounded. Then $\cl{\set{Tx_n}}$ is
+compact, by definition, so $(Tx_n)$ has a convergent subsequence, by
+Theorem~\ref{thm:compact-tfae}.
+
+Conversely, assume that for every bounded $(x_n)$, $(Tx_n)$ has a convergent
+subsequence. Let $B \subset X$ be bounded, and consider $T(B)$. $\cl{T(B)}$
+is compact, because: take a sequence $(y_n) \subset T(B)$, $y_n = Tx_n$ with
+$x_n \in B$. Then $(x_n)$ is bounded, thus $(y_n)$ has a convergent
+subsequence, so $\cl{T(B)}$ is compact, by Theorem~\ref{thm:compact-tfae}.
+\end{proof}
+
+% [p2]
+\begin{corollary}\label{cor:compact-vector-space}
+The compact operators form a vector space within $\Bop{X}{Y}$.
+\end{corollary}
+
+\begin{proof}
+For compact operators $T_1, T_2$, the operators $T_1 + T_2$ and
+$\alpha T_1$ are compact, via sequences and Lemma~\ref{lem:compact-sequential}.
+\end{proof}
+
+\begin{lemma}\label{lem:finite-rank}
+Let $T \in \Bop{X}{Y}$ with $\dim T(X) < \infty$. Then $T$ is compact.
+\end{lemma}
+
+\begin{proof}
+For every bounded $B \subset X$, $T(B)$ is bounded in $T(X) \subset Y$. As
+$\dim T(X) < \infty$, the subspace $T(X)$ is closed in $Y$, as in the proof of
+Theorem~\ref{thm:locally-compact}, and its closed bounded sets are compact,
+by Theorems~\ref{thm:finite-dim} and~\ref{thm:heine-borel}. So $T(B)$ is
+relatively compact.
+\end{proof}
+
+\begin{theorem}\label{thm:compact-limit}
+Let $(T_n) \subset \Bop{X}{Y}$ be a sequence of compact operators, $Y$ a
+Banach space, and $T_n \to T$, that is, $\norm{T - T_n} \to 0$. Then $T$ is
+also compact.
+\end{theorem}
+
+\begin{proof}
+Let $(x_n) \subset X$ be bounded. We need $(Tx_n)$ to have a convergent
+subsequence. Use the diagonal method: $(T_1 x_n)$ has a convergent
+subsequence $(T_1 x_{1,n})$; $(T_2 x_{1,n})$ has a convergent subsequence
+$(T_2 x_{2,n})$; et cetera. Consider the subsequence
+$(x_{n,n}) \subset (x_n)$. We show that $(Tx_{n,n})$ is Cauchy. Let
+$y_n = x_{n,n}$ and consider
+\[
+  \norm{Ty_j - Ty_k}
+  \le \norm{Ty_j - T_r y_j} + \norm{T_r y_j - T_r y_k}
+    + \norm{T_r y_k - T y_k} < \eps .
+\]
+So $(Ty_n)$ is Cauchy in $Y$, so it converges, as $Y$ is a Banach space.
+\end{proof}
+
+\begin{example}\label{ex:diagonal-compact}
+Let $T \colon \lp{2} \to \lp{2}$,
+$(x_1, x_2, x_3, \dots) \mapsto (\frac{x_1}{1}, \frac{x_2}{2},
+\frac{x_3}{3}, \dots)$, bounded by Example~\ref{ex:mult-lp}. $T$ is compact,
+because: let
+\[
+  T_N \colon \lp{2} \to \lp{2}, \qquad (x_1, x_2, \dots) \longmapsto
+  \Bigl(\frac{x_1}{1}, \frac{x_2}{2}, \dots, \frac{x_N}{N}, 0, 0, \dots
+  \Bigr) .
+\]
+$T_N$ is compact, since $\dim \operatorname{Ran} T_N = N < \infty$, by
+Lemma~\ref{lem:finite-rank}; and $T_N \to T$, so $T$ is compact, by
+Theorem~\ref{thm:compact-limit}, $\lp{2}$ being a Banach space by
+Theorem~\ref{thm:lp-banach}. Check $T_N \to T$, that is,
+$\norm{T - T_N} \to 0$: $\norm{T - T_N} = \sup_{\norm{x} \le 1}
+\norm{(T - T_N)x}$, and
+\[
+  \begin{aligned}
+    \norm{(T - T_N)x}
+    &= \Bigl\lVert \Bigl(0, \dots, 0, \frac{x_{N+1}}{N+1}, \dots\Bigr)
+      \Bigr\rVert_2
+    = \Bigl(\sum_{k=N+1}^{\infty} \Bigl\lvert \frac{x_k}{k} \Bigr\rvert^2
+      \Bigr)^{1/2} \\
+    &\le \frac{1}{N+1} \Bigl(\sum_{k=N+1}^{\infty} \abs{x_k}^2\Bigr)^{1/2}
+    \le \frac{1}{N+1} \norm{x} ,
+  \end{aligned}
+\]
+so $\norm{T - T_N} \le \frac{1}{N+1} \to 0$.
+\end{example}
+
+\begin{theorem}\label{thm:compact-weak-strong}
+If $T \in \Bop{X}{Y}$ is compact, and $(x_n) \subset X$ has
+$x_n \xrightarrow{w} x$, then $Tx_n \to Tx$.
+\end{theorem}
+
+\begin{proof}
+Let $y_n = Tx_n$. As $x_n \xrightarrow{w} x$, $y_n \xrightarrow{w} y = Tx$.
+We show that $\norm{y_n - y} \to 0$. Assume $\norm{y_n - y} \not\to 0$, that
+is, there is a subsequence $(y_{n_k})$ such that
+$\norm{y_{n_k} - y} \ge \eta > 0$. $T$ is compact, and $(x_n)$ is bounded by
+Proposition~\ref{prop:weak-limit}, so $(y_{n_k})$ has a convergent
+subsequence $\tilde{y}_j \to \tilde{y}$. But then
+$\tilde{y}_j \xrightarrow{w} \tilde{y}$, so we must have $y = \tilde{y}$,
+since weak limits are unique, by Proposition~\ref{prop:weak-limit}. But this
+is a contradiction, since $\norm{\tilde{y}_j - y} \ge \eta$.
+\end{proof}
+
+\begin{lemma}\label{lem:compact-ideal}
+Let $T \in \Bopone{X}$ be compact, and $S \in \Bopone{X}$. Then $TS$ and $ST$
+are also compact.
+\end{lemma}
+
+\begin{proof}
+$TS$: let $B \subset X$ be bounded; then $S(B)$ is bounded, so $TS(B)$ is
+relatively compact.
+
+$ST$: let $(x_n) \subset X$ be bounded. $(Tx_n)$ has a convergent subsequence
+$(Tx_{n_k})$; then $(STx_{n_k})$ is also convergent, so $ST$ is compact, by
+Lemma~\ref{lem:compact-sequential}, since $(STx_n)$ also has a convergent
+subsequence.
+\end{proof}
+
+\begin{corollary}\label{cor:compact-zero-spectrum}
+Let $X$ be a Banach space. If $\dim X = \infty$, then $0$ is a spectral value
+of any compact $T \in \Bopone{X}$.
+\end{corollary}
+
+\begin{proof}
+Assume $0 \in \rho(T)$; then $T^{-1}$ exists and is bounded, so
+$T T^{-1} = I$ must be compact, by Lemma~\ref{lem:compact-ideal}, which is a
+contradiction, by Lemma~\ref{lem:compact-basic} (2).
+\end{proof}
+
+% [p3]
+\begin{proposition}\label{prop:compact-kernel}
+Let $X$ be a Banach space, $T \in \Bopone{X}$ compact, and
+$T_\lambda = T - \lambda I$. Then for every $\lambda \ne 0$ in $\C$,
+$\ker T_\lambda$ is finite-dimensional; that is, if $\lambda$ is an
+eigenvalue, its multiplicity is finite.
+\end{proposition}
+
+\begin{proof}
+Let $M$ be the closed unit ball of $\ker T_\lambda$. We claim that $M$ is
+compact, meaning $\dim \ker T_\lambda < \infty$, by
+Corollary~\ref{cor:unit-ball}. Let $(x_n) \subset M$; then
+$\norm{x_n} \le 1$ and $T_\lambda x_n = 0$, so $x_n = \lambda^{-1} T x_n$.
+$T$ is compact, so $(Tx_n)$ has a convergent subsequence $(Tx_{n_k})$; then
+$x_{n_k} = \frac{1}{\lambda} T x_{n_k}$ also converges. So $M$ is compact.
+\end{proof}
+
+\begin{corollary}\label{cor:compact-kernel-powers}
+For $\lambda \ne 0$, $\dim \ker T_\lambda^n < \infty$ for all $n \in \N$,
+and
+\[
+  \set{0} = \ker T_\lambda^0 \subset \ker T_\lambda \subset
+  \ker T_\lambda^2 \subset \dots .
+\]
+\end{corollary}
+
+\begin{proof}
+The second part is trivial. For the first,
+\[
+  T_\lambda^n = (T - \lambda I)^n
+  = \sum_{k=0}^{n} \binom{n}{k} T^k (-\lambda)^{n-k}
+  = \underbrace{(-\lambda)^n}_{-\mu \ne 0} I
+    + \underbrace{T \sum_{k=1}^{n} \binom{n}{k} T^{k-1}
+      (-\lambda)^{n-k}}_{W := TS \text{ compact}}
+  = W - \mu I ,
+\]
+where $W$ is compact by Lemma~\ref{lem:compact-ideal}. So
+$\dim \ker T_\lambda^n = \dim \ker(W - \mu I) < \infty$, by
+Proposition~\ref{prop:compact-kernel}.
+\end{proof}
+
+\begin{theorem}\label{thm:compact-eigenvalues}
+The set of eigenvalues of a compact operator $T \in \Bopone{X}$ is countable,
+and the only possible limit point is $0$; that is, there are finitely many
+eigenvalues outside $B(0, r)$ for every $r > 0$.
+\end{theorem}
+
+\begin{example}
+For the Volterra operator of Example~\ref{ex:volterra},
+$Vf(t) = \int_0^t f(s) \dd s$, we have $\sigma(V) = \set{0}$.
+\end{example}
+
+\begin{theorem}\label{thm:compact-spectrum}
+Let $T \in \Bopone{X}$ be compact on a Banach space $X$. Then every spectral
+value of $T$ is an eigenvalue, or zero.
+\end{theorem}
